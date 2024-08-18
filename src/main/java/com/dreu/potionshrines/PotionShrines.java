@@ -1,5 +1,6 @@
 package com.dreu.potionshrines;
 
+import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSItems;
 import com.mojang.logging.LogUtils;
@@ -14,20 +15,24 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+import java.util.Random;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(PotionShrines.MODID)
 public class PotionShrines
 {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "potion_shrines";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Random rand = new Random();
 
     public PotionShrines()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::commonSetup);
-        PSBlocks.BLOCKS.register(modEventBus);
-        PSItems.ITEMS.register(modEventBus);
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus.addListener(this::commonSetup);
+        PSBlocks.BLOCKS.register(eventBus);
+        PSBlockEntities.BLOCK_ENTITIES.register(eventBus);
+        PSItems.ITEMS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
 
     }
