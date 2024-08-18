@@ -3,12 +3,9 @@ package com.dreu.potionshrines.blocks;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.electronwill.nightconfig.core.Config;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -16,18 +13,16 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
+import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.config.PSShrineConfig.getRandomShrine;
 
 public class ShrineBlock extends Block implements EntityBlock {
@@ -43,7 +38,13 @@ public class ShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new ShrineBlockEntity(blockPos, blockState);
+        Config config = getRandomShrine();
+        ShrineBlockEntity shrine = new ShrineBlockEntity(blockPos, blockState);
+        shrine.setAmplifier((int) config.get("Amplifier") - 1);
+        shrine.setDuration(config.get("Duration"));
+        shrine.setMaxCooldown((int) config.get("Cooldown") * 20);
+        shrine.setEffect(config.get("Effect"));
+        return shrine;
     }
     @Nullable
     @Override
@@ -57,16 +58,31 @@ public class ShrineBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        Config shrine = getRandomShrine();
-        MobEffect effect = ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(shrine.get("Effect"))).get();
-        player.addEffect(new MobEffectInstance(effect, shrine.getInt("Duration") * 20));
+        ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
+        if (shrine.canUse()) {
+            shrine.resetCooldown();
+            if (!level.isClientSide) {
+                player.addEffect(new MobEffectInstance(
+                        getEffectFromString(shrine.getEffect()),
+                        shrine.getDuration() * 20,
+                        shrine.getAmplifier()));
+            }
+            player.sendSystemMessage(Component.literal("Client Side ----------------------"));
+            player.sendSystemMessage(Component.literal("Effect: " + shrine.getEffect()));
+            player.sendSystemMessage(Component.literal("Amplifier: " + shrine.getAmplifier()));
+            player.sendSystemMessage(Component.literal("Duration: " + shrine.getDuration()));
+            player.sendSystemMessage(Component.literal("Cooldown: " + shrine.getMaxCooldown()));
+            player.sendSystemMessage(Component.literal("Remaining: " + shrine.getRemainingCooldown()));
+            player.sendSystemMessage(Component.literal("----------------------------------"));
+            return InteractionResult.SUCCESS;
+        }
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
 
-        return super.getStateForPlacement(blockPlaceContext);
+        return super.getStateForPlacement(context);
     }
 }
