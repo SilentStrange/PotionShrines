@@ -25,8 +25,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
         // Render the text
         Font font = Minecraft.getInstance().font;
-        int width = font.width(text);
-        poseStack.translate(-width / 10.0D, 0.0D, 0.0D);
+        poseStack.translate(-font.width(text) / 2.0D, 0.0D, 0.0D);
 
         // Render the text with a shadow for better readability
         font.drawInBatch(text, 0F, 0F, 0xFFFFFF, false, poseStack.last().pose(), bufferSource, true, 0, combinedLight);
