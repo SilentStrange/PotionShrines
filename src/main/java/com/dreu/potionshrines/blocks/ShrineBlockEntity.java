@@ -14,13 +14,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import static com.dreu.potionshrines.config.PSGeneralConfig.SHRINES_REPLENISH;
 import static com.dreu.potionshrines.config.PSShrineConfig.getRandomShrine;
 
 public class ShrineBlockEntity extends BlockEntity {
-    public int maxCooldown = 0;
-    public String effect = "";
-    public int duration = 0;
-    public int amplifier = 0;
+    public int maxCooldown;
+    public String effect;
+    public int duration;
+    public int amplifier;
     private int remainingCooldown = 0;
     public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
@@ -30,8 +31,9 @@ public class ShrineBlockEntity extends BlockEntity {
         maxCooldown = (int) SHRINE.get("Cooldown") * 20;
         effect = SHRINE.get("Effect");
     }
+
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrineBlockEntity) {
-        if (shrineBlockEntity.remainingCooldown > 0) {
+        if (SHRINES_REPLENISH && shrineBlockEntity.remainingCooldown > 0) {
             shrineBlockEntity.remainingCooldown--;
             setChanged(level, blockPos, blockState);
         }
@@ -85,6 +87,8 @@ public class ShrineBlockEntity extends BlockEntity {
     public void setDuration(int dur){duration = dur;}
     public void setMaxCooldown(int cool){maxCooldown = cool;}
     public void setAmplifier(int amp){amplifier = amp;}
+    public void setRemainingCooldown(int rCool) {remainingCooldown = rCool;}
+
 
     public boolean canUse() {
         return remainingCooldown == 0;

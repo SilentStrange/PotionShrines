@@ -13,5 +13,5 @@ import static com.dreu.potionshrines.PotionShrines.MODID;
 
 public class PSBlocks {
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-        public static final RegistryObject<Block> SHRINE = BLOCKS.register("shrine", () -> new ShrineBlock(BlockBehaviour.Properties.copy(Blocks.OBSIDIAN)));
+        public static final RegistryObject<Block> SHRINE = BLOCKS.register("shrine", () -> new ShrineBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
 }
