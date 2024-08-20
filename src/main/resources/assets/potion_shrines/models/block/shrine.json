@@ -1,7 +1,11 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
+	"ambientocclusion": false,
 	"textures": {
-		"0": "block/crying_obsidian"
+		"0": "block/crying_obsidian",
+		"1": "block/stone",
+		"particle": "#0"
 	},
 	"elements": [
 		{
@@ -255,12 +259,12 @@
 			"to": [11, 27, 11],
 			"rotation": {"angle": 0, "axis": "y", "origin": [6, 4, 6]},
 			"faces": {
-				"north": {"uv": [0, 0, 6, 16], "texture": "#0"},
-				"east": {"uv": [0, 0, 6, 16], "texture": "#0"},
-				"south": {"uv": [0, 0, 6, 16], "texture": "#0"},
-				"west": {"uv": [0, 0, 6, 16], "texture": "#0"},
-				"up": {"uv": [0, 0, 6, 6], "texture": "#0"},
-				"down": {"uv": [0, 0, 6, 6], "texture": "#0"}
+				"north": {"uv": [0, 0, 6, 16], "texture": "#1"},
+				"east": {"uv": [0, 0, 6, 16], "texture": "#1"},
+				"south": {"uv": [0, 0, 6, 16], "texture": "#1"},
+				"west": {"uv": [0, 0, 6, 16], "texture": "#1"},
+				"up": {"uv": [0, 0, 6, 6], "texture": "#1"},
+				"down": {"uv": [0, 0, 6, 6], "texture": "#1"}
 			}
 		},
 		{
