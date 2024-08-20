@@ -5,7 +5,10 @@ import com.electronwill.nightconfig.toml.TomlParser;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.dreu.potionshrines.PotionShrines.rand;
 
@@ -26,6 +29,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 180
             Amplifier = 2
             Weight = 5
+            Icon = "regeneration"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
@@ -33,6 +37,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 2
             Weight = 5
+            Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
@@ -40,6 +45,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 3
             Weight = 3
+            Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
@@ -47,6 +53,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 5
             Weight = 1
+            Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
@@ -54,6 +61,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 2
             Weight = 5
+            Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
@@ -61,6 +69,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 3
             Weight = 3
+            Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
@@ -68,6 +77,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 5
             Weight = 1
+            Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:jump_boost"
@@ -75,6 +85,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 2
             Weight = 5
+            Icon = "jump_boost"
             
             [[Shrine]]
             Effect = "minecraft:strength"
@@ -82,6 +93,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:strength"
@@ -89,6 +101,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 180
             Amplifier = 2
             Weight = 3
+            Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:strength"
@@ -96,6 +109,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 3
             Weight = 1
+            Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:invisibility"
@@ -103,6 +117,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "invisibility"
             
             [[Shrine]]
             Effect = "minecraft:fire_resistance"
@@ -110,6 +125,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "fire_resistance"
             
             [[Shrine]]
             Effect = "minecraft:speed"
@@ -117,6 +133,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:speed"
@@ -124,6 +141,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 180
             Amplifier = 2
             Weight = 3
+            Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:speed"
@@ -131,6 +149,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 3
             Weight = 1
+            Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:haste"
@@ -138,6 +157,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "haste"
             
             [[Shrine]]
             Effect = "minecraft:haste"
@@ -145,6 +165,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 180
             Amplifier = 2
             Weight = 3
+            Icon = "haste"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
@@ -152,6 +173,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 180
             Amplifier = 1
             Weight = 3
+            Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
@@ -159,6 +181,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 2
             Weight = 1
+            Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:water_breathing"
@@ -166,6 +189,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 300
             Amplifier = 1
             Weight = 5
+            Icon = "water_breathing"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
@@ -173,6 +197,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 2
             Weight = 1
+            Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
@@ -180,6 +205,7 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 60
             Amplifier = 2
             Weight = 1
+            Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:slow_falling"
@@ -187,14 +213,17 @@ public class PSShrineConfig extends PSConfig{
             Cooldown = 120
             Amplifier = 1
             Weight = 5
+            Icon = "slow_falling"
             """;
     private static final Pair<Config, String> CONFIG = getConfigOrDefault("shrines", defaultConfig);
     private static final Config CONFIG_DEFAULT = new TomlParser().parse(defaultConfig);
     private static final List<Config> SHRINES = CONFIG.getLeft().get("Shrine");
     public static double TOTAL_WEIGHT = 0;
+    public static final Set<String> SHRINE_ICONS = new HashSet<>();
     static {
         SHRINES.forEach((shrine) -> {
             TOTAL_WEIGHT += shrine.getInt("Weight");
+            SHRINE_ICONS.add(shrine.get("Icon"));
         });
     }
     public static Config getRandomShrine() {

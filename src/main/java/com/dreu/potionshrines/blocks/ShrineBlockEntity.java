@@ -23,6 +23,7 @@ public class ShrineBlockEntity extends BlockEntity {
     public int duration;
     public int amplifier;
     private int remainingCooldown = 0;
+    private String icon;
     public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
         Config SHRINE = getRandomShrine();
@@ -30,6 +31,7 @@ public class ShrineBlockEntity extends BlockEntity {
         duration = SHRINE.get("Duration");
         maxCooldown = (int) SHRINE.get("Cooldown") * 20;
         effect = SHRINE.get("Effect");
+        icon = SHRINE.get("Icon");
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrineBlockEntity) {
@@ -46,6 +48,7 @@ public class ShrineBlockEntity extends BlockEntity {
         nbt.putInt("max_cooldown", maxCooldown);
         nbt.putInt("remaining_cooldown", remainingCooldown);
         nbt.putInt("amplifier", amplifier);
+        nbt.putString("icon", icon);
         super.saveAdditional(nbt);
     }
 
@@ -57,6 +60,7 @@ public class ShrineBlockEntity extends BlockEntity {
         maxCooldown = nbt.getInt("max_cooldown");
         duration = nbt.getInt("duration");
         effect = nbt.getString("effect");
+        icon = nbt.getString("icon");
     }
 
     @Nullable
@@ -83,6 +87,7 @@ public class ShrineBlockEntity extends BlockEntity {
     public int getMaxCooldown(){return maxCooldown;}
     public int getRemainingCooldown(){return remainingCooldown;}
     public int getAmplifier(){return amplifier;}
+    public String getIcon(){return icon;}
     public void setEffect(String eff){effect = eff;}
     public void setDuration(int dur){duration = dur;}
     public void setMaxCooldown(int cool){maxCooldown = cool;}
