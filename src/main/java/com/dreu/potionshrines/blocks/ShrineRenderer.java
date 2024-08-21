@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -33,7 +34,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.translate(-0.5, 0, -0.5);
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            itemRenderer.renderModelLists(BAKED_ICONS.get(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+            itemRenderer.renderModelLists(getBakedIconOrDefault(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
 
             poseStack.popPose();
         } else if (cooldown < 40){
@@ -52,7 +53,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.translate(-0.5, 0, -0.5);
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            itemRenderer.renderModelLists(BAKED_ICONS.get(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+            itemRenderer.renderModelLists(getBakedIconOrDefault(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
 
             poseStack.popPose();
         } else if (cooldown > shrineEntity.getMaxCooldown() - 20){
@@ -72,7 +73,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.translate(-0.5, 0, -0.5);
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            itemRenderer.renderModelLists(BAKED_ICONS.get(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+            itemRenderer.renderModelLists(getBakedIconOrDefault(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
 
             poseStack.popPose();
         }
@@ -97,5 +98,8 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
         Tesselator.getInstance().end();
 
         poseStack.popPose();
+    }
+    private BakedModel getBakedIconOrDefault(String key) {
+        return BAKED_ICONS.get(key) == null ? BAKED_ICONS.get("default") : BAKED_ICONS.get(key);
     }
 }

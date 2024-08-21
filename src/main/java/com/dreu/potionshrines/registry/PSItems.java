@@ -1,7 +1,6 @@
 package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.items.ShrineBlockItem;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;

@@ -4,9 +4,7 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.toml.TomlParser;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 

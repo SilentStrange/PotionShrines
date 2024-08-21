@@ -62,6 +62,7 @@ public class PotionShrines {
             for (String icon : SHRINE_ICONS) {
                 event.register(new ResourceLocation("potion_shrines", "shrine/" + icon));
             }
+            event.register(new ResourceLocation("potion_shrines", "shrine/default"));
         }
         @SubscribeEvent
         public static void bakeModels(ModelEvent.BakingCompleted event){
@@ -74,6 +75,13 @@ public class PotionShrines {
                         iconLocation
                 ));
             }
+            ResourceLocation iconLocation = new ResourceLocation("potion_shrines", "shrine/default");
+            BAKED_ICONS.put("default", Minecraft.getInstance().getModelManager().getModelBakery().getModel(iconLocation).bake(
+                        Minecraft.getInstance().getModelManager().getModelBakery(),
+                        (material) -> Minecraft.getInstance().getTextureAtlas(material.atlasLocation()).apply(material.texture()),
+                        new SimpleModelState(Transformation.identity()),
+                        iconLocation
+            ));
         }
 
         @SubscribeEvent
@@ -82,6 +90,7 @@ public class PotionShrines {
                 for (String icon : SHRINE_ICONS) {
                     event.addSprite(new ResourceLocation("potion_shrines", "shrine/" + icon));
                 }
+                event.addSprite(new ResourceLocation("potion_shrines", "shrine/default"));
             }
         }
     }

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -78,6 +79,11 @@ public class ShrineBaseBlock extends Block {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(HALF, Half.BOTTOM));
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState blockState) {
+        return PushReaction.BLOCK;
     }
 
     @Override
