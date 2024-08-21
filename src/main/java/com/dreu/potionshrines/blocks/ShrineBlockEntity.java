@@ -38,7 +38,7 @@ public class ShrineBlockEntity extends BlockEntity {
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
         if (shrine.maxCooldown == 999999) return;
-        if (shrine.remainingCooldown == 30)
+        if (shrine.remainingCooldown == 40)
             level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 10F, 1F, true);
         if (SHRINES_REPLENISH && shrine.remainingCooldown > 30) {
             if (shrine.remainingCooldown > shrine.maxCooldown - 30){
@@ -51,7 +51,6 @@ public class ShrineBlockEntity extends BlockEntity {
             level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - shrine.remainingCooldown / 2), 11);
         }
     }
-
     @Override
     protected void saveAdditional(CompoundTag nbt) {
         nbt.putString("effect", effect);
@@ -62,7 +61,6 @@ public class ShrineBlockEntity extends BlockEntity {
         nbt.putString("icon", icon);
         super.saveAdditional(nbt);
     }
-
     @Override
     public void load(CompoundTag nbt){
         super.load(nbt);
@@ -91,7 +89,6 @@ public class ShrineBlockEntity extends BlockEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
     }
-
 
     public String getEffect(){return effect;}
     public int getDuration(){return duration;}
