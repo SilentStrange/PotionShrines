@@ -8,6 +8,8 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,7 +37,9 @@ public class ShrineBlockEntity extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
-
+        if (shrine.maxCooldown == 999999) return;
+        if (shrine.remainingCooldown == 30)
+            level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 10F, 1F, true);
         if (SHRINES_REPLENISH && shrine.remainingCooldown > 30) {
             if (shrine.remainingCooldown > shrine.maxCooldown - 30){
                 level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);

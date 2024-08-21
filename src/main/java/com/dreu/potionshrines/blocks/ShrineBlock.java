@@ -3,6 +3,9 @@ package com.dreu.potionshrines.blocks;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -100,6 +103,7 @@ public class ShrineBlock extends Block implements EntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
         if (shrine.canUse()) {
+            level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 10F, 1F, true);
             shrine.resetCooldown();
             if (!level.isClientSide) {
                 player.addEffect(new MobEffectInstance(

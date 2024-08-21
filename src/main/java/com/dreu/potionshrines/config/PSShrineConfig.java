@@ -17,7 +17,7 @@ public class PSShrineConfig extends PSConfig{
             
             # Effect = ID of the Potion Effect
             # Duration = How long the effect lasts in Seconds (Range: 1 - 999999)
-            # Cooldown = How many seconds until players can use the Shrine again. 0 means Shrine will never replenish (Range: 0 - 999999)
+            # Cooldown = How many seconds until players can use the Shrine again. 999999 means Shrine will never replenish (Range: 3 - 999999)
             # Amplifier = Level of the effect (Range: 1 - 256)
             # Weight = Chance for effect to be chosen compared to the Weight of all effects (Range: 1 - 2,147,483,647)
             
