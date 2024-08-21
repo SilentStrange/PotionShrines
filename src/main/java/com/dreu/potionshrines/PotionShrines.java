@@ -1,18 +1,16 @@
 package com.dreu.potionshrines;
 
-import com.dreu.potionshrines.blocks.ShrineBlockEntity;
 import com.dreu.potionshrines.blocks.ShrineRenderer;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
+import com.dreu.potionshrines.registry.PSFeatures;
 import com.dreu.potionshrines.registry.PSItems;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,8 +22,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
@@ -35,38 +31,26 @@ import java.util.Map;
 import java.util.Random;
 
 import static com.dreu.potionshrines.config.PSShrineConfig.SHRINE_ICONS;
-
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
-    // Define mod id in a common place for everything to reference
     public static final String MODID = "potion_shrines";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random rand = new Random();
     public static final Map<String, BakedModel> BAKED_ICONS = new HashMap<>();
 
-    public PotionShrines()
-    {
+    public PotionShrines() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::commonSetup);
+
+        PSItems.ITEMS.register(eventBus);
         PSBlocks.BLOCKS.register(eventBus);
         PSBlockEntities.BLOCK_ENTITIES.register(eventBus);
-        PSItems.ITEMS.register(eventBus);
+        PSFeatures.FEATURES.register(eventBus);
+        PSFeatures.Configured.CONFIGURED_FEATURES.register(eventBus);
+        PSFeatures.Placed.PLACED_FEATURES.register(eventBus);
+
         MinecraftForge.EVENT_BUS.register(this);
-
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-
-    }
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
@@ -101,7 +85,6 @@ public class PotionShrines {
             }
         }
     }
-
     public static MobEffect getEffectFromString(String effect){
         return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
     }

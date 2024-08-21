@@ -10,18 +10,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import static com.dreu.potionshrines.PotionShrines.BAKED_ICONS;
 
 public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
-    public ShrineRenderer(BlockEntityRendererProvider.Context context) {
-    }
-
+    public ShrineRenderer(BlockEntityRendererProvider.Context context){}
     @Override
     public void render(ShrineBlockEntity shrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         float cooldown = shrineEntity.getRemainingCooldown();
@@ -91,7 +86,6 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
         float uvY = 1 - (float) shrineEntity.getRemainingCooldown() / shrineEntity.getMaxCooldown();
-        // Render front face
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         for (int i = 0; i < 4; i++) {
             buffer.vertex(poseStack.last().pose(), -0.125f, 0, 0.1876f).uv(0, 1).endVertex();

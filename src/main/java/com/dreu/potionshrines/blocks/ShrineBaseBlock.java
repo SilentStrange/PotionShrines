@@ -1,5 +1,7 @@
 package com.dreu.potionshrines.blocks;
 
+import com.dreu.potionshrines.registry.PSBlocks;
+import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -7,7 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -22,8 +25,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import static com.dreu.potionshrines.config.PSGeneralConfig.OBTAINABLE;
+
 public class ShrineBaseBlock extends Block {
-    public static final EnumProperty HALF = BlockStateProperties.HALF;
+    public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final VoxelShape BOTTOM_SHAPE =
             Shapes.join(
                 Shapes.join(
@@ -69,12 +74,15 @@ public class ShrineBaseBlock extends Block {
                 BooleanOp.OR
             );
 
-    public ShrineBaseBlock(Properties properties) {super(properties);}
+    public ShrineBaseBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(stateDefinition.any()
+                .setValue(HALF, Half.BOTTOM));
+    }
 
     @Override
     public ItemStack getCloneItemStack(BlockState blockState, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
-        blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
-        return level.getBlockState(blockPos).getBlock().getCloneItemStack(level.getBlockState(blockPos), target, level, blockPos, player);
+        return level.getBlockState(blockPos.above()).getBlock().getCloneItemStack(level.getBlockState(blockPos.above()), target, level, blockPos.above(), player);
     }
 
     @Override
@@ -87,21 +95,51 @@ public class ShrineBaseBlock extends Block {
     }
 
     @Override
-    public void destroy(LevelAccessor level, BlockPos blockPos, BlockState blockState) {
+    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
-        level.removeBlock(blockPos, true);
-        level.removeBlock(blockPos.below(1), true);
-        level.removeBlock(blockPos.below(2), true);
+        if (level.getBlockState(blockPos).is(PSBlocks.SHRINE.get())) {
+            level.destroyBlock(blockPos.below(2), true);
+            level.removeBlock(blockPos.below(1), true);
+            level.removeBlock(blockPos, true);
+        }
     }
-
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HALF);
+    public boolean onDestroyedByPlayer(BlockState blockState, Level level, BlockPos blockPos, Player player, boolean willHarvest, FluidState fluid) {
+        BlockPos shrinePos = blockPos.above(blockState.getValue(HALF) == Half.BOTTOM ? 2 : 1);
+        if (level.getBlockEntity(shrinePos) != null && !level.isClientSide) {
+            if (OBTAINABLE && !player.isCreative()) {
+                ItemStack drop = new ItemStack(PSItems.SHRINE.get());
+                level.getBlockEntity(shrinePos).saveToItem(drop);
+                popResource(level, blockPos, drop);
+            }
+            level.removeBlock(shrinePos.below(2), true);
+            level.removeBlock(shrinePos.below(1), true);
+            level.removeBlock(shrinePos, true);
+            return true;
+        }
+        return super.onDestroyedByPlayer(blockState, level, blockPos, player, !player.isCreative(), fluid);
     }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
         return level.getBlockState(blockPos).getBlock().use(level.getBlockState(blockPos), level, blockPos, player, interactionHand, blockHitResult);
+    }
+
+    @Override
+    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
+        return false;
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
+        level.setBlock(blockPos.above(), blockState.getValue(HALF) == Half.BOTTOM
+                ? PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP)
+                : PSBlocks.SHRINE.get().defaultBlockState(), 11);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(HALF);
     }
 }

@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -20,10 +19,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.Tags;
 
 import static com.dreu.potionshrines.blocks.ShrineBaseBlock.HALF;
-import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class ShrineBlockItem extends BlockItem {
     public ShrineBlockItem(Block block, Properties properties) {
@@ -32,7 +29,8 @@ public class ShrineBlockItem extends BlockItem {
 
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState blockState) {
-        return context.getLevel().getBlockState(context.getClickedPos().above(1)).getMaterial().isReplaceable()
+        return  context.getLevel().getBlockState(context.getClickedPos()).getMaterial().isReplaceable()
+                && context.getLevel().getBlockState(context.getClickedPos().above(1)).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(2)).getMaterial().isReplaceable()
                 && context.getLevel().setBlock(context.getClickedPos().above(2), blockState, 11);
     }

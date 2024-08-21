@@ -2,7 +2,6 @@ package com.dreu.potionshrines.blocks;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.toml.TomlParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import static com.dreu.potionshrines.blocks.ShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.PSGeneralConfig.SHRINES_REPLENISH;
 import static com.dreu.potionshrines.config.PSShrineConfig.getRandomShrine;
 
@@ -34,10 +34,17 @@ public class ShrineBlockEntity extends BlockEntity {
         icon = SHRINE.get("Icon");
     }
 
-    public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrineBlockEntity) {
-        if (SHRINES_REPLENISH && shrineBlockEntity.remainingCooldown > 0) {
-            shrineBlockEntity.remainingCooldown--;
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
+
+        if (SHRINES_REPLENISH && shrine.remainingCooldown > 30) {
+            if (shrine.remainingCooldown > shrine.maxCooldown - 30){
+                level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);
+            }
+            shrine.remainingCooldown--;
             setChanged(level, blockPos, blockState);
+        } else if (shrine.remainingCooldown > 0){
+            shrine.remainingCooldown--;
+            level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - shrine.remainingCooldown / 2), 11);
         }
     }
 
@@ -88,13 +95,6 @@ public class ShrineBlockEntity extends BlockEntity {
     public int getRemainingCooldown(){return remainingCooldown;}
     public int getAmplifier(){return amplifier;}
     public String getIcon(){return icon;}
-    public void setEffect(String eff){effect = eff;}
-    public void setDuration(int dur){duration = dur;}
-    public void setMaxCooldown(int cool){maxCooldown = cool;}
-    public void setAmplifier(int amp){amplifier = amp;}
-    public void setRemainingCooldown(int rCool) {remainingCooldown = rCool;}
-
-
     public boolean canUse() {
         return remainingCooldown == 0;
     }
