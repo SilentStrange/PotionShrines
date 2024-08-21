@@ -20,6 +20,6 @@ public class PSGeneralConfig extends PSConfig {
     private static final Config CONFIG_DEFAULT = new TomlParser().parse(defaultConfig);
     public static final Boolean SHRINES_REPLENISH = getBooleanOrDefault("Replenish", CONFIG, CONFIG_DEFAULT);
     public static final int SHRINE_RARITY = rangeBounded(getIntOrDefault("Rarity", CONFIG, CONFIG_DEFAULT), 1, 10000);
-    public static final boolean INDESTRUCTIBLE = getBooleanOrDefault("Indestructible", CONFIG, CONFIG_DEFAULT);
+    public static final boolean SHRINE_INDESTRUCTIBLE = getBooleanOrDefault("Indestructible", CONFIG, CONFIG_DEFAULT);
     public static final boolean OBTAINABLE = getBooleanOrDefault("Obtainable", CONFIG, CONFIG_DEFAULT);
 }

@@ -1,13 +1,16 @@
 package com.dreu.potionshrines.blocks;
 
+import com.dreu.potionshrines.config.PSGeneralConfig;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -124,6 +127,16 @@ public class ShrineBaseBlock extends Block {
             return true;
         }
         return super.onDestroyedByPlayer(blockState, level, blockPos, player, !player.isCreative(), fluid);
+    }
+
+    @Override
+    public boolean canEntityDestroy(BlockState blockState, BlockGetter level, BlockPos blockPos, Entity entity) {
+        return !PSGeneralConfig.SHRINE_INDESTRUCTIBLE && super.canEntityDestroy(blockState, level, blockPos, entity);
+    }
+
+    @Override
+    public float getExplosionResistance(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion) {
+        return PSGeneralConfig.SHRINE_INDESTRUCTIBLE ? 3600000 : 1200;
     }
 
     @Override
