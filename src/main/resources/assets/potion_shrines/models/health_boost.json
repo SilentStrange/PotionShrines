@@ -1,6 +1,6 @@
 {
   "parent":  "item/generated",
   "textures": {
-    "layer0": "potion_shrines:shrine/health_boost"
+    "layer0": "potion_shrines:health_boost"
   }
 }

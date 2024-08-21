@@ -60,14 +60,14 @@ public class PotionShrines {
         @SubscribeEvent
         public static void registerModels(ModelEvent.RegisterAdditional event){
             for (String icon : SHRINE_ICONS) {
-                event.register(new ResourceLocation("potion_shrines", "shrine/" + icon));
+                event.register(new ResourceLocation("potion_shrines", icon));
             }
-            event.register(new ResourceLocation("potion_shrines", "shrine/default"));
+            event.register(new ResourceLocation("potion_shrines", "default"));
         }
         @SubscribeEvent
         public static void bakeModels(ModelEvent.BakingCompleted event){
             for (String icon : SHRINE_ICONS) {
-                ResourceLocation iconLocation = new ResourceLocation("potion_shrines", "shrine/" + icon);
+                ResourceLocation iconLocation = new ResourceLocation("potion_shrines", icon);
                 BAKED_ICONS.put(icon, Minecraft.getInstance().getModelManager().getModelBakery().getModel(iconLocation).bake(
                         Minecraft.getInstance().getModelManager().getModelBakery(),
                         (material) -> Minecraft.getInstance().getTextureAtlas(material.atlasLocation()).apply(material.texture()),
@@ -75,7 +75,7 @@ public class PotionShrines {
                         iconLocation
                 ));
             }
-            ResourceLocation iconLocation = new ResourceLocation("potion_shrines", "shrine/default");
+            ResourceLocation iconLocation = new ResourceLocation("potion_shrines", "default");
             BAKED_ICONS.put("default", Minecraft.getInstance().getModelManager().getModelBakery().getModel(iconLocation).bake(
                         Minecraft.getInstance().getModelManager().getModelBakery(),
                         (material) -> Minecraft.getInstance().getTextureAtlas(material.atlasLocation()).apply(material.texture()),
@@ -88,9 +88,9 @@ public class PotionShrines {
         public static void onTextureStitch(TextureStitchEvent.Pre event) {
             if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
                 for (String icon : SHRINE_ICONS) {
-                    event.addSprite(new ResourceLocation("potion_shrines", "shrine/" + icon));
+                    event.addSprite(new ResourceLocation("potion_shrines", icon));
                 }
-                event.addSprite(new ResourceLocation("potion_shrines", "shrine/default"));
+                event.addSprite(new ResourceLocation("potion_shrines", "default"));
             }
         }
     }
