@@ -26,7 +26,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.translate(0.5, Math.sin((shrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0.5);
             poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) % 360));  // Apply rotation around the Y-axis
 
-            RenderSystem.disableCull();
+            //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
             RenderSystem.enableDepthTest();
 
@@ -45,7 +45,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.scale(1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
             poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) * (1 - normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
 
-            RenderSystem.disableCull();
+            //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
             RenderSystem.enableDepthTest();
 
@@ -65,7 +65,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             poseStack.scale(1 - normalizedCooldown * normalizedCooldown , 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
             poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) * (1 + normalizedCooldown * normalizedCooldown * 8.0f) % 360));  // Apply rotation around the Y-axis
 
-            RenderSystem.disableCull();
+            //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
             RenderSystem.enableDepthTest();
 
@@ -77,10 +77,10 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
             poseStack.popPose();
         }
-        RenderSystem.disableCull();
+        //RenderSystem.disableCull()
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/shrine/recharging.png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/recharging.png"));
         poseStack.pushPose();
 
         poseStack.translate(0.5, -1.375, 0.5);
