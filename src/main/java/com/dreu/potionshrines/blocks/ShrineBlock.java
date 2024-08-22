@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -41,7 +42,7 @@ public class ShrineBlock extends Block implements EntityBlock {
     public ShrineBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
-                .setValue(LIGHT_LEVEL, 15));
+                .setValue(LIGHT_LEVEL, 0));
     }
 
     @Override
@@ -121,7 +122,6 @@ public class ShrineBlock extends Block implements EntityBlock {
         level.setBlock(blockPos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
         level.setBlock(blockPos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
     }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LIGHT_LEVEL);

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import static com.dreu.potionshrines.blocks.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.ShrineBlock.LIGHT_LEVEL;
 
 public class ShrineBlockItem extends BlockItem {
     public ShrineBlockItem(Block block, Properties properties) {
