@@ -16,8 +16,8 @@ import static com.dreu.potionshrines.blocks.ShrineBaseBlock.HALF;
 import static net.minecraft.world.level.block.StairBlock.FACING;
 import static net.minecraft.world.level.block.StairBlock.SHAPE;
 
-public class ShrineFeaturePlacer extends Feature<NoneFeatureConfiguration> {
-    public ShrineFeaturePlacer(Codec<NoneFeatureConfiguration> codec) {
+public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfiguration> {
+    public ShrineSurfaceAltarFeaturePlacer(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
     @Override

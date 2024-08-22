@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "#potion_shrines:has_feature/shrine",
-  "features": "potion_shrines:shrine",
-  "step": "surface_structures"
-}
