@@ -21,7 +21,9 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
     @Override
     public void render(ShrineBlockEntity shrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         float cooldown = shrineEntity.getRemainingCooldown();
+//        System.err.println("CD: " + cooldown + " | " + (shrineEntity.getLevel().getGameTime() + partialTicks));
         if (cooldown == 0){
+//            System.err.println("equal to 0");
             poseStack.pushPose();
             poseStack.translate(0.5, Math.sin((shrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0.5);
             poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) % 360));  // Apply rotation around the Y-axis
@@ -38,12 +40,14 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
             poseStack.popPose();
         } else if (cooldown < 40){
+//            System.err.println("less than 40");
             //Animation on replenish
             poseStack.pushPose();
             poseStack.translate(0.5, -cooldown * 0.01, 0.5);
-            float normalizedCooldown = (cooldown) / 40.0f;
+            poseStack.translate(0, Math.sin((shrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0);
+            float normalizedCooldown = cooldown / 39.0f;
             poseStack.scale(1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) * (1 - normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(((shrineEntity.getLevel().getGameTime() + partialTicks) - 3600 * normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
 
             //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
@@ -57,13 +61,15 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
             poseStack.popPose();
         } else if (cooldown > shrineEntity.getMaxCooldown() - 20){
+//            System.err.println("greater than max - 20");
             //Animation on use
             cooldown = shrineEntity.getMaxCooldown() - cooldown;
             poseStack.pushPose();
             poseStack.translate(0.5, cooldown * 0.04 + 0.1, 0.5);
-            float normalizedCooldown = (cooldown - 1) / 19.0f;
+            poseStack.translate(0, Math.sin((shrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0);
+            float normalizedCooldown = cooldown / 19.0f;
             poseStack.scale(1 - normalizedCooldown * normalizedCooldown , 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) * (1 + normalizedCooldown * normalizedCooldown * 8.0f) % 360));  // Apply rotation around the Y-axis
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(((shrineEntity.getLevel().getGameTime() + partialTicks) - 1800 * normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
 
             //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
@@ -77,6 +83,8 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
             poseStack.popPose();
         }
+//        System.err.println("End of Method | " + (shrineEntity.getLevel().getGameTime() + partialTicks));
+        System.err.println();
         //RenderSystem.disableCull()
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
