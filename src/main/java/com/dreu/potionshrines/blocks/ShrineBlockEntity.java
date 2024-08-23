@@ -48,6 +48,7 @@ public class ShrineBlockEntity extends BlockEntity {
             setChanged(level, blockPos, blockState);
         } else if (shrine.remainingCooldown > 0){
             shrine.remainingCooldown--;
+            setChanged(level, blockPos, blockState);
             level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - shrine.remainingCooldown / 2), 11);
         } else if(shrine.remainingCooldown == 0){
             if (!level.isClientSide)

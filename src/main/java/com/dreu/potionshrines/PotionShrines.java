@@ -11,22 +11,31 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.common.world.ForgeBiomeModifiers;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -94,6 +103,30 @@ public class PotionShrines {
             }
         }
     }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+         event.enqueueWork(() -> {
+                    // Specify the biomes where the feature should be added
+                    List<Holder<Biome>> biomes = List.of(
+                    );
+
+                    // Create the AddFeaturesBiomeModifier
+                    BiomeModifier modifier = new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                        HolderSet.direct(biomes),
+                        HolderSet.direct(PSFeatures.Placed.SHRINE_SURFACE_ALTAR.getHolder().get()), // Features to add
+                        GenerationStep.Decoration.UNDERGROUND_ORES // Generation step
+                    );
+                    ForgeRegistries.BIOME_MODIFIER_SERIALIZERS.get().register(new ResourceLocation(MODID, "modificators"), modifier.codec());
+         });
+    }
+    @Mod.EventBusSubscriber(modid = PotionShrines.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public class ForgeEvents {
+
+    @SubscribeEvent
+    public static void onBiomeLoading(Event event) {
+        // Your logic to modify biomes goes here
+    }
+}
     public static MobEffect getEffectFromString(String effect){
         return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
     }
