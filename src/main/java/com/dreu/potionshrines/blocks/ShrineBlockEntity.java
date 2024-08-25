@@ -38,8 +38,10 @@ public class ShrineBlockEntity extends BlockEntity {
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
         if (shrine.maxCooldown == 999999) return;
+        if (shrine.remainingCooldown > shrine.maxCooldown - 1)
+            level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
         if (shrine.remainingCooldown == 40)
-            level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 10F, 1F, true);
+            level.playSound(null, blockPos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 3F, 1F);
         if (SHRINES_REPLENISH && shrine.remainingCooldown > 30) {
             if (shrine.remainingCooldown > shrine.maxCooldown - 30){
                 level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);
