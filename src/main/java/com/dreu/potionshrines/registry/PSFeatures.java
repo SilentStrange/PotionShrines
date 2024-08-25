@@ -1,7 +1,7 @@
 package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.PotionShrines;
-import com.dreu.potionshrines.config.PSGeneralConfig;
+import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.levelgen.features.placers.ShrineCaveFeaturePlacer;
 import com.dreu.potionshrines.levelgen.features.placers.ShrineSurfaceAltarFeaturePlacer;
 import com.google.common.collect.ImmutableList;
@@ -46,7 +46,7 @@ public class PSFeatures {
 
         public static final RegistryObject<PlacedFeature> SHRINE_SURFACE_ALTAR = register("shrine_surface_altar",
 				Configured.SHRINE_SURFACE_ALTAR, List.of(
-						RarityFilter.onAverageOnceEvery(PSGeneralConfig.SHRINE_RARITY),
+						RarityFilter.onAverageOnceEvery(General.SHRINE_RARITY),
 						SurfaceWaterDepthFilter.forMaxDepth(63),
 						PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
 						InSquarePlacement.spread(),

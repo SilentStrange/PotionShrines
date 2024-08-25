@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.dreu.potionshrines.PotionShrines.rand;
 
-public class PSShrineConfig extends PSConfig{
+public class Shrine extends PSConfig{
     static final String defaultConfig =
             """
             # If you want to reset this config to default, delete this file from the config folder and run the game
@@ -20,6 +20,8 @@ public class PSShrineConfig extends PSConfig{
             # Cooldown = How many seconds until players can use the Shrine again. 999999 means Shrine will never replenish (Range: 3 - 999999)
             # Amplifier = Level of the effect (Range: 1 - 256)
             # Weight = Chance for effect to be chosen compared to the Weight of all effects (Range: 1 - 2,147,483,647)
+            # Icon = Symbol hovering above the shrine. Either use one that other shrines are using or
+            #        go to the CurseForge page to see a detailed walkthrough on custom icons.
             
             [[Shrine]]
             Effect = "minecraft:regeneration"

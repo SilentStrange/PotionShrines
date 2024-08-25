@@ -1,18 +1,15 @@
-package com.dreu.potionshrines.blocks;
+package com.dreu.potionshrines.blocks.aoe;
 
+import com.dreu.potionshrines.blocks.shrine.ShrineBlockEntity;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -35,11 +32,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
-import static com.dreu.potionshrines.blocks.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
 
-public class ShrineBlock extends Block implements EntityBlock {
+public class AoEShrineBlock extends Block implements EntityBlock {
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
-    public ShrineBlock(Properties properties) {
+    public AoEShrineBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(LIGHT_LEVEL, 0));
@@ -67,7 +64,7 @@ public class ShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        BlockEntity blockEntity = new ShrineBlockEntity(blockPos, blockState);
+        BlockEntity blockEntity = new AoEShrineBlockEntity(blockPos, blockState);
         blockEntity.setChanged();
         return blockEntity;
     }
@@ -89,7 +86,7 @@ public class ShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, PSBlockEntities.SHRINE.get(), ShrineBlockEntity::tick);
+        return createTickerHelper(blockEntityType, PSBlockEntities.AOE_SHRINE.get(), AoEShrineBlockEntity::tick);
     }
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> aBlockEntityType, BlockEntityType<E> eBlockEntityType, BlockEntityTicker<? super E> blockEntityTicker) {
         return eBlockEntityType == aBlockEntityType ? (BlockEntityTicker<A>)blockEntityTicker : null;
@@ -102,7 +99,7 @@ public class ShrineBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
+        AoEShrineBlockEntity shrine = (AoEShrineBlockEntity) level.getBlockEntity(blockPos);
         if (shrine.canUse()) {
             shrine.resetCooldown();
             if (!level.isClientSide) {
@@ -118,8 +115,8 @@ public class ShrineBlock extends Block implements EntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
-        level.setBlock(blockPos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-        level.setBlock(blockPos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+        level.setBlock(blockPos.below(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+        level.setBlock(blockPos.below(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
     }
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

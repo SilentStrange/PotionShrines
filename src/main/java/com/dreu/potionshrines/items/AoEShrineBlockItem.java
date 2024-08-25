@@ -22,8 +22,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
 
-public class ShrineBlockItem extends BlockItem {
-    public ShrineBlockItem(Block block, Properties properties) {
+public class AoEShrineBlockItem extends BlockItem {
+    public AoEShrineBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
 
@@ -61,8 +61,8 @@ public class ShrineBlockItem extends BlockItem {
                     }
                 }
 
-                level.setBlockAndUpdate(blockpos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP));
-                level.setBlockAndUpdate(blockpos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM));
+                level.setBlockAndUpdate(blockpos.below(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP));
+                level.setBlockAndUpdate(blockpos.below(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM));
 
                 level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(player, blockstate1));
                 SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());

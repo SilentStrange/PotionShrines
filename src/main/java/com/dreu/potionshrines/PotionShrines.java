@@ -1,6 +1,7 @@
 package com.dreu.potionshrines;
 
-import com.dreu.potionshrines.blocks.ShrineRenderer;
+import com.dreu.potionshrines.blocks.aoe.AoEShrineRenderer;
+import com.dreu.potionshrines.blocks.shrine.ShrineRenderer;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSFeatures;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static com.dreu.potionshrines.config.PSShrineConfig.SHRINE_ICONS;
+import static com.dreu.potionshrines.config.Shrine.SHRINE_ICONS;
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
     public static final String MODID = "potion_shrines";
@@ -64,7 +65,8 @@ public class PotionShrines {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            BlockEntityRenderers.register(PSBlockEntities.SHRINE.get(), ShrineRenderer::new);
+            BlockEntityRenderers.register(PSBlockEntities.SHRINE.get(), (c) -> new ShrineRenderer());
+            BlockEntityRenderers.register(PSBlockEntities.AOE_SHRINE.get(), (c) -> new AoEShrineRenderer());
         }
         @SubscribeEvent
         public static void registerModels(ModelEvent.RegisterAdditional event){

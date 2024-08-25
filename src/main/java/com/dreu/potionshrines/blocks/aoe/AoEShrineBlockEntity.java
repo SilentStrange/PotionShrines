@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks;
+package com.dreu.potionshrines.blocks.aoe;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.electronwill.nightconfig.core.Config;
@@ -15,19 +15,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import static com.dreu.potionshrines.blocks.ShrineBlock.LIGHT_LEVEL;
-import static com.dreu.potionshrines.config.PSGeneralConfig.SHRINES_REPLENISH;
-import static com.dreu.potionshrines.config.PSShrineConfig.getRandomShrine;
+import static com.dreu.potionshrines.blocks.shrine.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
+import static com.dreu.potionshrines.config.Shrine.getRandomShrine;
 
-public class ShrineBlockEntity extends BlockEntity {
+public class AoEShrineBlockEntity extends BlockEntity {
     public int maxCooldown;
     public String effect;
     public int duration;
     public int amplifier;
     private int remainingCooldown = 0;
     private String icon;
-    public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
+    public AoEShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(PSBlockEntities.AOE_SHRINE.get(), blockPos, blockState);
         Config SHRINE = getRandomShrine();
         amplifier = (int) SHRINE.get("Amplifier") - 1;
         duration = SHRINE.get("Duration");
@@ -36,7 +36,7 @@ public class ShrineBlockEntity extends BlockEntity {
         icon = SHRINE.get("Icon");
     }
 
-    public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, AoEShrineBlockEntity shrine) {
         if (shrine.maxCooldown == 999999) return;
         if (shrine.remainingCooldown > shrine.maxCooldown - 1)
             level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);

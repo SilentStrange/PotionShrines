@@ -4,7 +4,7 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.toml.TomlParser;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class PSGeneralConfig extends PSConfig {
+public class General extends PSConfig {
     static final String defaultConfig = """
             # Can the Shrines replenish? (DEFAULT = true)
             Replenish = true

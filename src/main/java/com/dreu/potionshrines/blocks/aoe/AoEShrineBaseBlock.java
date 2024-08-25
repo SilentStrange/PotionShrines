@@ -1,6 +1,6 @@
-package com.dreu.potionshrines.blocks;
+package com.dreu.potionshrines.blocks.aoe;
 
-import com.dreu.potionshrines.config.PSGeneralConfig;
+import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
@@ -29,9 +29,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import static com.dreu.potionshrines.config.PSGeneralConfig.OBTAINABLE;
+import static com.dreu.potionshrines.config.General.OBTAINABLE;
 
-public class ShrineBaseBlock extends Block {
+public class AoEShrineBaseBlock extends Block {
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final VoxelShape BOTTOM_SHAPE =
             Shapes.join(
@@ -78,7 +78,7 @@ public class ShrineBaseBlock extends Block {
                 BooleanOp.OR
             );
 
-    public ShrineBaseBlock(Properties properties) {
+    public AoEShrineBaseBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(HALF, Half.BOTTOM));
@@ -106,7 +106,7 @@ public class ShrineBaseBlock extends Block {
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
-        if (level.getBlockState(blockPos).is(PSBlocks.SHRINE.get())) {
+        if (level.getBlockState(blockPos).is(PSBlocks.AOE_SHRINE.get())) {
             level.destroyBlock(blockPos.below(2), true);
             level.removeBlock(blockPos.below(1), true);
             level.removeBlock(blockPos, true);
@@ -117,7 +117,7 @@ public class ShrineBaseBlock extends Block {
         BlockPos shrinePos = blockPos.above(blockState.getValue(HALF) == Half.BOTTOM ? 2 : 1);
         if (level.getBlockEntity(shrinePos) != null && !level.isClientSide) {
             if (OBTAINABLE && !player.isCreative()) {
-                ItemStack drop = new ItemStack(PSItems.SHRINE.get());
+                ItemStack drop = new ItemStack(PSItems.AOE_SHRINE.get());
                 level.getBlockEntity(shrinePos).saveToItem(drop);
                 popResource(level, blockPos, drop);
             }
@@ -131,12 +131,12 @@ public class ShrineBaseBlock extends Block {
 
     @Override
     public boolean canEntityDestroy(BlockState blockState, BlockGetter level, BlockPos blockPos, Entity entity) {
-        return !PSGeneralConfig.SHRINE_INDESTRUCTIBLE && super.canEntityDestroy(blockState, level, blockPos, entity);
+        return !General.SHRINE_INDESTRUCTIBLE && super.canEntityDestroy(blockState, level, blockPos, entity);
     }
 
     @Override
     public float getExplosionResistance(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion) {
-        return PSGeneralConfig.SHRINE_INDESTRUCTIBLE ? 3600000 : 1200;
+        return General.SHRINE_INDESTRUCTIBLE ? 3600000 : 1200;
     }
 
     @Override
@@ -153,8 +153,8 @@ public class ShrineBaseBlock extends Block {
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         level.setBlock(blockPos.above(), blockState.getValue(HALF) == Half.BOTTOM
-                ? PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP)
-                : PSBlocks.SHRINE.get().defaultBlockState(), 11);
+                ? PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP)
+                : PSBlocks.AOE_SHRINE.get().defaultBlockState(), 11);
     }
 
     @Override
