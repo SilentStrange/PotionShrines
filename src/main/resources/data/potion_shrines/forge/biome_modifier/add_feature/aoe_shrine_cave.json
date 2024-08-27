@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#potion_shrines:has_feature/aoe_shrine_cave",
+  "features": "potion_shrines:aoe_shrine_cave",
+  "step": "underground_structures"
+}

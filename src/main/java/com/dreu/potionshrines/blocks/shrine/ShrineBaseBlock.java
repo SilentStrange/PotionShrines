@@ -2,7 +2,6 @@ package com.dreu.potionshrines.blocks.shrine;
 
 import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.registry.PSBlocks;
-import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

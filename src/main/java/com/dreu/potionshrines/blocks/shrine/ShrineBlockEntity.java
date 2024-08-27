@@ -30,7 +30,7 @@ public class ShrineBlockEntity extends BlockEntity {
     public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
         Config shrine = getRandomShrine();
-        amplifier = rangeBounded((int) shrine.get("Amplifier") - 1, 1, 256);
+        amplifier = rangeBounded((int) shrine.get("Amplifier") - 1, 0, 255);
         duration = rangeBounded(shrine.get("Duration"), 1, 999999);
         maxCooldown = rangeBounded ((int) shrine.get("Cooldown") * 20, 3, 999999);
         effect = shrine.get("Effect");

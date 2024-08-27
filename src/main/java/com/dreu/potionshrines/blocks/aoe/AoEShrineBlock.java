@@ -1,6 +1,5 @@
 package com.dreu.potionshrines.blocks.aoe;
 
-import com.dreu.potionshrines.blocks.shrine.ShrineBlockEntity;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSTags;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,9 +35,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
@@ -115,16 +110,16 @@ public class AoEShrineBlock extends Block implements EntityBlock {
             if (!level.isClientSide) {
                 level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
                 if (shrine.effectPlayers)
-                    level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.area)).stream()
-                        .filter(nearPlayer -> nearPlayer.blockPosition().distSqr(blockPos) <= shrine.area * shrine.area)
+                    level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.radius)).stream()
+                        .filter(nearPlayer -> nearPlayer.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius)
                         .toList().forEach(filteredPlayer ->
                             filteredPlayer.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
                                 shrine.getDuration() * 20,
                                 shrine.getAmplifier())));
                 if (shrine.effectMonsters)
-                    level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.area)).stream()
-                        .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.area * shrine.area
+                    level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.radius)).stream()
+                        .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius
                                 && (nearEntity instanceof Monster || nearEntity.getType().getTags().toList().contains(PSTags.Entities.MONSTERS)))
                         .toList().forEach(filteredMonster ->
                             filteredMonster.addEffect(new MobEffectInstance(

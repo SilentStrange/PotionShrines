@@ -27,7 +27,7 @@ import static com.dreu.potionshrines.config.PSConfig.rangeBounded;
 public class AoEShrineBlockEntity extends BlockEntity {
     public int maxCooldown;
     public String effect;
-    public int area;
+    public int radius;
     public boolean effectPlayers;
     public boolean effectMonsters;
     public int duration;
@@ -46,7 +46,7 @@ public class AoEShrineBlockEntity extends BlockEntity {
         icon = aoeShrine.get("Icon");
         effectPlayers = aoeShrine.get("Players");
         effectMonsters = aoeShrine.get("Monsters");
-        area = rangeBounded(aoeShrine.get("Area"), 3, 64);
+        radius = rangeBounded(aoeShrine.get("Radius"), 3, 64);
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, AoEShrineBlockEntity shrine) {
@@ -62,7 +62,7 @@ public class AoEShrineBlockEntity extends BlockEntity {
                 if (shrine.remainingCooldown > shrine.maxCooldown - 10) {
                     for (int i = 0; i < 360; i += 10) {
                         double theta = Math.toRadians(i);
-                        double radius = shrine.area * (double) (shrine.maxCooldown - shrine.remainingCooldown) / 10;
+                        double radius = shrine.radius * (double) (shrine.maxCooldown - shrine.remainingCooldown) / 10;
                         level.addParticle(ParticleTypes.ENTITY_EFFECT,
                                 shrine.getBlockPos().getX() + rand.nextFloat() + radius * Math.cos(theta),
                                 shrine.getBlockPos().getY() - 2,
@@ -87,14 +87,14 @@ public class AoEShrineBlockEntity extends BlockEntity {
                         (getEffectFromString(shrine.effect).getColor() >> 8 & 0xFF) / 255.0f,
                         (getEffectFromString(shrine.effect).getColor() & 0xFF) / 255.0f
                 );
-                int particleCount = (int) Math.pow((double) shrine.area / 5, 3) + 1;
+                int particleCount = (int) Math.pow((double) shrine.radius / 5, 3) + 1;
                 for (int i = 0; i < particleCount; i++) {
                     double theta = Math.random() * 2 * Math.PI;
                     double phi = Math.acos(2 * Math.random() - 1);
                     shrine.getLevel().addParticle(ParticleTypes.ENTITY_EFFECT,
-                        shrine.getBlockPos().getX() + 0.5 + shrine.area * Math.sin(phi) * Math.cos(theta),
-                        shrine.getBlockPos().getY() + 0.5 + shrine.area * Math.sin(phi) * Math.sin(theta),
-                        shrine.getBlockPos().getZ() + 0.5 + shrine.area * Math.cos(phi),
+                        shrine.getBlockPos().getX() + 0.5 + shrine.radius * Math.sin(phi) * Math.cos(theta),
+                        shrine.getBlockPos().getY() + 0.5 + shrine.radius * Math.sin(phi) * Math.sin(theta),
+                        shrine.getBlockPos().getZ() + 0.5 + shrine.radius * Math.cos(phi),
                         color.x(), color.y(), color.z());
                 }
             }
@@ -113,7 +113,7 @@ public class AoEShrineBlockEntity extends BlockEntity {
         nbt.putString("icon", icon);
         nbt.putBoolean("players", effectPlayers);
         nbt.putBoolean("monsters", effectMonsters);
-        nbt.putInt("area", area);
+        nbt.putInt("radius", radius);
         super.saveAdditional(nbt);
     }
     @Override
@@ -128,7 +128,7 @@ public class AoEShrineBlockEntity extends BlockEntity {
         icon = nbt.getString("icon");
         effectPlayers = nbt.getBoolean("players");
         effectMonsters = nbt.getBoolean("monsters");
-        area = nbt.getInt("area");
+        radius = nbt.getInt("radius");
     }
 
     @Nullable

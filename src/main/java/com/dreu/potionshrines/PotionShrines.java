@@ -39,7 +39,8 @@ import java.util.*;
 
 import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
 import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
-import static com.dreu.potionshrines.config.Shrine.*;
+import static com.dreu.potionshrines.config.Shrine.SHRINES;
+import static com.dreu.potionshrines.config.Shrine.TOTAL_WEIGHT;
 
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
@@ -143,4 +144,30 @@ public class PotionShrines {
     public static MobEffect getEffectFromString(String effect){
         return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
     }
+
+    public static final List<String> romanNumerals = new ArrayList<>();
+    static {
+        romanNumerals.add("");
+        romanNumerals.add("");
+        for (int i = 2; i <= 255; i++) {
+            romanNumerals.add(toRoman(i));
+        }
+    }
+
+    // Method to convert an integer to Roman numeral
+    public static String toRoman(int number) {
+        String[] thousands = {"", "M"};
+        String[] hundreds = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] tens = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] ones = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+
+        return thousands[number / 1000] +
+               hundreds[(number % 1000) / 100] +
+               tens[(number % 100) / 10] +
+               ones[number % 10] + " ";
+    }
+    public static String asTime(int seconds) {
+        return String.format("%d:%02d", seconds / 60, seconds % 60);
+    }
+
 }

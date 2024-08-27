@@ -4,13 +4,9 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.toml.TomlParser;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.dreu.potionshrines.PotionShrines.rand;
-import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
-import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
 
 public class Shrine extends PSConfig{
     static final String defaultConfig =

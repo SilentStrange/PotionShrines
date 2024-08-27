@@ -1,15 +1,19 @@
 package com.dreu.potionshrines.items;
 
 import com.dreu.potionshrines.registry.PSBlocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +23,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+import static com.dreu.potionshrines.PotionShrines.*;
 import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
 
 public class ShrineBlockItem extends BlockItem {
@@ -33,6 +41,17 @@ public class ShrineBlockItem extends BlockItem {
                 && context.getLevel().getBlockState(context.getClickedPos().above(1)).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(2)).getMaterial().isReplaceable()
                 && context.getLevel().setBlock(context.getClickedPos().above(2), blockState, 11);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
+        CompoundTag nbt = itemStack.getTagElement("BlockEntityTag");
+        if (nbt == null) return;
+        components.add(Component.translatable(getEffectFromString(nbt.getString("effect")).getDescriptionId()).withStyle(ChatFormatting.BLUE)
+                .append(Component.literal(" " + romanNumerals.get(nbt.getInt("amplifier") + 1)))
+                .append(Component.literal("(" + asTime(nbt.getInt("duration")) + ")")));
+        components.add(Component.translatable("tooltip.potion_shrines.cooldown").withStyle(ChatFormatting.BLUE)
+                .append(Component.literal(": " + asTime((int) (nbt.getInt("remaining_cooldown") * 0.05)) + "/" + asTime((int) (nbt.getInt("max_cooldown") * 0.05)))).withStyle(Style.EMPTY.withBold(false)));
     }
 
     @Override

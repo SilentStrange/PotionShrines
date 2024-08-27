@@ -16,7 +16,7 @@ public class AoEShrine extends PSConfig {
             # Cooldown = How many seconds until players can use the Shrine again. (Range: 3 - 999999)
             # Replenish = Will the shrine replenish
             # Amplifier = Level of the effect (Range: 1 - 256)
-            # Area = The range of the AoE effect (Range: 3 - 64)
+            # Radius = The range of the AoE effect (Range: 3 - 64)
             # Players = Whether the effect will get applied to players and passive mobs
             # Monsters = Whether the effect will get applied to monsters
             # Weight = Chance for effect to be chosen compared to the Weight of all effects (Range: 1 - 2,147,483,647)
@@ -30,7 +30,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = false
             Monsters = true
             Weight = 5
@@ -42,7 +42,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 180
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -54,7 +54,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -66,7 +66,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 3
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -78,7 +78,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 5
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -90,7 +90,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -102,7 +102,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 3
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -114,7 +114,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 5
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -126,7 +126,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -138,7 +138,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -150,7 +150,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 180
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -162,7 +162,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 3
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -174,7 +174,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -186,7 +186,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -198,7 +198,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -210,7 +210,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 180
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -222,7 +222,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 3
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -234,7 +234,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -246,7 +246,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 180
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -258,7 +258,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 180
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 3
@@ -270,7 +270,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -282,7 +282,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 300
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5
@@ -294,7 +294,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -306,7 +306,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 60
             Replenish = true
             Amplifier = 2
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 1
@@ -318,7 +318,7 @@ public class AoEShrine extends PSConfig {
             Cooldown = 120
             Replenish = true
             Amplifier = 1
-            Area = 5
+            Radius = 5
             Players = true
             Monsters = false
             Weight = 5

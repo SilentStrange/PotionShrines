@@ -1,4 +1,15 @@
 {
-  "item.potion_shrines.shrine": "Potion Shrine",
-  "block.potion_shrines.shrine": "Potion Shrine"
+  "item.potion_shrines.shrine": "Simple Shrine",
+  "block.potion_shrines.shrine": "Simple Shrine",
+  "item.potion_shrines.shrine_decrepit": "Decrepit Simple Shrine",
+  "block.potion_shrines.shrine_decrepit": "Decrepit Simple Shrine",
+  "item.potion_shrines.aoe_shrine": "AoE Shrine",
+  "block.potion_shrines.aoe_shrine": "AoE Shrine",
+  "item.potion_shrines.aoe_shrine_decrepit": "Decrepit AoE Shrine",
+  "block.potion_shrines.aoe_shrine_decrepit": "Decrepit AoE Shrine",
+
+  "tooltip.potion_shrines.cooldown": "Cooldown",
+  "tooltip.potion_shrines.radius": "Radius",
+  "tooltip.potion_shrines.players": "Players",
+  "tooltip.potion_shrines.monsters": "Monsters"
 }

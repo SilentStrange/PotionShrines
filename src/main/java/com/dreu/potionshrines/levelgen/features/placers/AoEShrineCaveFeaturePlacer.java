@@ -11,8 +11,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
 
-public class ShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
-    public ShrineCaveFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
+public class AoEShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
+    public AoEShrineCaveFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         BlockPos origin = context.origin();
@@ -24,10 +24,10 @@ public class ShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
         if (canPlaceBlock(context.level(), origin)
                 && canPlaceBlock(context.level(), origin.above(1))
                 && canPlaceBlock(context.level(), origin.above(2))
-                && context.level().setBlock(origin.above(2), PSBlocks.SHRINE.get().defaultBlockState(), 11)) {
+                && context.level().setBlock(origin.above(2), PSBlocks.AOE_SHRINE.get().defaultBlockState(), 11)) {
 
-            context.level().setBlock(origin.above(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-            context.level().setBlock(origin, PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+            context.level().setBlock(origin.above(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+            context.level().setBlock(origin, PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
         }
         return false;
     }

@@ -2,7 +2,6 @@ package com.dreu.potionshrines.blocks.aoe;
 
 import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.registry.PSBlocks;
-import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;

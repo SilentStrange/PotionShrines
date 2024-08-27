@@ -15,8 +15,8 @@ import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
 import static net.minecraft.world.level.block.StairBlock.FACING;
 import static net.minecraft.world.level.block.StairBlock.SHAPE;
 
-public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfiguration> {
-    public ShrineSurfaceAltarFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
+public class AoEShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfiguration> {
+    public AoEShrineSurfaceAltarFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         for (int i = -1; i < 2; i++){
@@ -29,10 +29,10 @@ public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfigur
                 && canPlaceBlock(context.level(), context.origin().above(1))
                 && canPlaceBlock(context.level(), context.origin().above(2))
                 && canPlaceBlock(context.level(), context.origin().above(3))
-                && context.level().setBlock(context.origin().above(3), PSBlocks.SHRINE.get().defaultBlockState(), 11)) {
+                && context.level().setBlock(context.origin().above(3), PSBlocks.AOE_SHRINE.get().defaultBlockState(), 11)) {
 
-            context.level().setBlock(context.origin().above(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-            context.level().setBlock(context.origin().above(), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+            context.level().setBlock(context.origin().above(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+            context.level().setBlock(context.origin().above(), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
 
             if (canPlaceBlock(context.level(), context.origin()))
                 context.level().setBlock(context.origin(), Blocks.DEEPSLATE_BRICKS.defaultBlockState(), 11);
