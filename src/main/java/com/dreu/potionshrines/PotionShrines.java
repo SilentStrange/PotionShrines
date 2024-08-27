@@ -35,18 +35,29 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-import static com.dreu.potionshrines.config.Shrine.SHRINE_ICONS;
+import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
+import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
+import static com.dreu.potionshrines.config.Shrine.*;
+
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
     public static final String MODID = "potion_shrines";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random rand = new Random();
     public static final Map<String, BakedModel> BAKED_ICONS = new HashMap<>();
+    public static final Set<String> SHRINE_ICONS = new HashSet<>();
+    static {
+        SHRINES.forEach((shrine) -> {
+            TOTAL_WEIGHT += shrine.getInt("Weight");
+            SHRINE_ICONS.add(shrine.get("Icon"));
+        });
+        AOE_SHRINES.forEach((shrine) -> {
+            TOTAL_WEIGHT_AOE += shrine.getInt("Weight");
+            SHRINE_ICONS.add(shrine.get("Icon"));
+        });
+    }
 
     public PotionShrines() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();

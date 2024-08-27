@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.blocks.shrine.ShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
+import static com.dreu.potionshrines.config.PSConfig.rangeBounded;
 import static com.dreu.potionshrines.config.Shrine.getRandomShrine;
 
 public class ShrineBlockEntity extends BlockEntity {
@@ -28,16 +29,15 @@ public class ShrineBlockEntity extends BlockEntity {
     private String icon;
     public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
-        Config SHRINE = getRandomShrine();
-        amplifier = (int) SHRINE.get("Amplifier") - 1;
-        duration = SHRINE.get("Duration");
-        maxCooldown = (int) SHRINE.get("Cooldown") * 20;
-        effect = SHRINE.get("Effect");
-        icon = SHRINE.get("Icon");
+        Config shrine = getRandomShrine();
+        amplifier = rangeBounded((int) shrine.get("Amplifier") - 1, 1, 256);
+        duration = rangeBounded(shrine.get("Duration"), 1, 999999);
+        maxCooldown = rangeBounded ((int) shrine.get("Cooldown") * 20, 3, 999999);
+        effect = shrine.get("Effect");
+        icon = shrine.get("Icon");
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, ShrineBlockEntity shrine) {
-        if (shrine.maxCooldown == 999999) return;
         if (shrine.remainingCooldown > shrine.maxCooldown - 1)
             level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
         if (shrine.remainingCooldown == 40)

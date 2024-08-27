@@ -76,7 +76,6 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
 
             poseStack.popPose();
         }
-        System.err.println();
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/recharging.png"));

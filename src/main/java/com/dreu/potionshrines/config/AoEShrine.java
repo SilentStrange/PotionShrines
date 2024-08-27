@@ -7,17 +7,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.rand;
-import static com.dreu.potionshrines.config.Shrine.SHRINE_ICONS;
-
 public class AoEShrine extends PSConfig {
       static final String defaultConfig = """
             # If you want to reset this config to default, delete or move this file from the config folder and run the game
             
             # Effect = ID of the Potion Effect
             # Duration = How long the effect lasts in Seconds (Range: 1 - 999999)
-            # Cooldown = How many seconds until players can use the Shrine again. 999999 means Shrine will never replenish (Range: 3 - 999999)
+            # Cooldown = How many seconds until players can use the Shrine again. (Range: 3 - 999999)
+            # Replenish = Will the shrine replenish
             # Amplifier = Level of the effect (Range: 1 - 256)
-            # Area = The range of the AoE effect (Range: 1 - 30)
+            # Area = The range of the AoE effect (Range: 3 - 64)
             # Players = Whether the effect will get applied to players and passive mobs
             # Monsters = Whether the effect will get applied to monsters
             # Weight = Chance for effect to be chosen compared to the Weight of all effects (Range: 1 - 2,147,483,647)
@@ -29,6 +28,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:poison"
             Duration = 20
             Cooldown = 60
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = false
@@ -40,6 +40,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:regeneration"
             Duration = 180
             Cooldown = 180
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -51,6 +52,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:health_boost"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -62,6 +64,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:health_boost"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 3
             Area = 5
             Players = true
@@ -73,6 +76,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:health_boost"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 5
             Area = 5
             Players = true
@@ -84,6 +88,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:absorption"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -95,6 +100,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:absorption"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 3
             Area = 5
             Players = true
@@ -106,6 +112,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:absorption"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 5
             Area = 5
             Players = true
@@ -117,6 +124,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:jump_boost"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -128,6 +136,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:strength"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -139,6 +148,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:strength"
             Duration = 180
             Cooldown = 180
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -150,6 +160,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:strength"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 3
             Area = 5
             Players = true
@@ -161,6 +172,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:invisibility"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -172,6 +184,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:fire_resistance"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -183,6 +196,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:speed"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -194,6 +208,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:speed"
             Duration = 180
             Cooldown = 180
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -205,6 +220,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:speed"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 3
             Area = 5
             Players = true
@@ -216,6 +232,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:haste"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -227,6 +244,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:haste"
             Duration = 180
             Cooldown = 180
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -238,6 +256,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:resistance"
             Duration = 180
             Cooldown = 180
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -249,6 +268,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:resistance"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -260,6 +280,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:water_breathing"
             Duration = 300
             Cooldown = 300
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -271,6 +292,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:resistance"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -282,6 +304,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:resistance"
             Duration = 60
             Cooldown = 60
+            Replenish = true
             Amplifier = 2
             Area = 5
             Players = true
@@ -293,6 +316,7 @@ public class AoEShrine extends PSConfig {
             Effect = "minecraft:slow_falling"
             Duration = 120
             Cooldown = 120
+            Replenish = true
             Amplifier = 1
             Area = 5
             Players = true
@@ -303,15 +327,10 @@ public class AoEShrine extends PSConfig {
 
     private static final Pair<Config, String> CONFIG = getConfigOrDefault("aoe_shrine", defaultConfig);
     private static final Config CONFIG_DEFAULT = new TomlParser().parse(defaultConfig);
-    private static final List<Config> AOE_SHRINES = CONFIG.getLeft().get("Shrine");
+    public static final List<Config> AOE_SHRINES = CONFIG.getLeft().get("Shrine");
     public static double TOTAL_WEIGHT_AOE = 0;
-    static {
-        AOE_SHRINES.forEach((shrine) -> {
-            TOTAL_WEIGHT_AOE += shrine.getInt("Weight");
-            SHRINE_ICONS.add(shrine.get("Icon"));
-        });
-    }
-    public static Config getRandomShrine() {
+
+    public static Config getRandomAoEShrine() {
         double randomWeight = rand.nextDouble(TOTAL_WEIGHT_AOE);
         double weightCount = 0;
         for (Config shrine : AOE_SHRINES){

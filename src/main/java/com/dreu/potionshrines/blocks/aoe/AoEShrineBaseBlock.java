@@ -4,6 +4,7 @@ import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -34,49 +35,25 @@ import static com.dreu.potionshrines.config.General.OBTAINABLE;
 public class AoEShrineBaseBlock extends Block {
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final VoxelShape BOTTOM_SHAPE =
-            Shapes.join(
                 Shapes.join(
                     Shapes.join(
-                            Block.box(1, 0, 1, 15, 2, 15),
-                            Block.box(2, 2, 2, 14, 4, 14), BooleanOp.OR),
+                        Block.box(1, 0, 1, 15, 4, 15),
+                        Block.box(2, 4, 2, 14, 10, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(3, 4, 3, 13, 11, 13),
-                        Block.box(4, 11, 4, 12, 27,12), BooleanOp.OR),
+                        Block.box(3, 10, 3, 13, 17, 13),
+                        Block.box(2, 17, 2, 14, 28,14), BooleanOp.OR),
                     BooleanOp.OR
-                ),
-                Shapes.join(
-                    Shapes.join(
-                        Block.box(3, 27, 3, 13, 28, 13),
-                        Block.box(2, 28, 2, 14, 30, 14), BooleanOp.OR),
-                    Shapes.join(
-                        Block.box(2, 30, 1, 14, 31, 15),
-                        Block.box(1, 30, 2, 15, 31, 14), BooleanOp.OR),
-                    BooleanOp.OR
-                ),
-                BooleanOp.OR
-            );
+                );
     public static final VoxelShape TOP_SHAPE =
             Shapes.join(
-                Shapes.join(
                     Shapes.join(
-                        Block.box(1, -16, 1, 15, -14, 15),
-                        Block.box(2, -14, 2, 14, -12, 14), BooleanOp.OR),
+                        Block.box(1, -16, 1, 15, -12, 15),
+                        Block.box(2, -12, 2, 14, -6, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(3, -12, 3, 13, -5, 13),
-                        Block.box(4, -5, 4, 12, 11,12), BooleanOp.OR),
+                        Block.box(3, -16, 3, 13, 1, 13),
+                        Block.box(2, 1, 2, 14, 12,14), BooleanOp.OR),
                     BooleanOp.OR
-                ),
-                Shapes.join(
-                    Shapes.join(
-                        Block.box(3, 11, 3, 13, 12, 13),
-                        Block.box(2, 12, 2, 14, 14, 14), BooleanOp.OR),
-                    Shapes.join(
-                        Block.box(2, 14, 1, 14, 15, 15),
-                        Block.box(1, 14, 2, 15, 15, 14), BooleanOp.OR),
-                    BooleanOp.OR
-                ),
-                BooleanOp.OR
-            );
+                );
 
     public AoEShrineBaseBlock(Properties properties) {
         super(properties);
@@ -117,7 +94,7 @@ public class AoEShrineBaseBlock extends Block {
         BlockPos shrinePos = blockPos.above(blockState.getValue(HALF) == Half.BOTTOM ? 2 : 1);
         if (level.getBlockEntity(shrinePos) != null && !level.isClientSide) {
             if (OBTAINABLE && !player.isCreative()) {
-                ItemStack drop = new ItemStack(PSItems.AOE_SHRINE.get());
+                ItemStack drop = new ItemStack(this);
                 level.getBlockEntity(shrinePos).saveToItem(drop);
                 popResource(level, blockPos, drop);
             }
@@ -127,6 +104,11 @@ public class AoEShrineBaseBlock extends Block {
             return true;
         }
         return super.onDestroyedByPlayer(blockState, level, blockPos, player, !player.isCreative(), fluid);
+    }
+
+    @Override
+    public void animateTick(BlockState p_220827_, Level p_220828_, BlockPos p_220829_, RandomSource p_220830_) {
+        super.animateTick(p_220827_, p_220828_, p_220829_, p_220830_);
     }
 
     @Override

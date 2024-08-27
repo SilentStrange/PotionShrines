@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "potion_shrines:shrine"
+    "potion_shrines:shrine",
+    "potion_shrines:shrine_decrepit",
+    "potion_shrines:aoe_shrine",
+    "potion_shrines:aoe_shrine_decrepit"
   ]
 }

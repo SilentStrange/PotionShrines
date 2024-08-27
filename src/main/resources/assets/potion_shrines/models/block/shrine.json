@@ -3,9 +3,9 @@
 	"ambientocclusion": false,
 	"render_type": "minecraft:cutout",
 	"textures": {
+		"particle": "block/anvil",
 		"pillar": "block/anvil",
-		"core": "block/obsidian",
-		"particle": "#pillar"
+		"core": "block/obsidian"
 	},
 	"elements": [
 		{
@@ -275,7 +275,7 @@
 		},
 		{
 			"name": "core",
-			"from": [5, 4, 5],
+			"from": [5, 10, 5],
 			"to": [11, 27, 11],
 			"rotation": {"angle": 0, "axis": "y", "origin": [6, 4, 6]},
 			"faces": {

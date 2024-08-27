@@ -117,7 +117,7 @@ public class ShrineBaseBlock extends Block {
         BlockPos shrinePos = blockPos.above(blockState.getValue(HALF) == Half.BOTTOM ? 2 : 1);
         if (level.getBlockEntity(shrinePos) != null && !level.isClientSide) {
             if (OBTAINABLE && !player.isCreative()) {
-                ItemStack drop = new ItemStack(PSItems.SHRINE.get());
+                ItemStack drop = new ItemStack(this);
                 level.getBlockEntity(shrinePos).saveToItem(drop);
                 popResource(level, blockPos, drop);
             }
