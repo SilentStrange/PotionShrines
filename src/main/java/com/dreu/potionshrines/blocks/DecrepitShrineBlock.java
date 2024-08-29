@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.config.General.OBTAINABLE;
 import static com.dreu.potionshrines.config.General.SHRINE_INDESTRUCTIBLE;
@@ -80,6 +82,21 @@ public class DecrepitShrineBlock extends Block {
     public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType pathComputationType) {
         return false;
     }
+
+    @Override
+    public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+        if (blockState.getValue(HALF) == Half.BOTTOM) {
+            return (levelReader.getBlockState(blockPos.above()).equals(blockState.setValue(HALF, Half.TOP)) || levelReader.getBlockState(blockPos.above()).getMaterial().isReplaceable());
+        }
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return super.getStateForPlacement(context);
+    }
+
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         if (blockState.getValue(HALF) == Half.BOTTOM){
