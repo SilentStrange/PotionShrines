@@ -60,14 +60,18 @@ public class AoEShrineBlockEntity extends BlockEntity {
                         (getEffectFromString(shrine.effect).getColor() & 0xFF) / 255.0f
                 );
                 if (shrine.remainingCooldown > shrine.maxCooldown - 10) {
-                    for (int i = 0; i < 360; i += 10) {
-                        double theta = Math.toRadians(i);
-                        double radius = shrine.radius * (double) (shrine.maxCooldown - shrine.remainingCooldown) / 10;
-                        level.addParticle(ParticleTypes.ENTITY_EFFECT,
-                                shrine.getBlockPos().getX() + rand.nextFloat() + radius * Math.cos(theta),
-                                shrine.getBlockPos().getY() - 2,
-                                shrine.getBlockPos().getZ() + rand.nextFloat() + radius * Math.sin(theta),
-                                color.x(), color.y(), color.z());
+                    double iterations = (double) shrine.radius / 10;
+                    double radius = shrine.radius * (double) (shrine.maxCooldown - shrine.remainingCooldown) / 10;
+                    double angleIncrement = (3 + 2 * (double) shrine.radius / 64 ) * Math.PI / (shrine.radius * 10); // Full circle divided into small segments
+
+                    for (int rings = 0; rings < iterations; rings++) {
+                        for (double angle = 0; angle < 2 * Math.PI; angle += angleIncrement) {
+                            level.addParticle(ParticleTypes.ENTITY_EFFECT,
+                                    shrine.getBlockPos().getX() + rand.nextFloat() + (radius + rings) * Math.cos(angle),
+                                    shrine.getBlockPos().getY() - 2,
+                                    shrine.getBlockPos().getZ() + rand.nextFloat() + (radius + rings) * Math.sin(angle),
+                                    color.x(), color.y(), color.z());
+                        }
                     }
                 }
                 level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);
