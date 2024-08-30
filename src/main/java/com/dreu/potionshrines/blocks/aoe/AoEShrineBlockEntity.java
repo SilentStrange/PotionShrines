@@ -1,6 +1,7 @@
 package com.dreu.potionshrines.blocks.aoe;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
+import com.dreu.potionshrines.registry.PSBlocks;
 import com.electronwill.nightconfig.core.Config;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
@@ -81,7 +82,7 @@ public class AoEShrineBlockEntity extends BlockEntity {
                 }
                 level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);
             } else if (!SHRINES_REPLENISH || !shrine.replenish){
-
+                level.setBlock(blockPos.below(2), PSBlocks.AOE_SHRINE_DECREPIT.get().defaultBlockState(), 11);
             }
             shrine.remainingCooldown--;
             setChanged(level, blockPos, blockState);
