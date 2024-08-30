@@ -61,16 +61,21 @@ public class AoEShrineBlockEntity extends BlockEntity {
                 );
                 if (shrine.remainingCooldown > shrine.maxCooldown - 10) {
                     double iterations = (double) shrine.radius / 10;
-                    double radius = shrine.radius * (double) (shrine.maxCooldown - shrine.remainingCooldown) / 10;
-                    double angleIncrement = (3 + 2 * (double) shrine.radius / 64 ) * Math.PI / (shrine.radius * 10); // Full circle divided into small segments
+                    double radius = (double) (shrine.radius * (shrine.maxCooldown - shrine.remainingCooldown)) / 10;
+                    double angleIncrement = Math.PI * (3 + (double) (2 * shrine.radius) / 64) / (shrine.radius * 10);
+
+                    int xPos = shrine.getBlockPos().getX();
+                    int yPos = shrine.getBlockPos().getY() - 2;
+                    int zPos = shrine.getBlockPos().getZ();
 
                     for (int rings = 0; rings < iterations; rings++) {
                         for (double angle = 0; angle < 2 * Math.PI; angle += angleIncrement) {
+                            double xOffset = rand.nextFloat() + (radius + rings) * Math.cos(angle);
+                            double zOffset = rand.nextFloat() + (radius + rings) * Math.sin(angle);
+
                             level.addParticle(ParticleTypes.ENTITY_EFFECT,
-                                    shrine.getBlockPos().getX() + rand.nextFloat() + (radius + rings) * Math.cos(angle),
-                                    shrine.getBlockPos().getY() - 2,
-                                    shrine.getBlockPos().getZ() + rand.nextFloat() + (radius + rings) * Math.sin(angle),
-                                    color.x(), color.y(), color.z());
+                                xPos + xOffset, yPos, zPos + zOffset,
+                                color.x(), color.y(), color.z());
                         }
                     }
                 }
