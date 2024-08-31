@@ -120,7 +120,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
                         .toList().forEach(filteredPlayer ->
                             filteredPlayer.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration() * 20,
+                                shrine.getDuration(),
                                 shrine.getAmplifier())));
                 if (shrine.effectMonsters)
                     level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.radius)).stream()
@@ -129,7 +129,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
                         .toList().forEach(filteredMonster ->
                             filteredMonster.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration() * 20,
+                                shrine.getDuration(),
                                 shrine.getAmplifier())));
             }
             return InteractionResult.SUCCESS;

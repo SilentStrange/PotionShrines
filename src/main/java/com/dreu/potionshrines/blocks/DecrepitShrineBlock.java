@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.config.General.OBTAINABLE;
