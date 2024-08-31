@@ -111,17 +111,17 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     }
     @Override
     protected void saveAdditional(CompoundTag nbt) {
-            nbt.putString("effect", effect);
-            nbt.putInt("duration", duration);
-            nbt.putInt("max_cooldown", maxCooldown);
-            nbt.putBoolean("replenish", replenish);
-            nbt.putInt("remaining_cooldown", remainingCooldown);
-            nbt.putInt("amplifier", amplifier);
-            nbt.putString("icon", icon);
-            nbt.putBoolean("players", effectPlayers);
-            nbt.putBoolean("monsters", effectMonsters);
-            nbt.putInt("radius", radius);
-            super.saveAdditional(nbt);
+        nbt.putString("effect", effect);
+        nbt.putInt("duration", duration);
+        nbt.putInt("max_cooldown", maxCooldown);
+        nbt.putBoolean("replenish", replenish);
+        nbt.putInt("remaining_cooldown", remainingCooldown);
+        nbt.putInt("amplifier", amplifier);
+        nbt.putString("icon", icon);
+        nbt.putBoolean("players", effectPlayers);
+        nbt.putBoolean("monsters", effectMonsters);
+        nbt.putInt("radius", radius);
+        super.saveAdditional(nbt);
     }
     @Override
     public void load(CompoundTag nbt){
@@ -177,6 +177,6 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new AoEShrineMenu(id, inventory, this);
+        return new AoEShrineMenu(id, this);
     }
 }

@@ -12,14 +12,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class AoEShrineMenu extends AbstractContainerMenu {
     public final AoEShrineBlockEntity shrineEntity;
-    private final Level level;
     public AoEShrineMenu(int id, Inventory inventory, FriendlyByteBuf extraData){
-        this(id, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(id, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
     }
-    public AoEShrineMenu(int id, Inventory inventory, BlockEntity blockEntity){
+    public AoEShrineMenu(int id, BlockEntity blockEntity){
         super(PSMenuTypes.AOE_SHRINE_MENU.get() , id);
         shrineEntity = (AoEShrineBlockEntity) blockEntity;
-        this.level = inventory.player.level;
     }
 
     @Override
