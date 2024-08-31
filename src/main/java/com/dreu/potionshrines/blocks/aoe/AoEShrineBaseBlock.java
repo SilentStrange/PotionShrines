@@ -39,8 +39,8 @@ public class AoEShrineBaseBlock extends Block {
                         Block.box(1, 0, 1, 15, 4, 15),
                         Block.box(2, 4, 2, 14, 10, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(3, 10, 3, 13, 17, 13),
-                        Block.box(2, 17, 2, 14, 28,14), BooleanOp.OR),
+                        Block.box(3, 10, 3, 13, 20, 13),
+                        Block.box(2, 20, 2, 14, 31,14), BooleanOp.OR),
                     BooleanOp.OR
                 );
     public static final VoxelShape TOP_SHAPE =
@@ -49,10 +49,12 @@ public class AoEShrineBaseBlock extends Block {
                         Block.box(1, -16, 1, 15, -12, 15),
                         Block.box(2, -12, 2, 14, -6, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(3, -16, 3, 13, 1, 13),
-                        Block.box(2, 1, 2, 14, 12,14), BooleanOp.OR),
+                        Block.box(3, -16, 3, 13, 4, 13),
+                        Block.box(2, 4, 2, 14, 15,14), BooleanOp.OR),
                     BooleanOp.OR
                 );
+        public static final VoxelShape COLLISION_SHAPE = Block.box(2, 0, 2, 14, 16, 14);
+
 
     public AoEShrineBaseBlock(Properties properties) {
         super(properties);
@@ -61,9 +63,10 @@ public class AoEShrineBaseBlock extends Block {
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState blockState) {
-        return PushReaction.BLOCK;
-    }
+    public PushReaction getPistonPushReaction(BlockState blockState) {return PushReaction.BLOCK;}
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext context) {return COLLISION_SHAPE;}
 
     @Override
     public ItemStack getCloneItemStack(BlockState blockState, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
@@ -124,6 +127,7 @@ public class AoEShrineBaseBlock extends Block {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
         return level.getBlockState(blockPos).getBlock().use(level.getBlockState(blockPos), level, blockPos, player, interactionHand, blockHitResult);
+
     }
 
     @Override

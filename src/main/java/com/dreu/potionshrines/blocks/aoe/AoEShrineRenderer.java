@@ -87,10 +87,10 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
         float uvY = aoeshrineEntity.replenish ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         for (int i = 0; i < 4; i++) {
-            buffer.vertex(poseStack.last().pose(), -0.125f, 0, 0.2501f).uv(0, 1).endVertex();
-            buffer.vertex(poseStack.last().pose(), 0.125f, 0, 0.2501f).uv(1, 1).endVertex();
-            buffer.vertex(poseStack.last().pose(), 0.125f, 1.0625f * uvY, 0.2501f).uv(1, 1 - uvY).endVertex();
-            buffer.vertex(poseStack.last().pose(), -0.125f, 1.0625f * uvY, 0.2501f).uv(0, 1 - uvY).endVertex();
+            buffer.vertex(poseStack.last().pose(), -0.125f, 0.125f, 0.2501f).uv(0, 1).endVertex();
+            buffer.vertex(poseStack.last().pose(), 0.125f, 0.125f, 0.2501f).uv(1, 1).endVertex();
+            buffer.vertex(poseStack.last().pose(), 0.125f, 1.1875f * uvY, 0.2501f).uv(1, 1 - uvY).endVertex();
+            buffer.vertex(poseStack.last().pose(), -0.125f, 1.1875f * uvY, 0.2501f).uv(0, 1 - uvY).endVertex();
             poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
         }
         Tesselator.getInstance().end();

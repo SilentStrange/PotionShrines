@@ -40,16 +40,16 @@ public class ShrineBaseBlock extends Block {
                             Block.box(2, 2, 2, 14, 4, 14), BooleanOp.OR),
                     Shapes.join(
                         Block.box(3, 4, 3, 13, 11, 13),
-                        Block.box(4, 11, 4, 12, 27,12), BooleanOp.OR),
+                        Block.box(4, 11, 4, 12, 28,12), BooleanOp.OR),
                     BooleanOp.OR
                 ),
                 Shapes.join(
                     Shapes.join(
-                        Block.box(3, 27, 3, 13, 28, 13),
-                        Block.box(2, 28, 2, 14, 30, 14), BooleanOp.OR),
+                        Block.box(3, 28, 3, 13, 29, 13),
+                        Block.box(2, 29, 2, 14, 31, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(2, 30, 1, 14, 31, 15),
-                        Block.box(1, 30, 2, 15, 31, 14), BooleanOp.OR),
+                        Block.box(2, 31, 1, 14, 32, 15),
+                        Block.box(1, 31, 2, 15, 32, 14), BooleanOp.OR),
                     BooleanOp.OR
                 ),
                 BooleanOp.OR
@@ -62,20 +62,22 @@ public class ShrineBaseBlock extends Block {
                         Block.box(2, -14, 2, 14, -12, 14), BooleanOp.OR),
                     Shapes.join(
                         Block.box(3, -12, 3, 13, -5, 13),
-                        Block.box(4, -5, 4, 12, 11,12), BooleanOp.OR),
+                        Block.box(4, -5, 4, 12, 12,12), BooleanOp.OR),
                     BooleanOp.OR
                 ),
                 Shapes.join(
                     Shapes.join(
-                        Block.box(3, 11, 3, 13, 12, 13),
-                        Block.box(2, 12, 2, 14, 14, 14), BooleanOp.OR),
+                        Block.box(3, 12, 3, 13, 13, 13),
+                        Block.box(2, 13, 2, 14, 15, 14), BooleanOp.OR),
                     Shapes.join(
-                        Block.box(2, 14, 1, 14, 15, 15),
-                        Block.box(1, 14, 2, 15, 15, 14), BooleanOp.OR),
+                        Block.box(2, 15, 1, 14, 16, 15),
+                        Block.box(1, 15, 2, 15, 16, 14), BooleanOp.OR),
                     BooleanOp.OR
                 ),
                 BooleanOp.OR
             );
+
+    public static final VoxelShape COLLISION_SHAPE = Block.box(3, 0, 3, 13, 16, 13);
 
     public ShrineBaseBlock(Properties properties) {
         super(properties);
@@ -84,9 +86,9 @@ public class ShrineBaseBlock extends Block {
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState blockState) {
-        return PushReaction.BLOCK;
-    }
+    public PushReaction getPistonPushReaction(BlockState blockState) {return PushReaction.BLOCK;}
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext context) {return COLLISION_SHAPE;}
 
     @Override
     public ItemStack getCloneItemStack(BlockState blockState, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {

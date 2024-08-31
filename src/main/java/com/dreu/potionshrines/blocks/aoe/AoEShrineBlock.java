@@ -4,6 +4,7 @@ import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -34,6 +35,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
@@ -76,7 +78,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
-        if (player.isCrouching()){
+        if (player.isShiftKeyDown()){
             ItemStack itemStack = new ItemStack(this);
             level.getBlockEntity(blockPos).saveToItem(itemStack);
             return itemStack;
@@ -105,9 +107,12 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         AoEShrineBlockEntity shrine = (AoEShrineBlockEntity) level.getBlockEntity(blockPos);
-        if (shrine.canUse()) {
-            shrine.resetCooldown();
+        if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide){
+            NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
+            return InteractionResult.SUCCESS;
+        } else if (shrine.canUse()) {
             if (!level.isClientSide) {
+                shrine.resetCooldown();
                 level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
                 if (shrine.effectPlayers)
                     level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.radius)).stream()

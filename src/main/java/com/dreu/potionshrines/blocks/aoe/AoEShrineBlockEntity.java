@@ -2,17 +2,25 @@ package com.dreu.potionshrines.blocks.aoe;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
+import com.dreu.potionshrines.screen.AoEShrineMenu;
 import com.electronwill.nightconfig.core.Config;
 import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +33,7 @@ import static com.dreu.potionshrines.config.AoEShrine.getRandomAoEShrine;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 import static com.dreu.potionshrines.config.PSConfig.rangeBounded;
 
-public class AoEShrineBlockEntity extends BlockEntity {
+public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     public int maxCooldown;
     public String effect;
     public int radius;
@@ -170,5 +178,16 @@ public class AoEShrineBlockEntity extends BlockEntity {
     }
     public void resetCooldown(){
         remainingCooldown = maxCooldown;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("gui.potion_shrines.shrine_options").withStyle(Style.EMPTY.withUnderlined(true)).withStyle(ChatFormatting.BLACK);
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new AoEShrineMenu(id, inventory, this);
     }
 }

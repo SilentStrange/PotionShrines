@@ -2,13 +2,12 @@ package com.dreu.potionshrines;
 
 import com.dreu.potionshrines.blocks.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.blocks.shrine.ShrineRenderer;
-import com.dreu.potionshrines.registry.PSBlockEntities;
-import com.dreu.potionshrines.registry.PSBlocks;
-import com.dreu.potionshrines.registry.PSFeatures;
-import com.dreu.potionshrines.registry.PSItems;
+import com.dreu.potionshrines.registry.*;
+import com.dreu.potionshrines.screen.AoEShrineScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
@@ -76,6 +75,7 @@ public class PotionShrines {
         PSFeatures.FEATURES.register(eventBus);
         PSFeatures.Configured.CONFIGURED_FEATURES.register(eventBus);
         PSFeatures.Placed.PLACED_FEATURES.register(eventBus);
+        PSMenuTypes.MENUS.register(eventBus);
 
         eventBus.addListener(this::commonSetup);
 
@@ -86,6 +86,7 @@ public class PotionShrines {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            MenuScreens.register(PSMenuTypes.AOE_SHRINE_MENU.get(), AoEShrineScreen::new);
             BlockEntityRenderers.register(PSBlockEntities.SHRINE.get(), (c) -> new ShrineRenderer());
             BlockEntityRenderers.register(PSBlockEntities.AOE_SHRINE.get(), (c) -> new AoEShrineRenderer());
         }
