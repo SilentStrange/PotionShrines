@@ -130,6 +130,19 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 new ShrineIconScreen(
                         new ShrineIconMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
     }
+
+    private void onResetClick(Button button) {
+        effectBox.setValue(menu.shrineEntity.getEffect());
+        amplifierBox.setValue(String.valueOf(menu.shrineEntity.getAmplifier()));
+        durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
+        maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.getMaxCooldown() / 20));
+        radiusBox.setValue(String.valueOf(menu.shrineEntity.getRadius()));
+    }
+
+    private void onCancelClick(Button button) {
+        onClose();
+    }
+
     private void onSaveClick(Button button) {
         menu.shrineEntity.setEffect(effectBox.getValue());
         menu.shrineEntity.setAmplifier(Integer.parseInt(amplifierBox.getValue()));
