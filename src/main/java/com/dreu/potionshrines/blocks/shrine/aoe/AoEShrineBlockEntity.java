@@ -32,7 +32,7 @@ import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVE
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 
 public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
-    public int maxCooldown = 0, radius = 0, duration = 0, amplifier = 0, remainingCooldown = 0;
+    private int maxCooldown = 0, radius = 0, duration = 0, amplifier = 0, remainingCooldown = 0;
     private String effect = "null", icon = "default";
     private boolean effectPlayers = false, effectMonsters = false, replenish = false;
     public AoEShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -74,10 +74,10 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
                 } else if (!SHRINES_REPLENISH || !shrine.replenish) {
                     level.setBlock(blockPos.below(2), PSBlocks.AOE_SHRINE_DECREPIT.get().defaultBlockState(), 11);
                 }
-                shrine.remainingCooldown--;
+                shrine.setRemainingCooldown(shrine.remainingCooldown - 1);
                 setChanged(level, blockPos, blockState);
             } else if (shrine.remainingCooldown > 0) {
-                shrine.remainingCooldown--;
+                shrine.setRemainingCooldown(shrine.remainingCooldown - 1);
                 setChanged(level, blockPos, blockState);
                 level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - shrine.remainingCooldown / 2), 11);
             } else {
@@ -120,16 +120,16 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public void load(CompoundTag nbt){
         super.load(nbt);
-        amplifier = nbt.getInt("amplifier");
-        remainingCooldown = nbt.getInt("remaining_cooldown");
-        maxCooldown = nbt.getInt("max_cooldown");
-        replenish = nbt.getBoolean("replenish");
-        duration = nbt.getInt("duration");
-        effect = nbt.getString("effect");
-        icon = nbt.getString("icon");
-        effectPlayers = nbt.getBoolean("players");
-        effectMonsters = nbt.getBoolean("monsters");
-        radius = nbt.getInt("radius");
+        setAmplifier(nbt.getInt("amplifier"));
+        setRemainingCooldown(nbt.getInt("remaining_cooldown"));
+        setMaxCooldown(nbt.getInt("max_cooldown"));
+        setCanReplenish(nbt.getBoolean("replenish"));
+        setDuration(nbt.getInt("duration"));
+        setEffect(nbt.getString("effect"));
+        setIcon(nbt.getString("icon"));
+        setCanEffectPlayers(nbt.getBoolean("players"));
+        setCanEffectMonsters(nbt.getBoolean("monsters"));
+        setRadius(nbt.getInt("radius"));
     }
 
     @Nullable
@@ -151,11 +151,30 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public String getEffect(){return effect;}
+    public int getAmplifier(){return amplifier;}
     public int getDuration(){return duration;}
     public int getMaxCooldown(){return maxCooldown;}
     public int getRemainingCooldown(){return remainingCooldown;}
-    public int getAmplifier(){return amplifier;}
+    public int getRadius() {return radius;}
+    public boolean canEffectPlayers(){return effectPlayers;}
+    public boolean canEffectMonsters(){return effectMonsters;}
+    public boolean canReplenish(){return replenish;}
     public String getIcon(){return icon;}
+
+    public void setEffect(String s){effect = s;}
+    public void setAmplifier(int i){amplifier = Mth.clamp(i, 0, 255);}
+    public void setDuration(int i){duration = Mth.clamp(i, 1, 999999);}
+    public void setMaxCooldown(int i){
+        maxCooldown = Mth.clamp(i, 60, 19999980);
+        if (remainingCooldown > maxCooldown) remainingCooldown = maxCooldown;
+    }
+    public void setRemainingCooldown(int i){remainingCooldown = Mth.clamp(i, 0, maxCooldown);}
+    public void setRadius(int i){radius = Mth.clamp(i, 3, 64);}
+    public void setCanEffectPlayers(boolean b){effectPlayers = b;}
+    public void setCanEffectMonsters(boolean b){effectMonsters = b;}
+    public void setCanReplenish(boolean b){replenish = b;}
+    public void setIcon(String s){icon = s;}
+
     public boolean canUse() {
         return remainingCooldown == 0;
     }

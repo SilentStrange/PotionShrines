@@ -114,17 +114,17 @@ public class AoEShrineBlock extends Block implements EntityBlock {
             if (!level.isClientSide) {
                 shrine.resetCooldown();
                 level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
-                if (shrine.effectPlayers)
-                    level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.radius)).stream()
-                        .filter(nearPlayer -> nearPlayer.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius)
+                if (shrine.canEffectPlayers())
+                    level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.getRadius())).stream()
+                        .filter(nearPlayer -> nearPlayer.blockPosition().distSqr(blockPos) <= shrine.getRadius() * shrine.getRadius())
                         .toList().forEach(filteredPlayer ->
                             filteredPlayer.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
                                 shrine.getDuration(),
                                 shrine.getAmplifier())));
-                if (shrine.effectMonsters)
-                    level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.radius)).stream()
-                        .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius
+                if (shrine.canEffectMonsters())
+                    level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.getRadius())).stream()
+                        .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.getRadius() * shrine.getRadius()
                                 && (nearEntity instanceof Monster || nearEntity.getType().getTags().toList().contains(PSTags.Entities.MONSTERS)))
                         .toList().forEach(filteredMonster ->
                             filteredMonster.addEffect(new MobEffectInstance(

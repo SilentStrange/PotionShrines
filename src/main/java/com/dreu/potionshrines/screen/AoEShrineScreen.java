@@ -55,44 +55,53 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         effectBox.setTextColor(0xFFFFFF);
         effectBox.setResponder(this::onEffectChanged);
         effectBox.setValue(menu.shrineEntity.effect);
+            effectBox = new EditBox(font, leftPos + 8, topPos + 32, effectBoxWidth, editBoxHeight, Component.literal(""));
+            effectBox.setMaxLength(100);
+            effectBox.setVisible(true);
+            effectBox.setTextColor(0xFFFFFF);
+            effectBox.setResponder(this::onEffectChanged);
+            effectBox.setValue(menu.shrineEntity.getEffect());
 
-        amplifierBox = new EditBox(font, leftPos + 243, topPos + 32, 45, editBoxHeight, Component.literal(""));
-        amplifierBox.setMaxLength(3);
-        amplifierBox.setVisible(true);
-        amplifierBox.setTextColor(0xFFFFFF);
-        amplifierBox.setResponder(this::onAmplifierChanged);
-        amplifierBox.setFilter((s -> s.matches("\\d*")));
-        amplifierBox.setValue(String.valueOf(menu.shrineEntity.amplifier));
+            amplifierBox = new EditBox(font, leftPos + 243, topPos + 32, 45, editBoxHeight, Component.literal(""));
+            amplifierBox.setMaxLength(3);
+            amplifierBox.setVisible(true);
+            amplifierBox.setTextColor(0xFFFFFF);
+            amplifierBox.setResponder(this::onAmplifierChanged);
+            amplifierBox.setFilter((s -> s.matches("\\d*")));
+            amplifierBox.setValue(String.valueOf(menu.shrineEntity.getAmplifier()));
 
-        durationBox = new EditBox(font, leftPos + 8, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
-        durationBox.setMaxLength(6);
-        durationBox.setVisible(true);
-        durationBox.setTextColor(0xFFFFFF);
-        durationBox.setResponder(this::onDurationChanged);
-        durationBox.setFilter((s -> s.matches("\\d*")));
-        durationBox.setValue(String.valueOf(menu.shrineEntity.duration / 20));
+            durationBox = new EditBox(font, leftPos + 8, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            durationBox.setMaxLength(6);
+            durationBox.setVisible(true);
+            durationBox.setTextColor(0xFFFFFF);
+            durationBox.setResponder(this::onDurationChanged);
+            durationBox.setFilter((s -> s.matches("\\d*")));
+            durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
 
-        resetCooldownButton = new Button(leftPos + 81, topPos + 65, numberBoxWidth, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
+            resetCooldownButton = new Button(leftPos + 81, topPos + 65, numberBoxWidth, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
 
-        maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
-        maxCooldownBox.setMaxLength(6);
-        maxCooldownBox.setVisible(true);
-        maxCooldownBox.setTextColor(0xFFFFFF);
-        maxCooldownBox.setResponder(this::onCooldownChanged);
-        maxCooldownBox.setFilter((s -> s.matches("\\d*")));
-        maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.maxCooldown / 20));
+            maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            maxCooldownBox.setMaxLength(6);
+            maxCooldownBox.setVisible(true);
+            maxCooldownBox.setTextColor(0xFFFFFF);
+            maxCooldownBox.setResponder(this::onCooldownChanged);
+            maxCooldownBox.setFilter((s -> s.matches("\\d*")));
+            maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.getMaxCooldown() / 20));
 
-        radiusBox = new EditBox(font, leftPos + 222, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
-        radiusBox.setMaxLength(2);
-        radiusBox.setVisible(true);
-        radiusBox.setTextColor(0xFFFFFF);
-        radiusBox.setResponder(this::onRadiusChanged);
-        radiusBox.setFilter((s -> s.matches("\\d*")));
-        radiusBox.setValue(String.valueOf(menu.shrineEntity.maxCooldown / 20));
+            radiusBox = new EditBox(font, leftPos + 222, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            radiusBox.setMaxLength(2);
+            radiusBox.setVisible(true);
+            radiusBox.setTextColor(0xFFFFFF);
+            radiusBox.setResponder(this::onRadiusChanged);
+            radiusBox.setFilter((s -> s.matches("\\d*")));
+            radiusBox.setValue(String.valueOf(menu.shrineEntity.getRadius()));
 
-        replenishButton = new Button(leftPos + 8, topPos + 99, numberBoxWidth, 20, Component.translatable("potion_shrines." + menu.shrineEntity.replenish), this::onBooleanClick);
-        playersButton = new Button(leftPos + 8, topPos + 132, numberBoxWidth, 20, Component.translatable("potion_shrines." + menu.shrineEntity.effectPlayers), this::onBooleanClick);
-        monstersButton = new Button(leftPos + 8, topPos + 167, numberBoxWidth, 20, Component.translatable("potion_shrines." + menu.shrineEntity.effectMonsters), this::onBooleanClick);
+            replenishButton = new Button(leftPos + 8, topPos + 99, numberBoxWidth, 20,
+                    Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()), this::onBooleanClick);
+            effectMonstersButton = new Button(leftPos + 8, topPos + 132, numberBoxWidth, 20,
+                    Component.translatable("potion_shrines." + menu.shrineEntity.canEffectMonsters()), this::onBooleanClick);
+            effectPlayersButton = new Button(leftPos + 8, topPos + 167, numberBoxWidth, 20,
+                    Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()), this::onBooleanClick);
 
 
         addRenderableWidget(effectBox);

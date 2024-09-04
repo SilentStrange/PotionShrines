@@ -21,7 +21,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
     public AoEShrineRenderer(){}
     @Override
     public void render(AoEShrineBlockEntity aoeshrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        if (!Objects.equals(aoeshrineEntity .effect, "null")) {
+        if (!Objects.equals(aoeshrineEntity.getEffect(), "null")) {
             float cooldown = aoeshrineEntity.getRemainingCooldown();
 
             if (cooldown == 0) {
@@ -87,7 +87,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
             poseStack.translate(0.5, -1.4375, 0.5);
             BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-            float uvY = aoeshrineEntity.replenish ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
+            float uvY = aoeshrineEntity.canReplenish() ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             for (int i = 0; i < 4; i++) {
                 buffer.vertex(poseStack.last().pose(), -0.125f, 0.0f, 0.2501f).uv(0, 1).endVertex();

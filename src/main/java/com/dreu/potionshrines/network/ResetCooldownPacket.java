@@ -20,7 +20,7 @@ public class ResetCooldownPacket {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null && player.containerMenu instanceof AoEShrineMenu menu) {
-                menu.shrineEntity.remainingCooldown = 0;
+                menu.shrineEntity.setRemainingCooldown(0);
                 // Sync with the client if necessary
                 menu.shrineEntity.setChanged();
             }
