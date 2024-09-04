@@ -1,6 +1,7 @@
 package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.screen.AoEShrineMenu;
+import com.dreu.potionshrines.screen.ShrineIconMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -18,6 +19,8 @@ public class PSMenuTypes {
     public static final RegistryObject<MenuType<AoEShrineMenu>> AOE_SHRINE_MENU =
             registerMenuType(AoEShrineMenu::new, "aoe_shrine_menu");
 
+    public static final RegistryObject<MenuType<ShrineIconMenu>> SHRINE_ICON_MENU =
+            registerMenuType(ShrineIconMenu::new, "shrine_icon_menu");
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name){
         return MENUS.register(name, () -> IForgeMenuType.create(factory));
     }

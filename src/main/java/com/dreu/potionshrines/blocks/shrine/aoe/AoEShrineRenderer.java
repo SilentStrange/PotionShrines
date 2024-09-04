@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks.aoe;
+package com.dreu.potionshrines.blocks.shrine.aoe;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -81,19 +81,19 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
             }
             RenderSystem.enableDepthTest();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/recharging.png"));
+            RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/block/aoe_recharging.png"));
             poseStack.pushPose();
 
-            poseStack.translate(0.5, -1.625, 0.5);
+            poseStack.translate(0.5, -1.4375, 0.5);
             BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
             float uvY = aoeshrineEntity.replenish ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             for (int i = 0; i < 4; i++) {
-                buffer.vertex(poseStack.last().pose(), -0.125f, 0.125f, 0.2501f).uv(0, 1).endVertex();
-                buffer.vertex(poseStack.last().pose(), 0.125f, 0.125f, 0.2501f).uv(1, 1).endVertex();
-                buffer.vertex(poseStack.last().pose(), 0.125f, 1.1875f * uvY, 0.2501f).uv(1, 1 - uvY).endVertex();
-                buffer.vertex(poseStack.last().pose(), -0.125f, 1.1875f * uvY, 0.2501f).uv(0, 1 - uvY).endVertex();
+                buffer.vertex(poseStack.last().pose(), -0.125f, 0.0f, 0.2501f).uv(0, 1).endVertex();
+                buffer.vertex(poseStack.last().pose(), 0.125f, 0.0f, 0.2501f).uv(1, 1).endVertex();
+                buffer.vertex(poseStack.last().pose(), 0.125f, uvY, 0.2501f).uv(1, 1 - uvY).endVertex();
+                buffer.vertex(poseStack.last().pose(), -0.125f, uvY, 0.2501f).uv(0, 1 - uvY).endVertex();
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
             }
             Tesselator.getInstance().end();

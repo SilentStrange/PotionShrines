@@ -1,11 +1,12 @@
 package com.dreu.potionshrines;
 
-import com.dreu.potionshrines.blocks.aoe.AoEShrineRenderer;
-import com.dreu.potionshrines.blocks.shrine.ShrineRenderer;
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
+import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.registry.*;
 import com.dreu.potionshrines.screen.AoEShrineScreen;
+import com.dreu.potionshrines.screen.ShrineIconScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;

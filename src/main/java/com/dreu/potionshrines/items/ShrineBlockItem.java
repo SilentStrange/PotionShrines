@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.*;
-import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
 
 public class ShrineBlockItem extends BlockItem {
     public ShrineBlockItem(Block block, Properties properties) {

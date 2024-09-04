@@ -9,7 +9,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
 
 public class AoEShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
     public AoEShrineCaveFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}

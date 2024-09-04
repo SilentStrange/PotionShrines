@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks;
+package com.dreu.potionshrines.blocks.shrine;
 
 import com.dreu.potionshrines.config.General;
 import net.minecraft.core.BlockPos;

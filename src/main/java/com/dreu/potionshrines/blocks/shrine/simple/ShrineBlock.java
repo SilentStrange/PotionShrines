@@ -1,18 +1,12 @@
-package com.dreu.potionshrines.blocks.aoe;
+package com.dreu.potionshrines.blocks.shrine.simple;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
-import com.dreu.potionshrines.registry.PSTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -29,21 +23,19 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
-import static com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
 
-public class AoEShrineBlock extends Block implements EntityBlock {
+public class ShrineBlock extends Block implements EntityBlock {
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
-    public AoEShrineBlock(Properties properties) {
+    public ShrineBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(LIGHT_LEVEL, 0));
@@ -71,14 +63,14 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        BlockEntity blockEntity = new AoEShrineBlockEntity(blockPos, blockState);
+        BlockEntity blockEntity = new ShrineBlockEntity(blockPos, blockState);
         blockEntity.setChanged();
         return blockEntity;
     }
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
-        if (player.isShiftKeyDown()){
+        if (player.isCrouching()){
             ItemStack itemStack = new ItemStack(this);
             level.getBlockEntity(blockPos).saveToItem(itemStack);
             return itemStack;
@@ -93,7 +85,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, PSBlockEntities.AOE_SHRINE.get(), AoEShrineBlockEntity::tick);
+        return createTickerHelper(blockEntityType, PSBlockEntities.SHRINE.get(), ShrineBlockEntity::tick);
     }
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> aBlockEntityType, BlockEntityType<E> eBlockEntityType, BlockEntityTicker<? super E> blockEntityTicker) {
         return eBlockEntityType == aBlockEntityType ? (BlockEntityTicker<A>)blockEntityTicker : null;
@@ -106,31 +98,14 @@ public class AoEShrineBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        AoEShrineBlockEntity shrine = (AoEShrineBlockEntity) level.getBlockEntity(blockPos);
-        if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide){
-            NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
-            return InteractionResult.SUCCESS;
-        } else if (shrine.canUse()) {
+        ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
+        if (shrine.canUse()) {
+            shrine.resetCooldown();
             if (!level.isClientSide) {
-                shrine.resetCooldown();
-                level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
-                if (shrine.effectPlayers)
-                    level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.radius)).stream()
-                        .filter(nearPlayer -> nearPlayer.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius)
-                        .toList().forEach(filteredPlayer ->
-                            filteredPlayer.addEffect(new MobEffectInstance(
-                                getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration(),
-                                shrine.getAmplifier())));
-                if (shrine.effectMonsters)
-                    level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.radius)).stream()
-                        .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.radius * shrine.radius
-                                && (nearEntity instanceof Monster || nearEntity.getType().getTags().toList().contains(PSTags.Entities.MONSTERS)))
-                        .toList().forEach(filteredMonster ->
-                            filteredMonster.addEffect(new MobEffectInstance(
-                                getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration(),
-                                shrine.getAmplifier())));
+                player.addEffect(new MobEffectInstance(
+                        getEffectFromString(shrine.getEffect()),
+                        shrine.getDuration() * 20,
+                        shrine.getAmplifier()));
             }
             return InteractionResult.SUCCESS;
         }
@@ -139,8 +114,8 @@ public class AoEShrineBlock extends Block implements EntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
-        level.setBlock(blockPos.below(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-        level.setBlock(blockPos.below(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+        level.setBlock(blockPos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+        level.setBlock(blockPos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
     }
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

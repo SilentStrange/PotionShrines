@@ -1,11 +1,11 @@
 package com.dreu.potionshrines.registry;
 
-import com.dreu.potionshrines.blocks.aoe.AoEDecrepitBlock;
-import com.dreu.potionshrines.blocks.aoe.AoEShrineBaseBlock;
-import com.dreu.potionshrines.blocks.aoe.AoEShrineBlock;
-import com.dreu.potionshrines.blocks.shrine.ShrineBaseBlock;
-import com.dreu.potionshrines.blocks.shrine.ShrineBlock;
-import com.dreu.potionshrines.blocks.shrine.ShrineDecrepitBlock;
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEDecrepitBlock;
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBaseBlock;
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.ShrineDecrepitBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import static com.dreu.potionshrines.PotionShrines.MODID;
-import static com.dreu.potionshrines.blocks.shrine.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINE_INDESTRUCTIBLE;
 
 public class PSBlocks {

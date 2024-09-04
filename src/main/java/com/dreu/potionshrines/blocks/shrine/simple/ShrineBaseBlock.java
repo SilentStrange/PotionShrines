@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks.shrine;
+package com.dreu.potionshrines.blocks.shrine.simple;
 
 import com.dreu.potionshrines.config.General;
 import com.dreu.potionshrines.registry.PSBlocks;

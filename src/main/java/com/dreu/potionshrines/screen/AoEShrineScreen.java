@@ -2,8 +2,10 @@ package com.dreu.potionshrines.screen;
 
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.network.ResetCooldownPacket;
+import com.dreu.potionshrines.network.SaveAoEShrinePacket;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -21,23 +23,16 @@ import static com.dreu.potionshrines.PotionShrines.MODID;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
-    private EditBox effectBox;
-    private EditBox amplifierBox;
-    private EditBox durationBox;
-    private Button resetCooldownButton;
-    private EditBox maxCooldownBox;
-    private EditBox radiusBox;
-    private Button replenishButton;
-    private Button playersButton;
-    private Button monstersButton;
+public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen>{
+    private EditBox effectBox, amplifierBox, durationBox, maxCooldownBox, radiusBox;
+    private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton;
+    private String icon;
     private List<String> suggestions;
-    private static final int effectBoxWidth = 227;
-    private static final int numberBoxWidth = 66;
-    private static final int editBoxHeight = 18;
-    private int scrollOffset = 0;
-    private static final int maxDisplayed = 5;
+    private static final int effectBoxWidth = 227, numberBoxWidth = 66, editBoxHeight = 18, maxDisplayed = 5;
+    private static int scrollOffset = 0;
+    private boolean initialized = false;
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/aoe_shrine_screen.png");
+
     public AoEShrineScreen(AoEShrineMenu aoEShrineMenu, Inventory inventory, Component component) {
         super(aoEShrineMenu, inventory, component);
         imageWidth = 296;
@@ -107,8 +102,18 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
         addRenderableWidget(maxCooldownBox);
         addRenderableWidget(radiusBox);
         addRenderableWidget(replenishButton);
-        addRenderableWidget(playersButton);
-        addRenderableWidget(monstersButton);
+        addRenderableWidget(effectPlayersButton);
+        addRenderableWidget(effectMonstersButton);
+
+        addRenderableWidget(new Button(leftPos + 222, topPos + 99, numberBoxWidth, 20,
+                Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
+        addRenderableWidget(new Button(leftPos + 222, topPos + 132, numberBoxWidth, 20,
+                Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
+        addRenderableWidget(new Button(leftPos + 222, topPos + 167, numberBoxWidth, 20,
+                Component.translatable("gui.potion_shrines.save"), this::onSaveClick));
+        addRenderableWidget(new Button(leftPos + 140, topPos + 99, numberBoxWidth, 20,
+                Component.literal("IconButton"), this::onIconClick));
+
         suggestions = new ArrayList<>();
     }
 
@@ -162,7 +167,6 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(poseStack);
         resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -174,6 +178,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
     }
     @Override
     protected void renderBg(PoseStack poseStack, float v, int i, int i1) {
+        renderBackground(poseStack);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
@@ -221,19 +226,19 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
                 unfocusExcept(effectBox);
             } else if (amplifierBox.isMouseOver(mouseX, mouseY)){
                 unfocusExcept(amplifierBox);
-                if (amplifierBox.isFocused())
+                if (amplifierBox.isFocused() && button == 1)
                     amplifierBox.setValue("");
             } else if (durationBox.isMouseOver(mouseX, mouseY)){
                 unfocusExcept(durationBox);
-                if (durationBox.isFocused())
+                if (durationBox.isFocused() && button == 1)
                     durationBox.setValue("");
             } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)){
                 unfocusExcept(maxCooldownBox);
-                if (maxCooldownBox.isFocused())
+                if (maxCooldownBox.isFocused() && button == 1)
                     maxCooldownBox.setValue("");
             } else if (radiusBox.isMouseOver(mouseX, mouseY)){
                 unfocusExcept(radiusBox);
-                if (radiusBox.isFocused())
+                if (radiusBox.isFocused() && button == 1)
                     radiusBox.setValue("");
             }
         }
@@ -252,7 +257,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> {
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, 0);
     }
     public void unfocusExcept(EditBox keep){
         renderables.stream().filter(widget -> widget instanceof EditBox).forEach(editBox -> {

@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks.aoe;
+package com.dreu.potionshrines.blocks.shrine.aoe;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,20 +28,13 @@ import java.util.Objects;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.PotionShrines.rand;
-import static com.dreu.potionshrines.blocks.shrine.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 
 public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
-    public int maxCooldown;
-    public String effect = "null";
-    public int radius = 0;
-    public boolean effectPlayers = false;
-    public boolean effectMonsters = false;
-    public int duration = 0;
-    public int amplifier = 0;
-    public int remainingCooldown = 0;
-    public boolean replenish = false;
-    private String icon = "default";
+    public int maxCooldown = 0, radius = 0, duration = 0, amplifier = 0, remainingCooldown = 0;
+    private String effect = "null", icon = "default";
+    private boolean effectPlayers = false, effectMonsters = false, replenish = false;
     public AoEShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.AOE_SHRINE.get(), blockPos, blockState);
     }

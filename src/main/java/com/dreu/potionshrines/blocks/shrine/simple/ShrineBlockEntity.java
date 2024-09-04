@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks.shrine;
+package com.dreu.potionshrines.blocks.shrine.simple;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.electronwill.nightconfig.core.Config;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import static com.dreu.potionshrines.blocks.shrine.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 import static com.dreu.potionshrines.config.PSConfig.rangeBounded;
 import static com.dreu.potionshrines.config.Shrine.getRandomShrine;

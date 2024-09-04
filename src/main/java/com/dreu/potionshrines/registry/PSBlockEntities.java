@@ -1,8 +1,8 @@
 package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.PotionShrines;
-import com.dreu.potionshrines.blocks.aoe.AoEShrineBlockEntity;
-import com.dreu.potionshrines.blocks.shrine.ShrineBlockEntity;
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBlockEntity;
+import com.dreu.potionshrines.blocks.shrine.simple.ShrineBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

@@ -1,4 +1,4 @@
-package com.dreu.potionshrines.blocks.shrine;
+package com.dreu.potionshrines.blocks.shrine.simple;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -78,7 +78,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
         }
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/recharging.png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation("potion_shrines", "textures/block/simple_recharging.png"));
         poseStack.pushPose();
 
         poseStack.translate(0.5, -1.375, 0.5);
@@ -89,8 +89,8 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
         for (int i = 0; i < 4; i++) {
             buffer.vertex(poseStack.last().pose(), -0.125f, 0, 0.1876f).uv(0, 1).endVertex();
             buffer.vertex(poseStack.last().pose(), 0.125f, 0, 0.1876f).uv(1, 1).endVertex();
-            buffer.vertex(poseStack.last().pose(), 0.125f, 1.0625f * uvY, 0.1876f).uv(1, 1 - uvY).endVertex();
-            buffer.vertex(poseStack.last().pose(), -0.125f, 1.0625f * uvY, 0.1876f).uv(0, 1 - uvY).endVertex();
+            buffer.vertex(poseStack.last().pose(), 0.125f, 1.125f * uvY, 0.1876f).uv(1, 1 - uvY).endVertex();
+            buffer.vertex(poseStack.last().pose(), -0.125f, 1.125f * uvY, 0.1876f).uv(0, 1 - uvY).endVertex();
             poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
         }
         Tesselator.getInstance().end();
