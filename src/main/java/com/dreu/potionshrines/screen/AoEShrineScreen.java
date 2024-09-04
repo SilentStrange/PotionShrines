@@ -49,12 +49,8 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     @Override
     protected void init() {
         super.init();
-        effectBox = new EditBox(font, leftPos + 8, topPos + 32, effectBoxWidth, editBoxHeight, Component.literal(""));
-        effectBox.setMaxLength(100);
-        effectBox.setVisible(true);
-        effectBox.setTextColor(0xFFFFFF);
-        effectBox.setResponder(this::onEffectChanged);
-        effectBox.setValue(menu.shrineEntity.effect);
+
+        if (!initialized) {
             effectBox = new EditBox(font, leftPos + 8, topPos + 32, effectBoxWidth, editBoxHeight, Component.literal(""));
             effectBox.setMaxLength(100);
             effectBox.setVisible(true);
@@ -103,6 +99,8 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             effectPlayersButton = new Button(leftPos + 8, topPos + 167, numberBoxWidth, 20,
                     Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()), this::onBooleanClick);
 
+            icon = menu.shrineEntity.getIcon();
+        }
 
         addRenderableWidget(effectBox);
         addRenderableWidget(amplifierBox);
@@ -124,8 +122,14 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 Component.literal("IconButton"), this::onIconClick));
 
         suggestions = new ArrayList<>();
+        initialized = true;
     }
 
+    private void onIconClick(Button button) {
+        Minecraft.getInstance().setScreen(
+                new ShrineIconScreen(
+                        new ShrineIconMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
+    }
     private void onBooleanClick(Button button) {
         suggestions.clear();
         button.setMessage(Component.translatable("potion_shrines." + !Boolean.parseBoolean(button.getMessage().getString())));
@@ -301,5 +305,11 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             return true;
         }
         return super.charTyped(codePoint, modifiers);
+    }
+
+    @Override
+    public AoEShrineScreen withIcon(String icon) {
+        this.icon = icon;
+        return this;
     }
 }
