@@ -18,6 +18,7 @@
   "gui.potion_shrines.effect": "Effect",
   "gui.potion_shrines.duration": "Duration",
   "gui.potion_shrines.amplifier": "Lvl",
+  "gui.potion_shrines.save": "Save",
 
   "potion_shrines.false": "False",
   "potion_shrines.true": "True"

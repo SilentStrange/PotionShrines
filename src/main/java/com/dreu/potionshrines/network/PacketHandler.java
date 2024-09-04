@@ -16,8 +16,8 @@ public class PacketHandler {
     );
 
     public static void register() {
-        int id = 0;
-        CHANNEL.registerMessage(id++, ResetCooldownPacket.class, ResetCooldownPacket::toBytes, ResetCooldownPacket::new, ResetCooldownPacket::handle);
+        CHANNEL.registerMessage(0, ResetCooldownPacket.class, ResetCooldownPacket::toBytes, ResetCooldownPacket::new, ResetCooldownPacket::handle);
+        CHANNEL.registerMessage(1, SaveAoEShrinePacket.class, SaveAoEShrinePacket::toBytes, SaveAoEShrinePacket::new, SaveAoEShrinePacket::handle);
         // Register other packets here
     }
 }

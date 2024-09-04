@@ -130,6 +130,32 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 new ShrineIconScreen(
                         new ShrineIconMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
     }
+    private void onSaveClick(Button button) {
+        menu.shrineEntity.setEffect(effectBox.getValue());
+        menu.shrineEntity.setAmplifier(Integer.parseInt(amplifierBox.getValue()));
+        menu.shrineEntity.setDuration(Integer.parseInt(durationBox.getValue()) * 20);
+        menu.shrineEntity.setMaxCooldown(Integer.parseInt(maxCooldownBox.getValue()) * 20);
+        menu.shrineEntity.setRadius(Integer.parseInt(radiusBox.getValue()));
+        menu.shrineEntity.setCanEffectPlayers(Boolean.parseBoolean(effectPlayersButton.getMessage().getString()));
+        menu.shrineEntity.setCanEffectMonsters(Boolean.parseBoolean(effectMonstersButton.getMessage().getString()));
+        menu.shrineEntity.setCanReplenish(Boolean.parseBoolean(replenishButton.getMessage().getString()));
+        menu.shrineEntity.setIcon(icon);
+        PacketHandler.CHANNEL.sendToServer(new SaveAoEShrinePacket(
+                effectBox.getValue(),
+                Integer.parseInt(amplifierBox.getValue()),
+                Integer.parseInt(durationBox.getValue()) * 20,
+                Integer.parseInt(maxCooldownBox.getValue()) * 20,
+                Integer.parseInt(radiusBox.getValue()),
+                Boolean.parseBoolean(effectPlayersButton.getMessage().getString()),
+                Boolean.parseBoolean(effectMonstersButton.getMessage().getString()),
+                Boolean.parseBoolean(replenishButton.getMessage().getString()),
+                icon
+        ));
+        onClose();
+    }
+
+
+
     private void onBooleanClick(Button button) {
         suggestions.clear();
         button.setMessage(Component.translatable("potion_shrines." + !Boolean.parseBoolean(button.getMessage().getString())));
