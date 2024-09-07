@@ -16,17 +16,17 @@ import org.jetbrains.annotations.Nullable;
 import static com.dreu.potionshrines.PotionShrines.MODID;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-public class ShrineIconScreen extends AbstractContainerScreen<ShrineIconMenu> implements MenuProvider {
+public class IconSelectionScreen extends AbstractContainerScreen<IconSelectionMenu> implements MenuProvider {
     private IconScreen<?> returnScreen;
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/shrine_icon_screen.png");
 
-    public ShrineIconScreen(ShrineIconMenu shrineIconMenu, Inventory inventory, Component component) {
+    public IconSelectionScreen(IconSelectionMenu shrineIconMenu, Inventory inventory, Component component) {
         super(shrineIconMenu, inventory, component);
         imageWidth = 248;
         imageHeight = 166;
     }
 
-    public ShrineIconScreen withReturnScreen(IconScreen<?> returnScreen){
+    public IconSelectionScreen withReturnScreen(IconScreen<?> returnScreen){
         this.returnScreen = returnScreen;
         return this;
     }
@@ -40,6 +40,11 @@ public class ShrineIconScreen extends AbstractContainerScreen<ShrineIconMenu> im
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
 
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+    }
+
+    @Override
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+        this.font.draw(poseStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
     }
 
     @Override
@@ -58,6 +63,6 @@ public class ShrineIconScreen extends AbstractContainerScreen<ShrineIconMenu> im
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ShrineIconMenu(id);
+        return new IconSelectionMenu(id);
     }
 }

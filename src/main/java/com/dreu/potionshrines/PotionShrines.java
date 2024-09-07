@@ -6,7 +6,7 @@ import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.registry.*;
 import com.dreu.potionshrines.screen.AoEShrineScreen;
-import com.dreu.potionshrines.screen.ShrineIconScreen;
+import com.dreu.potionshrines.screen.IconSelectionScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
@@ -78,7 +78,7 @@ public class PotionShrines {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(PSMenuTypes.AOE_SHRINE_MENU.get(), AoEShrineScreen::new);
-            MenuScreens.register(PSMenuTypes.SHRINE_ICON_MENU.get(), ShrineIconScreen::new);
+            MenuScreens.register(PSMenuTypes.ICON_SELECTION_MENU.get(), IconSelectionScreen::new);
             BlockEntityRenderers.register(PSBlockEntities.SHRINE.get(), (c) -> new ShrineRenderer());
             BlockEntityRenderers.register(PSBlockEntities.AOE_SHRINE.get(), (c) -> new AoEShrineRenderer());
         }

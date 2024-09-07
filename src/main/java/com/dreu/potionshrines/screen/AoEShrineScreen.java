@@ -94,12 +94,31 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
             replenishButton = new Button(leftPos + 8, topPos + 99, numberBoxWidth, 20,
                     Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()), this::onBooleanClick);
+            effectPlayersButton = new Button(leftPos + 8, topPos + 166, numberBoxWidth, 20,
+                    Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()), this::onBooleanClick);
             effectMonstersButton = new Button(leftPos + 8, topPos + 132, numberBoxWidth, 20,
                     Component.translatable("potion_shrines." + menu.shrineEntity.canEffectMonsters()), this::onBooleanClick);
-            effectPlayersButton = new Button(leftPos + 8, topPos + 167, numberBoxWidth, 20,
-                    Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()), this::onBooleanClick);
 
             icon = menu.shrineEntity.getIcon();
+        } else {
+            effectBox.x = leftPos + 8;
+            effectBox.y = topPos + 32;
+            amplifierBox.x = leftPos + 243;
+            amplifierBox.y = topPos + 32;
+            durationBox.x = leftPos + 8;
+            durationBox.y = topPos + 66;
+            resetCooldownButton.x = leftPos + 81;
+            resetCooldownButton.y = topPos + 65;
+            maxCooldownBox.x = leftPos + 148;
+            maxCooldownBox.y = topPos + 66;
+            radiusBox.x = leftPos + 222;
+            radiusBox.y = topPos + 66;
+            replenishButton.x = leftPos + 8;
+            replenishButton.y = topPos + 99;
+            effectPlayersButton.x = leftPos + 8;
+            effectPlayersButton.y = topPos + 166;
+            effectMonstersButton.x = leftPos + 8;
+            effectMonstersButton.y = topPos + 132;
         }
 
         addRenderableWidget(effectBox);
@@ -116,19 +135,17 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
         addRenderableWidget(new Button(leftPos + 222, topPos + 132, numberBoxWidth, 20,
                 Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
-        addRenderableWidget(new Button(leftPos + 222, topPos + 167, numberBoxWidth, 20,
+        addRenderableWidget(new Button(leftPos + 222, topPos + 166, numberBoxWidth, 20,
                 Component.translatable("gui.potion_shrines.save"), this::onSaveClick));
-        addRenderableWidget(new Button(leftPos + 140, topPos + 99, numberBoxWidth, 20,
-                Component.literal("IconButton"), this::onIconClick));
 
         suggestions = new ArrayList<>();
         initialized = true;
     }
 
-    private void onIconClick(Button button) {
+    private void onIconClick() {
         Minecraft.getInstance().setScreen(
-                new ShrineIconScreen(
-                        new ShrineIconMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
+                new IconSelectionScreen(
+                        new IconSelectionMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
     }
 
     private void onResetClick(Button button) {
@@ -226,10 +243,17 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             poseStack.translate(0, 0, 1);
             renderSuggestionsDropdown(poseStack, mouseX, mouseY);
         }
+        if (mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
+            poseStack.translate(0, 0, 1);
+            hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
+            hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 151, 0xFF80ff80);
+            vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
+            vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
+        }
         RenderSystem.disableDepthTest();
     }
     @Override
-    protected void renderBg(PoseStack poseStack, float v, int i, int i1) {
+    protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
         renderBackground(poseStack);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -273,8 +297,14 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = leftPos + 8;
-        if (suggestions.isEmpty()){
-            if (effectBox.isMouseOver(mouseX, mouseY)){
+
+
+        if (suggestions.isEmpty()) {
+            if (mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
+                onIconClick();
+                return true;
+            }
+            if (effectBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(effectBox);
             } else if (amplifierBox.isMouseOver(mouseX, mouseY)){
                 unfocusExcept(amplifierBox);

@@ -7,12 +7,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-public class ShrineIconMenu extends AbstractContainerMenu {
-    public ShrineIconMenu(int id, Inventory inventory, FriendlyByteBuf extraData){
+public class IconSelectionMenu extends AbstractContainerMenu {
+    public IconSelectionMenu(int id, Inventory inventory, FriendlyByteBuf extraData){
         this(id);
     }
-    public ShrineIconMenu(int id){
-        super(PSMenuTypes.SHRINE_ICON_MENU.get() , id);
+    public IconSelectionMenu(int id){
+        super(PSMenuTypes.ICON_SELECTION_MENU.get() , id);
     }
 
     @Override
