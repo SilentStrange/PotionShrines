@@ -253,11 +253,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
-        if (effectBox.isFocused() && !suggestions.isEmpty() && !(suggestions.size() == 1 && suggestions.get(0).equals(effectBox.getValue()))) {
-            poseStack.translate(0, 0, 1);
-            renderSuggestionsDropdown(poseStack, mouseX, mouseY);
-        }
-        if (mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
+        if (suggestions.isEmpty() && mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
             poseStack.translate(0, 0, 1);
             hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
             hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 151, 0xFF80ff80);
@@ -265,6 +261,8 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
         }
         renderIcon(poseStack, mouseX, mouseY, partialTicks);
+        if (effectBox.isFocused() && !suggestions.isEmpty() && !(suggestions.size() == 1 && suggestions.get(0).equals(effectBox.getValue())))
+            renderSuggestionsDropdown(poseStack, mouseX, mouseY);
         RenderSystem.disableDepthTest();
     }
 
@@ -318,6 +316,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     }
 
     private void renderSuggestionsDropdown(PoseStack poseStack, int mouseX, int mouseY) {
+        poseStack.translate(0, 0, 1);
         int x = leftPos + 8;
         int y = topPos + 50;
 
