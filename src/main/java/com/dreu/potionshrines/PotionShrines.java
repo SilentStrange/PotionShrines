@@ -45,6 +45,7 @@ public class PotionShrines {
     public static final Random rand = new Random();
     public static final Map<String, BakedModel> BAKED_ICONS = new HashMap<>();
     public static final Set<String> SHRINE_ICONS = new HashSet<>();
+    public static final int EDIT_BOX_HEIGHT = 18;
     static {
         SHRINES.forEach((shrine) -> {
             TOTAL_WEIGHT += shrine.getInt("Weight");

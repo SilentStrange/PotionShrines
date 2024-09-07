@@ -1,29 +1,37 @@
 package com.dreu.potionshrines.screen;
 
+import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.network.ResetCooldownPacket;
 import com.dreu.potionshrines.network.SaveAoEShrinePacket;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.dreu.potionshrines.PotionShrines.EDIT_BOX_HEIGHT;
 import static com.dreu.potionshrines.PotionShrines.MODID;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen>{
+public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen> {
     private EditBox effectBox, amplifierBox, durationBox, maxCooldownBox, radiusBox;
     private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton;
     private String icon;
@@ -40,6 +48,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         imageWidth = 296;
         imageHeight = 196;
     }
+
     @Override
     protected void containerTick() {
         effectBox.tick();
@@ -48,19 +57,20 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         maxCooldownBox.tick();
         radiusBox.tick();
     }
+
     @Override
     protected void init() {
         super.init();
 
         if (!initialized) {
-            effectBox = new EditBox(font, leftPos + 8, topPos + 32, effectBoxWidth, editBoxHeight, Component.literal(""));
+            effectBox = new EditBox(font, leftPos + 8, topPos + 32, EFFECT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             effectBox.setMaxLength(100);
             effectBox.setVisible(true);
             effectBox.setTextColor(0xFFFFFF);
             effectBox.setResponder(this::onEffectChanged);
             effectBox.setValue(menu.shrineEntity.getEffect());
 
-            amplifierBox = new EditBox(font, leftPos + 243, topPos + 32, 45, editBoxHeight, Component.literal(""));
+            amplifierBox = new EditBox(font, leftPos + 243, topPos + 32, 45, EDIT_BOX_HEIGHT, Component.literal(""));
             amplifierBox.setMaxLength(3);
             amplifierBox.setVisible(true);
             amplifierBox.setTextColor(0xFFFFFF);
@@ -68,7 +78,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             amplifierBox.setFilter((s -> s.matches("\\d*")));
             amplifierBox.setValue(String.valueOf(menu.shrineEntity.getAmplifier()));
 
-            durationBox = new EditBox(font, leftPos + 8, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            durationBox = new EditBox(font, leftPos + 8, topPos + 66, NUMBER_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             durationBox.setMaxLength(6);
             durationBox.setVisible(true);
             durationBox.setTextColor(0xFFFFFF);
@@ -76,9 +86,9 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             durationBox.setFilter((s -> s.matches("\\d*")));
             durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
 
-            resetCooldownButton = new Button(leftPos + 81, topPos + 65, numberBoxWidth, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
+            resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
 
-            maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, NUMBER_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             maxCooldownBox.setMaxLength(6);
             maxCooldownBox.setVisible(true);
             maxCooldownBox.setTextColor(0xFFFFFF);
@@ -86,7 +96,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             maxCooldownBox.setFilter((s -> s.matches("\\d*")));
             maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.getMaxCooldown() / 20));
 
-            radiusBox = new EditBox(font, leftPos + 222, topPos + 66, numberBoxWidth, editBoxHeight, Component.literal(""));
+            radiusBox = new EditBox(font, leftPos + 222, topPos + 66, NUMBER_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             radiusBox.setMaxLength(2);
             radiusBox.setVisible(true);
             radiusBox.setTextColor(0xFFFFFF);
@@ -94,13 +104,13 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             radiusBox.setFilter((s -> s.matches("\\d*")));
             radiusBox.setValue(String.valueOf(menu.shrineEntity.getRadius()));
 
-            replenishButton = new Button(leftPos + 8, topPos + 99, numberBoxWidth, 20,
-                    Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()), this::onBooleanClick);
-            effectPlayersButton = new Button(leftPos + 8, topPos + 166, numberBoxWidth, 20,
+            effectPlayersButton = new Button(leftPos + 8, topPos + 99, NUMBER_BOX_WIDTH, 20,
                     Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()), this::onBooleanClick);
-            effectMonstersButton = new Button(leftPos + 8, topPos + 132, numberBoxWidth, 20,
+            effectMonstersButton = new Button(leftPos + 8, topPos + 132, NUMBER_BOX_WIDTH, 20,
                     Component.translatable("potion_shrines." + menu.shrineEntity.canEffectMonsters()), this::onBooleanClick);
-
+            replenishButton = new Button(leftPos + 8, topPos + 166, NUMBER_BOX_WIDTH, 20,
+                    Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()), this::onBooleanClick);
+            suggestions = new ArrayList<>();
             icon = menu.shrineEntity.getIcon();
         } else {
             effectBox.x = leftPos + 8;
@@ -115,12 +125,12 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             maxCooldownBox.y = topPos + 66;
             radiusBox.x = leftPos + 222;
             radiusBox.y = topPos + 66;
-            replenishButton.x = leftPos + 8;
-            replenishButton.y = topPos + 99;
             effectPlayersButton.x = leftPos + 8;
-            effectPlayersButton.y = topPos + 166;
+            effectPlayersButton.y = topPos + 99;
             effectMonstersButton.x = leftPos + 8;
             effectMonstersButton.y = topPos + 132;
+            replenishButton.x = leftPos + 8;
+            replenishButton.y = topPos + 166;
         }
 
         addRenderableWidget(effectBox);
@@ -133,21 +143,20 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         addRenderableWidget(effectPlayersButton);
         addRenderableWidget(effectMonstersButton);
 
-        addRenderableWidget(new Button(leftPos + 222, topPos + 99, numberBoxWidth, 20,
+        addRenderableWidget(new Button(leftPos + 222, topPos + 99, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
-        addRenderableWidget(new Button(leftPos + 222, topPos + 132, numberBoxWidth, 20,
+        addRenderableWidget(new Button(leftPos + 222, topPos + 132, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
-        addRenderableWidget(new Button(leftPos + 222, topPos + 166, numberBoxWidth, 20,
+        addRenderableWidget(new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.save"), this::onSaveClick));
-
-        suggestions = new ArrayList<>();
         initialized = true;
     }
 
     private void onIconClick() {
-        Minecraft.getInstance().setScreen(
-                new IconSelectionScreen(
-                        new IconSelectionMenu(this.menu.containerId), this.minecraft.player.getInventory(), Component.literal("Icon Selection")).withReturnScreen(this));
+        Minecraft.getInstance().setScreen(new IconSelectionScreen(
+                new IconSelectionMenu(this.menu.containerId),
+                this.minecraft.player.getInventory(),
+                Component.literal("Icon Selection")).withReturnScreen(this));
     }
 
     private void onResetClick(Button button) {
@@ -156,6 +165,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
         maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.getMaxCooldown() / 20));
         radiusBox.setValue(String.valueOf(menu.shrineEntity.getRadius()));
+        icon = menu.shrineEntity.getIcon();
     }
 
     private void onCancelClick(Button button) {
@@ -187,7 +197,6 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     }
 
 
-
     private void onBooleanClick(Button button) {
         suggestions.clear();
         button.setMessage(Component.translatable("potion_shrines." + !Boolean.parseBoolean(button.getMessage().getString())));
@@ -195,8 +204,9 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
     private void onRadiusChanged(String newRadius) {
         suggestions.clear();
-        if (!newRadius.isEmpty() && Integer.parseInt(newRadius) > 64)
+        if (!newRadius.isEmpty() && Integer.parseInt(newRadius) > 64) {
             radiusBox.setValue("64");
+        }
     }
 
     private void onCooldownChanged(String newCooldown) {
@@ -206,10 +216,12 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     private void onCooldownClick(Button button) {
         PacketHandler.CHANNEL.sendToServer(new ResetCooldownPacket());
     }
+
     private void onAmplifierChanged(String newAmplifier) {
         suggestions.clear();
-        if (!newAmplifier.isEmpty() && Integer.parseInt(newAmplifier) > 255)
+        if (!newAmplifier.isEmpty() && Integer.parseInt(newAmplifier) > 255) {
             amplifierBox.setValue("255");
+        }
     }
 
     private void onDurationChanged(String newDuration) {
@@ -221,17 +233,17 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             suggestions.clear();
         } else {
             suggestions = ForgeRegistries.MOB_EFFECTS.getEntries().stream()
-                .map(resourceKey -> resourceKey.getKey().location().toString())
-                .filter(name -> name.toLowerCase().contains(newEffect.toLowerCase()))
-                .collect(Collectors.toList());
+                    .map(resourceKey -> resourceKey.getKey().location().toString())
+                    .filter(name -> name.toLowerCase().contains(newEffect.toLowerCase()))
+                    .collect(Collectors.toList());
         }
         scrollOffset = 0;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (suggestions.size() > maxDisplayed) {
-            scrollOffset = Math.max(0, Math.min(scrollOffset - (int) delta, suggestions.size() - maxDisplayed));
+        if (suggestions.size() > MAX_DISPLAYED) {
+            scrollOffset = Math.max(0, Math.min(scrollOffset - (int) delta, suggestions.size() - MAX_DISPLAYED));
         }
         return super.mouseScrolled(mouseX, mouseY, delta);
     }
@@ -252,8 +264,34 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
             vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
         }
+        renderIcon(poseStack, mouseX, mouseY, partialTicks);
         RenderSystem.disableDepthTest();
     }
+
+    private void renderIcon(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+
+        // Set up rotation
+        RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
+        RenderSystem.disableCull();
+
+        // Push matrix and apply transformations
+        poseStack.pushPose();
+
+        poseStack.translate(leftPos + 123.5, topPos + 104, 2); // Positioning in the center
+        poseStack.scale(45.0F, 45.0F, 45.0F);
+        poseStack.translate(0.5F, 0.5F, 0.5F);
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees((Minecraft.getInstance().level.getGameTime() + partialTicks) % 3600L));
+        poseStack.translate(-0.5F, -0.5F, -0.5F);
+
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        Minecraft.getInstance().getItemRenderer().renderModelLists(AoEShrineRenderer.getBakedIconOrDefault(icon), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+        bufferSource.endBatch();
+
+        RenderSystem.enableCull();
+        poseStack.popPose();
+    }
+
     @Override
     protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
         renderBackground(poseStack);
@@ -263,44 +301,45 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
     }
-        @Override
+
+    @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         font.draw(poseStack, title, 47 - font.width(title.getVisualOrderText()) * 0.5f, titleLabelY, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.effect"), titleLabelX, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.amplifier"), 243, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.duration"), titleLabelX, 56, 4210752);
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.cooldown"), 82, 56, 4210752);
+        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.max"), 148, 56, 4210752); //
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.radius"), 222, 56, 4210752);
-        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.players"), 8, 90, 4210752);
-        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.monsters"), 8, 123, 4210752);
-        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.replenish"), 8, 158, 4210752);
+        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.players"), 9, 90, 4210752);
+        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.monsters"), 9, 123, 4210752);
+        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.replenish"), 9, 157, 4210752);
+        font.draw(poseStack, Component.translatable("tooltip.potion_shrines.icon"), 120, 90, 4210752);
     }
+
     private void renderSuggestionsDropdown(PoseStack poseStack, int mouseX, int mouseY) {
         int x = leftPos + 8;
         int y = topPos + 50;
 
         // Render background box for the dropdown
-        fill(poseStack, x, y, x + effectBoxWidth, y + Math.min(suggestions.size(), maxDisplayed) * 14, 0xFF000000); // Black background
+        fill(poseStack, x, y, x + EFFECT_BOX_WIDTH, y + Math.min(suggestions.size(), MAX_DISPLAYED) * 14, 0xFF000000); // Black background
 
         // Render each suggestion
-        for (int i = 0; i < Math.min(maxDisplayed, suggestions.size()); i++) {
+        for (int i = 0; i < Math.min(MAX_DISPLAYED, suggestions.size()); i++) {
             int index = i + scrollOffset;
             String suggestion = suggestions.get(index);
             int yOffset = y + i * 14;
 
             drawString(poseStack, font, suggestion, x + 4, yOffset + 3, 0xFFFFFF);
 
-            if (mouseX >= x && mouseX <= x + effectBoxWidth && mouseY >= yOffset && mouseY < yOffset + 14) {
-                fill(poseStack, x, yOffset, x + effectBoxWidth, yOffset + 14, 0x80FFFFFF);
+            if (mouseX >= x && mouseX <= x + EFFECT_BOX_WIDTH && mouseY >= yOffset && mouseY < yOffset + 14) {
+                fill(poseStack, x, yOffset, x + EFFECT_BOX_WIDTH, yOffset + 14, 0x80FFFFFF);
             }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int x = leftPos + 8;
-
-
         if (suggestions.isEmpty()) {
             if (mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
                 onIconClick();
@@ -308,27 +347,31 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             }
             if (effectBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(effectBox);
-            } else if (amplifierBox.isMouseOver(mouseX, mouseY)){
+            } else if (amplifierBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(amplifierBox);
-                if (amplifierBox.isFocused() && button == 1)
+                if (amplifierBox.isFocused() && button == 1) {
                     amplifierBox.setValue("");
-            } else if (durationBox.isMouseOver(mouseX, mouseY)){
+                }
+            } else if (durationBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(durationBox);
-                if (durationBox.isFocused() && button == 1)
+                if (durationBox.isFocused() && button == 1) {
                     durationBox.setValue("");
-            } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)){
+                }
+            } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(maxCooldownBox);
-                if (maxCooldownBox.isFocused() && button == 1)
+                if (maxCooldownBox.isFocused() && button == 1) {
                     maxCooldownBox.setValue("");
-            } else if (radiusBox.isMouseOver(mouseX, mouseY)){
+                }
+            } else if (radiusBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(radiusBox);
-                if (radiusBox.isFocused() && button == 1)
+                if (radiusBox.isFocused() && button == 1) {
                     radiusBox.setValue("");
+                }
             }
         }
         if (effectBox.isFocused()) {
-            if (mouseX >= x && mouseX <= x + effectBoxWidth) {
-                int suggestionCount = Math.min(maxDisplayed, suggestions.size());
+            if (mouseX >= leftPos + 8 && mouseX <= leftPos + 8 + EFFECT_BOX_WIDTH) {
+                int suggestionCount = Math.min(MAX_DISPLAYED, suggestions.size());
                 int suggestionYBottom = topPos + 50 + suggestionCount * 14;
                 if (effectBox.isMouseOver(mouseX, mouseY) && button == 1) {
                     suggestions.clear();
@@ -343,10 +386,12 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         }
         return super.mouseClicked(mouseX, mouseY, 0);
     }
-    public void unfocusExcept(EditBox keep){
+
+    public void unfocusExcept(EditBox keep) {
         renderables.stream().filter(widget -> widget instanceof EditBox).forEach(editBox -> {
-            if (editBox != keep)
+            if (editBox != keep) {
                 ((EditBox) editBox).setFocus(false);
+            }
         });
     }
 
@@ -362,6 +407,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
+
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         // Pass the key release event to the EditBox
@@ -370,6 +416,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
+
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
         if (effectBox.charTyped(codePoint, modifiers)) {
@@ -382,5 +429,10 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     public AoEShrineScreen withIcon(String icon) {
         this.icon = icon;
         return this;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
     }
 }

@@ -13,6 +13,8 @@
   "tooltip.potion_shrines.players": "Players",
   "tooltip.potion_shrines.monsters": "Monsters",
   "tooltip.potion_shrines.replenish": "Replenish",
+  "tooltip.potion_shrines.icon": "Icon",
+  "tooltip.potion_shrines.max": "Max",
 
   "gui.potion_shrines.shrine_options": "Shrine Options",
   "gui.potion_shrines.effect": "Effect",
@@ -21,6 +23,7 @@
   "gui.potion_shrines.reset": "Reset",
   "gui.potion_shrines.cancel": "Cancel",
   "gui.potion_shrines.save": "Save",
+  "gui.potion_shrines.done": "Done",
 
   "potion_shrines.false": "False",
   "potion_shrines.true": "True"
