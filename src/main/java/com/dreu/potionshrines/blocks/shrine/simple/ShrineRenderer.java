@@ -30,7 +30,7 @@ public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
             RenderSystem.enableDepthTest();
 
             poseStack.scale(0.88889f, 0.88889f, 0.88889f);
-            poseStack.translate(-0.5, 0, -0.5);
+            poseStack.translate(-0.5, 0.2, -0.5);
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
             itemRenderer.renderModelLists(getBakedIconOrDefault(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
