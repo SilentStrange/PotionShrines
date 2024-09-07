@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.PushReaction;
@@ -71,7 +72,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        BlockEntity blockEntity = new AoEShrineBlockEntity(blockPos, blockState);
+        BlockEntity blockEntity = new AoEShrineBlockEntity(blockPos, blockState).fromConfig();
         blockEntity.setChanged();
         return blockEntity;
     }
@@ -120,8 +121,8 @@ public class AoEShrineBlock extends Block implements EntityBlock {
                         .toList().forEach(filteredPlayer ->
                             filteredPlayer.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration(),
-                                shrine.getAmplifier())));
+                                shrine.getDuration() * 20,
+                                shrine.getAmplifier() - 1)));
                 if (shrine.canEffectMonsters())
                     level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.getRadius())).stream()
                         .filter(nearEntity -> nearEntity.blockPosition().distSqr(blockPos) <= shrine.getRadius() * shrine.getRadius()

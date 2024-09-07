@@ -3,6 +3,7 @@ package com.dreu.potionshrines.blocks.shrine.aoe;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.screen.AoEShrineMenu;
+import com.electronwill.nightconfig.core.Config;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,14 +30,28 @@ import java.util.Objects;
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.PotionShrines.rand;
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.config.AoEShrine.getRandomAoEShrine;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 
 public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
-    private int maxCooldown = 0, radius = 0, duration = 0, amplifier = 0, remainingCooldown = 0;
+    private int maxCooldown = 0, radius = 0, duration = 0, amplifier = 1, remainingCooldown = 0;
     private String effect = "null", icon = "default";
     private boolean effectPlayers = false, effectMonsters = false, replenish = false;
     public AoEShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.AOE_SHRINE.get(), blockPos, blockState);
+    }
+    public AoEShrineBlockEntity fromConfig() {
+        Config aoeShrine = getRandomAoEShrine();
+        amplifier = Mth.clamp((int) aoeShrine.get("Amplifier") - 1, 1, 256);
+        duration = Mth.clamp(aoeShrine.get("Duration"), 1, 999999) * 20;
+        maxCooldown = Mth.clamp(aoeShrine.get("Cooldown"), 3, 999999) * 20;
+        replenish = aoeShrine.get("Replenish");
+        effect = aoeShrine.get("Effect");
+        icon = aoeShrine.get("Icon");
+        effectPlayers = aoeShrine.get("Players");
+        effectMonsters = aoeShrine.get("Monsters");
+        radius = Mth.clamp(aoeShrine.get("Radius"), 3, 64);
+        return this;
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, AoEShrineBlockEntity shrine) {
@@ -161,19 +176,19 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     public boolean canReplenish(){return replenish;}
     public String getIcon(){return icon;}
 
-    public void setEffect(String s){effect = s;}
-    public void setAmplifier(int i){amplifier = Mth.clamp(i, 0, 255);}
-    public void setDuration(int i){duration = Mth.clamp(i, 1, 999999);}
-    public void setMaxCooldown(int i){
-        maxCooldown = Mth.clamp(i, 60, 19999980);
+    public void setEffect(String resourceLocation){effect = resourceLocation;}
+    public void setAmplifier(int lvl){amplifier = Mth.clamp(lvl, 1, 256);}
+    public void setDuration(int ticks){duration = Mth.clamp(ticks, 1, 19999980);}
+    public void setMaxCooldown(int ticks){
+        maxCooldown = Mth.clamp(ticks, 60, 19999980);
         if (remainingCooldown > maxCooldown) remainingCooldown = maxCooldown;
     }
-    public void setRemainingCooldown(int i){remainingCooldown = Mth.clamp(i, 0, maxCooldown);}
-    public void setRadius(int i){radius = Mth.clamp(i, 3, 64);}
+    public void setRemainingCooldown(int ticks){remainingCooldown = Mth.clamp(ticks, 0, maxCooldown);}
+    public void setRadius(int blocks){radius = Mth.clamp(blocks, 3, 64);}
     public void setCanEffectPlayers(boolean b){effectPlayers = b;}
     public void setCanEffectMonsters(boolean b){effectMonsters = b;}
     public void setCanReplenish(boolean b){replenish = b;}
-    public void setIcon(String s){icon = s;}
+    public void setIcon(String name){icon = name;}
 
     public boolean canUse() {
         return remainingCooldown == 0;
