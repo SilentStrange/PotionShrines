@@ -36,7 +36,7 @@ import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
     private int maxCooldown = 0, radius = 0, duration = 0, amplifier = 1, remainingCooldown = 0;
     private String effect = "null", icon = "default";
-    private boolean effectPlayers = false, effectMonsters = false, replenish = false;
+    private boolean effectPlayers = false, effectMonsters = false, replenish = true;
     public AoEShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.AOE_SHRINE.get(), blockPos, blockState);
     }
@@ -87,6 +87,9 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
                     }
                     level.setBlock(blockPos, blockState.setValue(LIGHT_LEVEL, 15 - (shrine.maxCooldown - shrine.remainingCooldown) / 2), 11);
                 } else if (!SHRINES_REPLENISH || !shrine.replenish) {
+                    level.removeBlock(blockPos.below(2), false);
+                    level.removeBlock(blockPos.below(1), false);
+                    level.removeBlock(blockPos, false);
                     level.setBlock(blockPos.below(2), PSBlocks.AOE_SHRINE_DECREPIT.get().defaultBlockState(), 11);
                 }
                 shrine.setRemainingCooldown(shrine.remainingCooldown - 1);

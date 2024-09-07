@@ -121,7 +121,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
                         .toList().forEach(filteredPlayer ->
                             filteredPlayer.addEffect(new MobEffectInstance(
                                 getEffectFromString(shrine.getEffect()),
-                                shrine.getDuration() * 20,
+                                shrine.getDuration(),
                                 shrine.getAmplifier() - 1)));
                 if (shrine.canEffectMonsters())
                     level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(shrine.getRadius())).stream()

@@ -101,7 +101,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
             poseStack.popPose();
         }
     }
-    private BakedModel getBakedIconOrDefault(String key) {
+    public static BakedModel getBakedIconOrDefault(String key) {
         return BAKED_ICONS.get(key) == null ? BAKED_ICONS.get("default") : BAKED_ICONS.get(key);
     }
 }

@@ -28,7 +28,9 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton;
     private String icon;
     private List<String> suggestions;
-    private static final int effectBoxWidth = 227, numberBoxWidth = 66, editBoxHeight = 18, maxDisplayed = 5;
+    static final int EFFECT_BOX_WIDTH = 227;
+    static final int NUMBER_BOX_WIDTH = 66;
+    private static final int MAX_DISPLAYED = 5;
     private static int scrollOffset = 0;
     private boolean initialized = false;
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/aoe_shrine_screen.png");
