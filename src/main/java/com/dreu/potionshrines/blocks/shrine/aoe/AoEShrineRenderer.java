@@ -23,8 +23,10 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
     public void render(AoEShrineBlockEntity aoeshrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         if (!Objects.equals(aoeshrineEntity.getEffect(), "null")) {
             float cooldown = aoeshrineEntity.getRemainingCooldown();
+            float uvY = aoeshrineEntity.canReplenish() ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
 
             if (cooldown == 0) {
+                uvY = 1;
                 poseStack.pushPose();
                 poseStack.translate(0.5, Math.sin((aoeshrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0.5);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees((aoeshrineEntity.getLevel().getGameTime() + partialTicks) % 360));  // Apply rotation around the Y-axis
@@ -33,7 +35,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
                 RenderSystem.enableDepthTest();
 
                 poseStack.scale(0.88889f, 0.88889f, 0.88889f);
-                poseStack.translate(-0.5, 0, -0.5);
+                poseStack.translate(-0.5, 0.2, -0.5);
 
                 ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
                 itemRenderer.renderModelLists(getBakedIconOrDefault(aoeshrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
@@ -78,6 +80,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
                 itemRenderer.renderModelLists(getBakedIconOrDefault(aoeshrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
 
                 poseStack.popPose();
+                uvY = 1 - normalizedCooldown;
             }
             RenderSystem.enableDepthTest();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -87,7 +90,6 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
             poseStack.translate(0.5, -1.4375, 0.5);
             BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-            float uvY = aoeshrineEntity.canReplenish() ? 1 - (float) aoeshrineEntity.getRemainingCooldown() / aoeshrineEntity.getMaxCooldown() : 0;
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             for (int i = 0; i < 4; i++) {
                 buffer.vertex(poseStack.last().pose(), -0.125f, 0.0f, 0.2501f).uv(0, 1).endVertex();
