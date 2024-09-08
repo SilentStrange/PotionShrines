@@ -49,7 +49,7 @@ public class AoEShrineBlockItem extends BlockItem {
         if (nbt == null) return;
         components.add(Component.translatable(getEffectFromString(nbt.getString("effect")).getDescriptionId()).withStyle(ChatFormatting.BLUE)
                 .append(Component.literal(" " + romanNumerals.get(nbt.getInt("amplifier") + 1)))
-                .append(Component.literal("(" + asTime(nbt.getInt("duration")) + ")")));
+                .append(Component.literal("(" + asTime((int) (nbt.getInt("duration") * 0.05F)) + ")")));
         components.add(Component.translatable("tooltip.potion_shrines.radius").withStyle(ChatFormatting.BLUE)
                 .append(Component.literal(": " + nbt.getInt("radius") + " ")
                 .append(Component.translatable("soundCategory.block"))));

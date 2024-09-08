@@ -24,6 +24,8 @@
   "gui.potion_shrines.cancel": "Cancel",
   "gui.potion_shrines.save": "Save",
   "gui.potion_shrines.done": "Done",
+  "gui.potion_shrines.blockNbt": "⎘ Block NBT",
+  "gui.potion_shrines.itemNbt": "⎘ Item NBT",
 
   "potion_shrines.false": "False",
   "potion_shrines.true": "True"

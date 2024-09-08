@@ -4,6 +4,7 @@ import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import com.dreu.potionshrines.registry.PSTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -80,8 +81,23 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
         if (player.isShiftKeyDown()){
+            AoEShrineBlockEntity shrine = level.getBlockEntity(blockPos, PSBlockEntities.AOE_SHRINE.get()).get();
             ItemStack itemStack = new ItemStack(this);
-            level.getBlockEntity(blockPos).saveToItem(itemStack);
+            CompoundTag tag = new CompoundTag();
+            tag.putString("effect", shrine.getEffect());
+            tag.putInt("amplifier", shrine.getAmplifier());
+            tag.putInt("duration", shrine.getDuration());
+            tag.putInt("max_cooldown", shrine.getMaxCooldown());
+            tag.putInt("radius", shrine.getRadius());
+            tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
+            tag.putBoolean("players", shrine.canEffectPlayers());
+            tag.putBoolean("monsters", shrine.canEffectMonsters());
+            tag.putBoolean("replenish", shrine.canReplenish());
+            tag.putString("icon", shrine.getIcon());
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.put("BlockEntityTag", tag);
+            itemStack.setTag(compoundTag);
+
             return itemStack;
         }
         return super.getCloneItemStack(state, target, level, blockPos, player);

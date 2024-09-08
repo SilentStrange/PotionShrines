@@ -188,13 +188,14 @@ public class IconSelectionScreen extends AbstractContainerScreen<IconSelectionMe
                 if (mouseX > leftPos + 7 && mouseX < leftPos + 246 - ICON_WIDTH * (Math.max(0, MAX_DISPLAYED - suggestions.size()))) {
                     int index = ((int) mouseX - leftPos - 8) / ICON_WIDTH + scrollOffset;
                     iconBox.setValue(suggestions.get(index));
+                    return false;
                 }
             }
         }
-        if (iconBox.isFocused() && button == 1){
+        if (button == 1){
             if (mouseY >= topPos + 20 && mouseY <= topPos + 20 + EDIT_BOX_HEIGHT && mouseX >= leftPos + 8 && mouseX <= leftPos + 8 + ICON_BOX_WIDTH ){
                 iconBox.setValue("");
-                return iconBox.mouseClicked(mouseX, mouseY, button);
+                return super.mouseClicked(mouseX, mouseY, 0);
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
