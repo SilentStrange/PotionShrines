@@ -1,9 +1,12 @@
-package com.dreu.potionshrines.screen;
+package com.dreu.potionshrines.screen.aoe;
 
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.network.ResetCooldownPacket;
 import com.dreu.potionshrines.network.SaveAoEShrinePacket;
+import com.dreu.potionshrines.screen.IconScreen;
+import com.dreu.potionshrines.screen.IconSelectionMenu;
+import com.dreu.potionshrines.screen.IconSelectionScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -40,7 +43,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     private String icon;
     private List<String> suggestions;
     static final int EFFECT_BOX_WIDTH = 227;
-    static final int NUMBER_BOX_WIDTH = 66;
+    public static final int NUMBER_BOX_WIDTH = 66;
     private static final int MAX_DISPLAYED = 5;
     private static int scrollOffset = 0;
     private boolean initialized = false;
@@ -450,7 +453,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         // Pass the key release event to the EditBox
         if (effectBox.keyReleased(keyCode, scanCode, modifiers)) {
-            return true;
+            return false;
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
     }

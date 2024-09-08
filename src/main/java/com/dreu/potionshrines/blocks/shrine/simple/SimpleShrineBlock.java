@@ -102,6 +102,10 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
         if (shrine.canUse()) {
             shrine.resetCooldown();
         SimpleShrineBlockEntity shrine = (SimpleShrineBlockEntity) level.getBlockEntity(blockPos);
+        if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide) {
+            NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
+            return InteractionResult.SUCCESS;
+        } else if (shrine.canUse()) {
             if (!level.isClientSide) {
                 player.addEffect(new MobEffectInstance(
                         getEffectFromString(shrine.getEffect()),

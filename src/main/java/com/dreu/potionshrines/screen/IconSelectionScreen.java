@@ -182,6 +182,13 @@ public class IconSelectionScreen extends AbstractContainerScreen<IconSelectionMe
     }
 
     @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (iconBox.keyReleased(keyCode, scanCode, modifiers))
+            return false;
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!suggestions.isEmpty()){
             if (mouseY > topPos + 45 && mouseY < topPos + 80) {

@@ -2,6 +2,7 @@ package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.screen.aoe.AoEShrineMenu;
 import com.dreu.potionshrines.screen.IconSelectionMenu;
+import com.dreu.potionshrines.screen.simple.SimpleShrineMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -18,6 +19,9 @@ public class PSMenuTypes {
 
     public static final RegistryObject<MenuType<AoEShrineMenu>> AOE_SHRINE_MENU =
             registerMenuType(AoEShrineMenu::new, "aoe_shrine_menu");
+
+    public static final RegistryObject<MenuType<SimpleShrineMenu>> SIMPLE_SHRINE_MENU =
+            registerMenuType(SimpleShrineMenu::new, "simple_shrine_menu");
 
     public static final RegistryObject<MenuType<IconSelectionMenu>> ICON_SELECTION_MENU =
             registerMenuType(IconSelectionMenu::new, "icon_selection_menu");

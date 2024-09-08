@@ -1,7 +1,8 @@
-package com.dreu.potionshrines.screen;
+package com.dreu.potionshrines.screen.aoe;
 
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBlockEntity;
 import com.dreu.potionshrines.registry.PSMenuTypes;
+import com.dreu.potionshrines.screen.ShrineMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -9,7 +10,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class AoEShrineMenu extends AbstractContainerMenu {
+public class AoEShrineMenu extends AbstractContainerMenu implements ShrineMenu {
     public final AoEShrineBlockEntity shrineEntity;
     public AoEShrineMenu(int id, Inventory inventory, FriendlyByteBuf extraData){
         this(id, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
@@ -27,5 +28,11 @@ public class AoEShrineMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return true;
+    }
+
+    @Override
+    public void resetCooldown() {
+        shrineEntity.setRemainingCooldown(0);
+        shrineEntity.setChanged();
     }
 }
