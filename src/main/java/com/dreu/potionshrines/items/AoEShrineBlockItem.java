@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,7 +40,9 @@ public class AoEShrineBlockItem extends BlockItem {
 
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState blockState) {
-        return  context.getLevel().getBlockState(context.getClickedPos()).getMaterial().isReplaceable()
+        return context.getLevel().getEntities(null, new AABB(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), context.getClickedPos().getX() + 1, context.getClickedPos().getY() + 2, context.getClickedPos().getZ() + 1))
+                .stream().filter(entity -> entity instanceof LivingEntity).toList().isEmpty()
+                && context.getLevel().getBlockState(context.getClickedPos()).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(1)).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(2)).getMaterial().isReplaceable()
                 && context.getLevel().setBlock(context.getClickedPos().above(2), blockState, 11);
@@ -66,40 +71,44 @@ public class AoEShrineBlockItem extends BlockItem {
     }
     @Override
     public InteractionResult place(BlockPlaceContext context) {
-        BlockPlaceContext blockplacecontext = this.updatePlacementContext(context);
-        if (blockplacecontext == null) {
+        if (!context.canPlace()) {
             return InteractionResult.FAIL;
         } else {
-            BlockState blockstate = this.getPlacementState(blockplacecontext);
-            if (blockstate == null) {
-                return InteractionResult.FAIL;
-            } else if (!this.placeBlock(blockplacecontext, blockstate)) {
+            BlockPlaceContext blockplacecontext = this.updatePlacementContext(context);
+            if (blockplacecontext == null) {
                 return InteractionResult.FAIL;
             } else {
-                BlockPos blockpos = blockplacecontext.getClickedPos().above(2);
-                Level level = blockplacecontext.getLevel();
-                Player player = blockplacecontext.getPlayer();
-                ItemStack itemstack = blockplacecontext.getItemInHand();
-                BlockState blockstate1 = level.getBlockState(blockpos);
-                if (blockstate1.is(blockstate.getBlock())) {
-                    blockstate1 = this.updateBlockStateFromTag(blockpos, level, itemstack, blockstate1);
-                    this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
-                    blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
-                    if (player instanceof ServerPlayer) {
-                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, blockpos, itemstack);
+                BlockState blockstate = this.getPlacementState(blockplacecontext);
+                if (blockstate == null) {
+                    return InteractionResult.FAIL;
+                } else if (!this.placeBlock(blockplacecontext, blockstate)) {
+                    return InteractionResult.FAIL;
+                } else {
+                    BlockPos blockpos = blockplacecontext.getClickedPos().above(2);
+                    Level level = blockplacecontext.getLevel();
+                    Player player = blockplacecontext.getPlayer();
+                    ItemStack itemstack = blockplacecontext.getItemInHand();
+                    BlockState blockstate1 = level.getBlockState(blockpos);
+                    if (blockstate1.is(blockstate.getBlock())) {
+                        blockstate1 = this.updateBlockStateFromTag(blockpos, level, itemstack, blockstate1);
+                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
+                        blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
+                        if (player instanceof ServerPlayer) {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, blockpos, itemstack);
+                        }
                     }
-                }
 
-                level.setBlockAndUpdate(blockpos.below(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP));
-                level.setBlockAndUpdate(blockpos.below(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM));
+                    level.setBlockAndUpdate(blockpos.below(1), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP));
+                    level.setBlockAndUpdate(blockpos.below(2), PSBlocks.AOE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM));
 
-                level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(player, blockstate1));
-                SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());
-                level.playSound(player, blockpos, this.getPlaceSound(blockstate1, level, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                if (player == null || !player.getAbilities().instabuild) {
-                    itemstack.shrink(1);
+                    level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(player, blockstate1));
+                    SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());
+                    level.playSound(player, blockpos, this.getPlaceSound(blockstate1, level, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    if (player == null || !player.getAbilities().instabuild) {
+                        itemstack.shrink(1);
+                    }
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
     }

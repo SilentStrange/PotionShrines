@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,7 +39,9 @@ public class ShrineBlockItem extends BlockItem {
 
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState blockState) {
-        return  context.getLevel().getBlockState(context.getClickedPos()).getMaterial().isReplaceable()
+        return context.getLevel().getEntities(null, new AABB(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), context.getClickedPos().getX() + 1, context.getClickedPos().getY() + 2, context.getClickedPos().getZ() + 1))
+                .stream().filter(entity -> entity instanceof LivingEntity).toList().isEmpty()
+                && context.getLevel().getBlockState(context.getClickedPos()).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(1)).getMaterial().isReplaceable()
                 && context.getLevel().getBlockState(context.getClickedPos().above(2)).getMaterial().isReplaceable()
                 && context.getLevel().setBlock(context.getClickedPos().above(2), blockState, 11);
