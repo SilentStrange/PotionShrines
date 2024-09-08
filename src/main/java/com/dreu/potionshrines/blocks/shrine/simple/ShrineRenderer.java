@@ -20,11 +20,12 @@ public class ShrineRenderer implements BlockEntityRenderer<SimpleShrineBlockEnti
     @Override
     public void render(SimpleShrineBlockEntity shrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         float cooldown = shrineEntity.getRemainingCooldown();
+        float uvY = shrineEntity.canReplenish() ? 1 - (float) shrineEntity.getRemainingCooldown() / shrineEntity.getMaxCooldown() : 0;
         if (cooldown == 0){
+            uvY = 1;
             poseStack.pushPose();
             poseStack.translate(0.5, Math.sin((shrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0.5);
             poseStack.mulPose(Vector3f.YP.rotationDegrees((shrineEntity.getLevel().getGameTime() + partialTicks) % 360));  // Apply rotation around the Y-axis
-
             //RenderSystem.disableCull()
             RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
             RenderSystem.enableDepthTest();
@@ -75,6 +76,7 @@ public class ShrineRenderer implements BlockEntityRenderer<SimpleShrineBlockEnti
             itemRenderer.renderModelLists(getBakedIconOrDefault(shrineEntity.getIcon()), ItemStack.EMPTY, 0xF000F0, combinedOverlay, poseStack, bufferSource.getBuffer(RenderType.cutout()));
 
             poseStack.popPose();
+            uvY = 1 - normalizedCooldown;
         }
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -84,7 +86,6 @@ public class ShrineRenderer implements BlockEntityRenderer<SimpleShrineBlockEnti
         poseStack.translate(0.5, -1.375, 0.5);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-        float uvY = 1 - (float) shrineEntity.getRemainingCooldown() / shrineEntity.getMaxCooldown();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         for (int i = 0; i < 4; i++) {
             buffer.vertex(poseStack.last().pose(), -0.125f, 0, 0.1876f).uv(0, 1).endVertex();
