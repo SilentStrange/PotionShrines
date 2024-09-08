@@ -5,7 +5,7 @@ import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.registry.*;
-import com.dreu.potionshrines.screen.AoEShrineScreen;
+import com.dreu.potionshrines.screen.aoe.AoEShrineScreen;
 import com.dreu.potionshrines.screen.IconSelectionScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
@@ -37,6 +37,8 @@ import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
 import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
 import static com.dreu.potionshrines.config.Shrine.SHRINES;
 import static com.dreu.potionshrines.config.Shrine.TOTAL_WEIGHT;
+import static com.dreu.potionshrines.config.SimpleShrine.SHRINES;
+import static com.dreu.potionshrines.config.SimpleShrine.TOTAL_WEIGHT;
 
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
@@ -81,6 +83,7 @@ public class PotionShrines {
             MenuScreens.register(PSMenuTypes.AOE_SHRINE_MENU.get(), AoEShrineScreen::new);
             MenuScreens.register(PSMenuTypes.ICON_SELECTION_MENU.get(), IconSelectionScreen::new);
             BlockEntityRenderers.register(PSBlockEntities.SHRINE.get(), (c) -> new ShrineRenderer());
+            BlockEntityRenderers.register(PSBlockEntities.SIMPLE_SHRINE.get(), (c) -> new ShrineRenderer());
             BlockEntityRenderers.register(PSBlockEntities.AOE_SHRINE.get(), (c) -> new AoEShrineRenderer());
         }
         @SubscribeEvent

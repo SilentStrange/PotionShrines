@@ -16,9 +16,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
-import static com.dreu.potionshrines.config.PSConfig.rangeBounded;
-import static com.dreu.potionshrines.config.Shrine.getRandomShrine;
+import static com.dreu.potionshrines.config.SimpleShrine.getRandomShrine;
 
 public class ShrineBlockEntity extends BlockEntity {
     public int maxCooldown;
@@ -29,6 +29,7 @@ public class ShrineBlockEntity extends BlockEntity {
     private String icon;
     public ShrineBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(PSBlockEntities.SHRINE.get(), blockPos, blockState);
+public class SimpleShrineBlockEntity extends BlockEntity implements MenuProvider {
         Config shrine = getRandomShrine();
         amplifier = rangeBounded((int) shrine.get("Amplifier") - 1, 0, 255);
         duration = rangeBounded(shrine.get("Duration"), 1, 999999);

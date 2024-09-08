@@ -15,10 +15,10 @@ import net.minecraft.world.item.ItemStack;
 
 import static com.dreu.potionshrines.PotionShrines.BAKED_ICONS;
 
-public class ShrineRenderer implements BlockEntityRenderer<ShrineBlockEntity> {
+public class ShrineRenderer implements BlockEntityRenderer<SimpleShrineBlockEntity> {
     public ShrineRenderer(){}
     @Override
-    public void render(ShrineBlockEntity shrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+    public void render(SimpleShrineBlockEntity shrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         float cooldown = shrineEntity.getRemainingCooldown();
         if (cooldown == 0){
             poseStack.pushPose();

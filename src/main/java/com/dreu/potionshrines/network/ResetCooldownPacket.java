@@ -1,6 +1,8 @@
 package com.dreu.potionshrines.network;
 
 import com.dreu.potionshrines.screen.AoEShrineMenu;
+import com.dreu.potionshrines.screen.aoe.AoEShrineMenu;
+import com.dreu.potionshrines.screen.simple.SimpleShrineMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;

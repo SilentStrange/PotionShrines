@@ -4,7 +4,7 @@ import com.dreu.potionshrines.blocks.shrine.aoe.AoEDecrepitBlock;
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBaseBlock;
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBlock;
 import com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock;
-import com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBlock;
 import com.dreu.potionshrines.blocks.shrine.simple.ShrineDecrepitBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,14 +14,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import static com.dreu.potionshrines.PotionShrines.MODID;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.General.SHRINE_INDESTRUCTIBLE;
 
 public class PSBlocks {
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
         public static final RegistryObject<Block> SHRINE = BLOCKS.register("shrine",
-                () -> new ShrineBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
+                () -> new SimpleShrineBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
                         .lightLevel((blockstate) -> blockstate.getValue(LIGHT_LEVEL))
                         .emissiveRendering((blockState, blockGetter, blockPos) -> true)));
         public static final RegistryObject<Block> SHRINE_BASE = BLOCKS.register("shrine_base",

@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.rand;
 
-public class Shrine extends PSConfig{
+public class SimpleShrine extends PSConfig{
     static final String defaultConfig =
             """
             # If you want to reset this config to default, delete this file from the config folder and run the game
@@ -24,217 +24,217 @@ public class Shrine extends PSConfig{
             
             [[Shrine]]
             Effect = "minecraft:regeneration"
+            Amplifier = 2
             Duration = 180
             Cooldown = 180
             Replenish = true
-            Amplifier = 2
             Weight = 5
             Icon = "regeneration"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
+            Amplifier = 2
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 2
             Weight = 5
             Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
+            Amplifier = 3
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 3
             Weight = 3
             Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:health_boost"
+            Amplifier = 5
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 5
             Weight = 1
             Icon = "health_boost"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
+            Amplifier = 2
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 2
             Weight = 5
             Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
+            Amplifier = 3
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 3
             Weight = 3
             Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:absorption"
+            Amplifier = 5
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 5
             Weight = 1
             Icon = "absorption"
             
             [[Shrine]]
             Effect = "minecraft:jump_boost"
+            Amplifier = 2
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 2
             Weight = 5
             Icon = "jump_boost"
             
             [[Shrine]]
             Effect = "minecraft:strength"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:strength"
+            Amplifier = 2
             Duration = 180
             Cooldown = 180
             Replenish = true
-            Amplifier = 2
             Weight = 3
             Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:strength"
+            Amplifier = 3
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 3
             Weight = 1
             Icon = "strength"
             
             [[Shrine]]
             Effect = "minecraft:invisibility"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "invisibility"
             
             [[Shrine]]
             Effect = "minecraft:fire_resistance"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "fire_resistance"
             
             [[Shrine]]
             Effect = "minecraft:speed"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:speed"
+            Amplifier = 2
             Duration = 180
             Cooldown = 180
             Replenish = true
-            Amplifier = 2
             Weight = 3
             Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:speed"
+            Amplifier = 3
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 3
             Weight = 1
             Icon = "speed"
             
             [[Shrine]]
             Effect = "minecraft:haste"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "haste"
             
             [[Shrine]]
             Effect = "minecraft:haste"
+            Amplifier = 2
             Duration = 180
             Cooldown = 180
             Replenish = true
-            Amplifier = 2
             Weight = 3
             Icon = "haste"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
+            Amplifier = 1
             Duration = 180
             Cooldown = 180
             Replenish = true
-            Amplifier = 1
             Weight = 3
             Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
+            Amplifier = 2
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 2
             Weight = 1
             Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:water_breathing"
+            Amplifier = 1
             Duration = 300
             Cooldown = 300
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "water_breathing"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
+            Amplifier = 2
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 2
             Weight = 1
             Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:resistance"
+            Amplifier = 2
             Duration = 60
             Cooldown = 60
             Replenish = true
-            Amplifier = 2
             Weight = 1
             Icon = "resistance"
             
             [[Shrine]]
             Effect = "minecraft:slow_falling"
+            Amplifier = 1
             Duration = 120
             Cooldown = 120
             Replenish = true
-            Amplifier = 1
             Weight = 5
             Icon = "slow_falling"
             """;

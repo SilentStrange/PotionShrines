@@ -33,9 +33,9 @@ import org.jetbrains.annotations.Nullable;
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
 
-public class ShrineBlock extends Block implements EntityBlock {
+public class SimpleShrineBlock extends Block implements EntityBlock {
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
-    public ShrineBlock(Properties properties) {
+    public SimpleShrineBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(LIGHT_LEVEL, 0));
@@ -63,7 +63,7 @@ public class ShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        BlockEntity blockEntity = new ShrineBlockEntity(blockPos, blockState);
+        BlockEntity blockEntity = new SimpleShrineBlockEntity(blockPos, blockState).fromConfig();
         blockEntity.setChanged();
         return blockEntity;
     }
@@ -101,6 +101,7 @@ public class ShrineBlock extends Block implements EntityBlock {
         ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
         if (shrine.canUse()) {
             shrine.resetCooldown();
+        SimpleShrineBlockEntity shrine = (SimpleShrineBlockEntity) level.getBlockEntity(blockPos);
             if (!level.isClientSide) {
                 player.addEffect(new MobEffectInstance(
                         getEffectFromString(shrine.getEffect()),

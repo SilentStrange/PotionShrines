@@ -2,7 +2,7 @@ package com.dreu.potionshrines.blocks.shrine.aoe;
 
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
-import com.dreu.potionshrines.screen.AoEShrineMenu;
+import com.dreu.potionshrines.screen.aoe.AoEShrineMenu;
 import com.electronwill.nightconfig.core.Config;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.PotionShrines.rand;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBlock.LIGHT_LEVEL;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBlock.LIGHT_LEVEL;
 import static com.dreu.potionshrines.config.AoEShrine.getRandomAoEShrine;
 import static com.dreu.potionshrines.config.General.SHRINES_REPLENISH;
 

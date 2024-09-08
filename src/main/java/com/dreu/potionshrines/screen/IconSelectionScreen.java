@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.*;
-import static com.dreu.potionshrines.screen.AoEShrineScreen.NUMBER_BOX_WIDTH;
+import static com.dreu.potionshrines.screen.aoe.AoEShrineScreen.NUMBER_BOX_WIDTH;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class IconSelectionScreen extends AbstractContainerScreen<IconSelectionMenu> implements MenuProvider {

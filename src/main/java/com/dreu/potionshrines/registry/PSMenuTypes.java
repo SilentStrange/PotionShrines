@@ -1,6 +1,6 @@
 package com.dreu.potionshrines.registry;
 
-import com.dreu.potionshrines.screen.AoEShrineMenu;
+import com.dreu.potionshrines.screen.aoe.AoEShrineMenu;
 import com.dreu.potionshrines.screen.IconSelectionMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
