@@ -3,6 +3,8 @@ package com.dreu.potionshrines.blocks.shrine.simple;
 import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -28,6 +30,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
@@ -70,9 +73,20 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
-        if (player.isCrouching()){
+        if (player.isShiftKeyDown()){
+            SimpleShrineBlockEntity shrine = level.getBlockEntity(blockPos, PSBlockEntities.SIMPLE_SHRINE.get()).get();
             ItemStack itemStack = new ItemStack(this);
-            level.getBlockEntity(blockPos).saveToItem(itemStack);
+            CompoundTag tag = new CompoundTag();
+            tag.putString("effect", shrine.getEffect());
+            tag.putInt("amplifier", shrine.getAmplifier());
+            tag.putInt("duration", shrine.getDuration());
+            tag.putInt("max_cooldown", shrine.getMaxCooldown());
+            tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
+            tag.putBoolean("replenish", shrine.canReplenish());
+            tag.putString("icon", shrine.getIcon());
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.put("BlockEntityTag", tag);
+            itemStack.setTag(compoundTag);
             return itemStack;
         }
         return super.getCloneItemStack(state, target, level, blockPos, player);
@@ -85,7 +99,7 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, PSBlockEntities.SHRINE.get(), ShrineBlockEntity::tick);
+        return createTickerHelper(blockEntityType, PSBlockEntities.SIMPLE_SHRINE.get(), SimpleShrineBlockEntity::tick);
     }
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> aBlockEntityType, BlockEntityType<E> eBlockEntityType, BlockEntityTicker<? super E> blockEntityTicker) {
         return eBlockEntityType == aBlockEntityType ? (BlockEntityTicker<A>)blockEntityTicker : null;
@@ -98,19 +112,17 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        ShrineBlockEntity shrine = (ShrineBlockEntity) level.getBlockEntity(blockPos);
-        if (shrine.canUse()) {
-            shrine.resetCooldown();
         SimpleShrineBlockEntity shrine = (SimpleShrineBlockEntity) level.getBlockEntity(blockPos);
         if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide) {
             NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
             return InteractionResult.SUCCESS;
         } else if (shrine.canUse()) {
             if (!level.isClientSide) {
+                shrine.resetCooldown();
                 player.addEffect(new MobEffectInstance(
                         getEffectFromString(shrine.getEffect()),
-                        shrine.getDuration() * 20,
-                        shrine.getAmplifier()));
+                        shrine.getDuration(),
+                        shrine.getAmplifier() - 1));
             }
             return InteractionResult.SUCCESS;
         }
