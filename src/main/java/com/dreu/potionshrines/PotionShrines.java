@@ -176,7 +176,11 @@ public class PotionShrines {
 
     }
     public static MobEffect getEffectFromString(String effect){
-        return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
+        try {
+            return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
+        } catch (Exception ignore){
+            return null;
+        }
     }
 
     public static final List<String> romanNumerals = new ArrayList<>();

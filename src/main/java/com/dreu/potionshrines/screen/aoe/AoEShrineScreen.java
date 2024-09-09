@@ -33,19 +33,18 @@ import java.util.stream.Collectors;
 import static com.dreu.potionshrines.PotionShrines.*;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen> {
     private EditBox effectBox, amplifierBox, durationBox, maxCooldownBox, radiusBox;
-    private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton;
+    private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton, saveButton, itemNbtButton, blockNbtButton;
     private String icon;
     private List<String> suggestions;
     static final int EFFECT_BOX_WIDTH = 227;
     public static final int NUMBER_BOX_WIDTH = 66;
     private static final int MAX_DISPLAYED = 5;
     private static int scrollOffset = 0;
-    private boolean initialized = false;
+    private boolean initialized = false, translate = true, effectInvalid = false;
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/aoe_shrine_screen.png");
 
     public AoEShrineScreen(AoEShrineMenu aoEShrineMenu, Inventory inventory, Component component) {
@@ -68,6 +67,11 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         super.init();
 
         if (!initialized) {
+            saveButton = new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.save"), this::onSaveClick);
+            resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
+            blockNbtButton = new Button(leftPos + 82, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.blockNbt"), this::onCopyBlockNbtClick);
+            itemNbtButton = new Button(leftPos + 148, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.itemNbt"), this::onCopyItemNbtClick);
+
             effectBox = new EditBox(font, leftPos + 8, topPos + 32, EFFECT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             effectBox.setMaxLength(100);
             effectBox.setVisible(true);
@@ -91,7 +95,6 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             durationBox.setFilter((s -> s.matches("\\d*")));
             durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
 
-            resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
 
             maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, NUMBER_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             maxCooldownBox.setMaxLength(6);
@@ -126,6 +129,12 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             durationBox.y = topPos + 66;
             resetCooldownButton.x = leftPos + 81;
             resetCooldownButton.y = topPos + 65;
+            saveButton.x = leftPos + 222;
+            saveButton.y = topPos + 166;
+            blockNbtButton.x = leftPos + 82;
+            blockNbtButton.y = topPos + 166;
+            itemNbtButton.x = leftPos + 148;
+            itemNbtButton.y = topPos + 166;
             maxCooldownBox.x = leftPos + 148;
             maxCooldownBox.y = topPos + 66;
             radiusBox.x = leftPos + 222;
@@ -144,20 +153,17 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         addRenderableWidget(resetCooldownButton);
         addRenderableWidget(maxCooldownBox);
         addRenderableWidget(radiusBox);
+        addRenderableWidget(saveButton);
         addRenderableWidget(replenishButton);
         addRenderableWidget(effectPlayersButton);
         addRenderableWidget(effectMonstersButton);
+        addRenderableWidget(blockNbtButton);
+        addRenderableWidget(itemNbtButton);
 
         addRenderableWidget(new Button(leftPos + 222, topPos + 99, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
         addRenderableWidget(new Button(leftPos + 222, topPos + 132, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
-        addRenderableWidget(new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.save"), this::onSaveClick));
-        addRenderableWidget(new Button(leftPos + 82, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.blockNbt"), this::onCopyBlockNbtClick));
-        addRenderableWidget(new Button(leftPos + 148, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.itemNbt"), this::onCopyItemNbtClick));
         initialized = true;
     }
 
@@ -215,6 +221,13 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     }
 
     private void onSaveClick(Button button) {
+        if (getEffectFromString(effectBox.getValue()) == null) {
+            if (suggestions.isEmpty()){
+                effectInvalid = true;
+                return;
+            }
+            effectBox.setValue(suggestions.get(0));
+        }
         menu.shrineEntity.setEffect(effectBox.getValue());
         menu.shrineEntity.setAmplifier(parseInt(amplifierBox.getValue()));
         menu.shrineEntity.setDuration(parseInt(durationBox.getValue()) * 20);
@@ -240,19 +253,16 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
 
     private void onBooleanClick(Button button) {
-        suggestions.clear();
         button.setMessage(Component.translatable("potion_shrines." + !parseBoolean(button.getMessage().getString())));
     }
 
     private void onRadiusChanged(String newRadius) {
-        suggestions.clear();
         if (!newRadius.isEmpty() && parseInt(newRadius) > 64) {
             radiusBox.setValue("64");
         }
     }
 
     private void onCooldownChanged(String newCooldown) {
-        suggestions.clear();
     }
 
     private void onCooldownClick(Button button) {
@@ -260,25 +270,28 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     }
 
     private void onAmplifierChanged(String newAmplifier) {
-        suggestions.clear();
         if (!newAmplifier.isEmpty() && parseInt(newAmplifier) > 255) {
             amplifierBox.setValue("255");
         }
     }
 
     private void onDurationChanged(String newDuration) {
-        suggestions.clear();
     }
 
-    private void onEffectChanged(String newEffect) {
-        if (newEffect.isEmpty()) {
+    private void onEffectChanged(String effectInput) {
+        if (effectInput.isEmpty()) {
+            effectInvalid = true;
             suggestions.clear();
         } else {
             suggestions = ForgeRegistries.MOB_EFFECTS.getEntries().stream()
                     .map(resourceKey -> resourceKey.getKey().location().toString())
-                    .filter(name -> name.toLowerCase().contains(newEffect.toLowerCase()))
+                    .filter(name -> translate ? Component.translatable(getEffectFromString(name).getDescriptionId()).getString().toLowerCase().contains(effectInput.toLowerCase()) : name.toLowerCase().contains(effectInput.toLowerCase()))
                     .collect(Collectors.toList());
+            effectInvalid = suggestions.isEmpty() && getEffectFromString(effectInput) == null;
         }
+        saveButton.active = !effectInvalid;
+        itemNbtButton.active = !effectInvalid;
+        blockNbtButton.active = !effectInvalid;
         scrollOffset = 0;
     }
 
@@ -293,8 +306,16 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
+        resetCooldownButton.active = !(menu.shrineEntity.getRemainingCooldown() == 0);
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
+        if (effectInvalid){
+            poseStack.translate(0, 0, 1);
+            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 31, 0xFFFF0000);
+            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 50, 0xFFFF0000);
+            vLine(poseStack, leftPos + 7, topPos + 31, topPos + 50, 0xFFFF0000);
+            vLine(poseStack, leftPos + 235, topPos + 31, topPos + 50, 0xFFFF0000);
+        }
         if (suggestions.isEmpty() && mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
             poseStack.translate(0, 0, 1);
             hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
@@ -345,7 +366,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         font.draw(poseStack, title, 47 - font.width(title.getVisualOrderText()) * 0.5f, titleLabelY, 4210752);
-        font.draw(poseStack, Component.translatable("gui.potion_shrines.effect"), titleLabelX, 22, 4210752);
+        font.draw(poseStack, Component.translatable("gui.potion_shrines.effect").append(Component.translatable("gui.potion_shrines.tab_hint")), titleLabelX, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.amplifier"), 243, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.duration"), titleLabelX, 56, 4210752);
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.cooldown"), 82, 56, 4210752);
@@ -368,7 +389,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         // Render each suggestion
         for (int i = 0; i < Math.min(MAX_DISPLAYED, suggestions.size()); i++) {
             int index = i + scrollOffset;
-            String suggestion = suggestions.get(index);
+            String suggestion = translate ? Component.translatable(getEffectFromString(suggestions.get(index)).getDescriptionId()).getString() : suggestions.get(index);
             int yOffset = y + i * 14;
 
             drawString(poseStack, font, suggestion, x + 4, yOffset + 3, 0xFFFFFF);
@@ -390,24 +411,28 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 unfocusExcept(effectBox);
             } else if (amplifierBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(amplifierBox);
-                if (amplifierBox.isFocused() && button == 1) {
+                if (button == 1) {
                     amplifierBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             } else if (durationBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(durationBox);
-                if (durationBox.isFocused() && button == 1) {
+                if (button == 1) {
                     durationBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(maxCooldownBox);
-                if (maxCooldownBox.isFocused() && button == 1) {
+                if (button == 1) {
                     maxCooldownBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             } else if (radiusBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(radiusBox);
-                if (radiusBox.isFocused() && button == 1) {
+                if (button == 1) {
                     radiusBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             }
         }
         if (mouseX >= leftPos + 8 && mouseX <= leftPos + 8 + EFFECT_BOX_WIDTH) {
@@ -422,6 +447,15 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 effectBox.setValue(suggestions.get(index));
                 suggestions.clear();
                 return false;
+            } else {
+                if (getEffectFromString(effectBox.getValue()) == null) {
+                    if (suggestions.isEmpty()) {
+                        effectInvalid = true;
+                    } else {
+                        effectBox.setValue(suggestions.get(0));
+                    }
+                }
+                suggestions.clear();
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -438,6 +472,10 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW_KEY_TAB) {
+            translate = !translate;
+            onEffectChanged(effectBox.getValue());
+        }
         if (effectBox.canConsumeInput() && keyCode != GLFW_KEY_ESCAPE) {
             if (keyCode == GLFW_KEY_ENTER) {
                 effectBox.setValue(suggestions.isEmpty() ? effectBox.getValue() : suggestions.get(0));
