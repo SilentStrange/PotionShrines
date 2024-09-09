@@ -317,7 +317,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         // Push matrix and apply transformations
         poseStack.pushPose();
 
-        poseStack.translate(leftPos + 123.5, topPos + 104, 2); // Positioning in the center
+        poseStack.translate(leftPos + 123.5, topPos + 103, 2); // Positioning in the center
         poseStack.scale(45.0F, 45.0F, 45.0F);
         poseStack.translate(0.5F, 0.5F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
