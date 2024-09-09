@@ -19,6 +19,7 @@
   "gui.potion_shrines.shrine_options": "Shrine Options",
   "gui.potion_shrines.effect": "Effect",
   "gui.potion_shrines.tab_hint": " (Press TAB to toggle translation)",
+  "gui.potion_shrines.reset_cooldown": "reset cooldown",
   "gui.potion_shrines.duration": "Duration",
   "gui.potion_shrines.amplifier": "Lvl",
   "gui.potion_shrines.reset": "Reset",
