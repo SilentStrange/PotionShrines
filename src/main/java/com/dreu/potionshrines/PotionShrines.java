@@ -5,8 +5,8 @@ import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.registry.*;
-import com.dreu.potionshrines.screen.aoe.AoEShrineScreen;
 import com.dreu.potionshrines.screen.IconSelectionScreen;
+import com.dreu.potionshrines.screen.aoe.AoEShrineScreen;
 import com.dreu.potionshrines.screen.simple.SimpleShrineScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
@@ -22,7 +22,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +31,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
@@ -48,16 +51,58 @@ public class PotionShrines {
     public static final Set<String> SHRINE_ICONS = new HashSet<>();
     public static final int EDIT_BOX_HEIGHT = 18;
     static {
-        SHRINES.forEach((shrine) -> {
-            TOTAL_WEIGHT += shrine.getInt("Weight");
-            SHRINE_ICONS.add(shrine.get("Icon"));
+        ExampleResourcePack.generate();
+        SHRINES.forEach(shrine -> TOTAL_WEIGHT += shrine.getInt("Weight"));
+        AOE_SHRINES.forEach(shrine -> TOTAL_WEIGHT_AOE += shrine.getInt("Weight"));
+
+        File resourcePacks = new File("resourcepacks");
+        String iconSearchPath = MODID + "\\textures\\icon";
+
+        searchDirectory(resourcePacks, iconSearchPath, ".png", 5).forEach(png -> {
+            String iconName = png.getName().substring(0, png.getName().length() - 4);  // Remove ".png" extension
+            File modelsIconFolder = new File(png.getParentFile().getParentFile().getParent(), "\\models\\icon");
+            File jsonFile = new File(modelsIconFolder, iconName + ".json");
+
+            if (!jsonFile.exists()) {
+                try {
+                    Files.createDirectories(modelsIconFolder.toPath());
+                    try (FileWriter writer = new FileWriter(jsonFile)) {
+                        writer.write("{\"parent\":\"item/generated\",\"textures\":{\"layer0\":\"" + MODID + ":icon/" + iconName + "\"}}");
+                        System.out.println("Wrote Model File For: " + iconName);
+                    }
+                } catch (IOException ignored) {}
+            }
+
+            SHRINE_ICONS.add(iconName);
         });
-        AOE_SHRINES.forEach((shrine) -> {
-            TOTAL_WEIGHT_AOE += shrine.getInt("Weight");
-            SHRINE_ICONS.add(shrine.get("Icon"));
-        });
+        SHRINE_ICONS.addAll(List.of(
+                "absorption", "bad_omen", "blindness", "conduit_power", "darkness", "wither",
+                "dolphins_grace", "fire_resistance", "glowing", "haste", "health_boost", "hero_of_the_village",
+                "hunger", "instant_damage", "instant_health", "invisibility", "jump_boost", "levitation",
+                "luck", "mining_fatigue", "nausea", "night_vision", "poison", "regeneration", "resistance",
+                "saturation", "slow_falling", "slowness", "speed", "strength", "unluck", "water_breathing", "weakness"
+        ));
+    }
+    public static List<File> searchDirectory(File rootDir, String searchPath, String fileExtension, int maxDepth) {
+        List<File> result = new ArrayList<>();
+        searchDirectory(rootDir, searchPath, fileExtension, result, 0, maxDepth);
+        return result;
     }
 
+    private static void searchDirectory(File dir, String searchPath, String fileExtension, List<File> result, int depth, int maxDepth) {
+        if (depth > maxDepth || !dir.isDirectory()) return;
+
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                searchDirectory(file, searchPath, fileExtension, result, depth + 1, maxDepth);
+            } else if (file.getPath().contains(searchPath) && file.getName().endsWith(fileExtension)) {
+                result.add(file);
+            }
+        }
+    }
     public PotionShrines() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -88,14 +133,14 @@ public class PotionShrines {
         @SubscribeEvent
         public static void registerModels(ModelEvent.RegisterAdditional event){
             for (String icon : SHRINE_ICONS) {
-                event.register(new ResourceLocation("potion_shrines", icon));
+                event.register(new ResourceLocation(MODID, "icon/" + icon));
             }
-            event.register(new ResourceLocation("potion_shrines", "default"));
+            event.register(new ResourceLocation(MODID, "icon/default"));
         }
         @SubscribeEvent
         public static void bakeModels(ModelEvent.BakingCompleted event){
             for (String icon : SHRINE_ICONS) {
-                ResourceLocation iconLocation = new ResourceLocation("potion_shrines", icon);
+                ResourceLocation iconLocation = new ResourceLocation(MODID, "icon/" + icon);
                 BAKED_ICONS.put(icon, Minecraft.getInstance().getModelManager().getModelBakery().getModel(iconLocation).bake(
                         Minecraft.getInstance().getModelManager().getModelBakery(),
                         (material) -> Minecraft.getInstance().getTextureAtlas(material.atlasLocation()).apply(material.texture()),
@@ -103,7 +148,7 @@ public class PotionShrines {
                         iconLocation
                 ));
             }
-            ResourceLocation iconLocation = new ResourceLocation("potion_shrines", "default");
+            ResourceLocation iconLocation = new ResourceLocation(MODID, "icon/default");
             BAKED_ICONS.put("default", Minecraft.getInstance().getModelManager().getModelBakery().getModel(iconLocation).bake(
                         Minecraft.getInstance().getModelManager().getModelBakery(),
                         (material) -> Minecraft.getInstance().getTextureAtlas(material.atlasLocation()).apply(material.texture()),
@@ -116,25 +161,20 @@ public class PotionShrines {
         public static void onTextureStitch(TextureStitchEvent.Pre event) {
             if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
                 for (String icon : SHRINE_ICONS) {
-                    event.addSprite(new ResourceLocation("potion_shrines", icon));
+                    event.addSprite(new ResourceLocation(MODID, "icon/" + icon));
                 }
-                event.addSprite(new ResourceLocation("potion_shrines", "default"));
+                event.addSprite(new ResourceLocation(MODID, "icon/default"));
             }
         }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        ExampleResourcePack.generate();
     }
 
     @Mod.EventBusSubscriber(modid = PotionShrines.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public class ForgeEvents {
 
-    @SubscribeEvent
-    public static void onBiomeLoading(Event event) {
-        // Your logic to modify biomes goes here
     }
-}
     public static MobEffect getEffectFromString(String effect){
         return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();
     }
