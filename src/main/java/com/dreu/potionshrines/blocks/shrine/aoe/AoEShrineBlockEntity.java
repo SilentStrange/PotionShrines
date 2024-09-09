@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -56,18 +57,20 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, AoEShrineBlockEntity shrine) {
         if (!Objects.equals(shrine.effect, "null")) {
+            double circle = 2 * Math.PI;
             if (shrine.remainingCooldown > 30) {
-                if (shrine.remainingCooldown == 40)
+                if (shrine.remainingCooldown == 31)
                     level.playSound(null, blockPos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 3F, 1F);
                 if (shrine.remainingCooldown > shrine.maxCooldown - 29) {
+                    MobEffect effect = getEffectFromString(shrine.effect);
                     Vector3f color = new Vector3f(
-                            (getEffectFromString(shrine.effect).getColor() >> 16 & 0xFF) / 255.0f,
-                            (getEffectFromString(shrine.effect).getColor() >> 8 & 0xFF) / 255.0f,
-                            (getEffectFromString(shrine.effect).getColor() & 0xFF) / 255.0f
+                            (effect.getColor() >> 16 & 0xFF) / 255.0f,
+                            (effect.getColor() >> 8 & 0xFF) / 255.0f,
+                            (effect.getColor() & 0xFF) / 255.0f
                     );
                     if (shrine.remainingCooldown > shrine.maxCooldown - 10) {
                         double iterations = (double) shrine.radius / 10;
-                        double radius = (double) (shrine.radius * (shrine.maxCooldown - shrine.remainingCooldown)) / 10;
+                        double radius = shrine.radius * ((double) (shrine.maxCooldown - shrine.remainingCooldown) / 9);
                         double angleIncrement = Math.PI * (3 + (double) (2 * shrine.radius) / 64) / (shrine.radius * 10);
 
                         int xPos = shrine.getBlockPos().getX();
@@ -75,10 +78,9 @@ public class AoEShrineBlockEntity extends BlockEntity implements MenuProvider {
                         int zPos = shrine.getBlockPos().getZ();
 
                         for (int rings = 0; rings < iterations; rings++) {
-                            for (double angle = 0; angle < 2 * Math.PI; angle += angleIncrement) {
+                            for (double angle = 0; angle < circle; angle += angleIncrement) {
                                 double xOffset = rand.nextFloat() + (radius + rings) * Math.cos(angle);
                                 double zOffset = rand.nextFloat() + (radius + rings) * Math.sin(angle);
-
                                 level.addParticle(ParticleTypes.ENTITY_EFFECT,
                                         xPos + xOffset, yPos, zPos + zOffset,
                                         color.x(), color.y(), color.z());
