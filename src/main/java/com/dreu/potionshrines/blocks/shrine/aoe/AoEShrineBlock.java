@@ -124,12 +124,13 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         AoEShrineBlockEntity shrine = (AoEShrineBlockEntity) level.getBlockEntity(blockPos);
-        if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide){
-            NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
+        if (player.isCreative() && !player.isShiftKeyDown()){
+            if (!level.isClientSide)
+                NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
             return InteractionResult.SUCCESS;
         } else if (shrine.canUse()) {
+            shrine.resetCooldown();
             if (!level.isClientSide) {
-                shrine.resetCooldown();
                 level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
                 if (shrine.canEffectPlayers())
                     level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(shrine.getRadius())).stream()
