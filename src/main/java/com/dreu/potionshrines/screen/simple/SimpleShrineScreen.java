@@ -31,8 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dreu.potionshrines.PotionShrines.EDIT_BOX_HEIGHT;
-import static com.dreu.potionshrines.PotionShrines.MODID;
+import static com.dreu.potionshrines.PotionShrines.*;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
@@ -285,7 +284,7 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
         poseStack.translate(-0.5F, -0.5F, -0.5F);
 
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        Minecraft.getInstance().getItemRenderer().renderModelLists(AoEShrineRenderer.getBakedIconOrDefault(icon), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+        Minecraft.getInstance().getItemRenderer().renderModelLists(getBakedIconOrDefault(icon), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
         bufferSource.endBatch();
 
         RenderSystem.enableCull();

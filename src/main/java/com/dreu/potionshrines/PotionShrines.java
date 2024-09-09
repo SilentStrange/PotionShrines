@@ -163,5 +163,7 @@ public class PotionShrines {
     public static String asTime(int seconds) {
         return String.format("%d:%02d", seconds / 60, seconds % 60);
     }
-
+    public static BakedModel getBakedIconOrDefault(String key) {
+        return BAKED_ICONS.get(key) == null ? BAKED_ICONS.get("default") : BAKED_ICONS.get(key);
+    }
 }

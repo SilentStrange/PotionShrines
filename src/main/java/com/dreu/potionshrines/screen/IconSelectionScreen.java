@@ -134,7 +134,7 @@ public class IconSelectionScreen extends AbstractContainerScreen<IconSelectionMe
             poseStack.translate(-0.5F, -0.25f, -0.5F);
 
             MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().renderModelLists(BAKED_ICONS.get(suggestions.get(offset + scrollOffset)), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
+            Minecraft.getInstance().getItemRenderer().renderModelLists(getBakedIconOrDefault(suggestions.get(offset + scrollOffset)), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
             bufferSource.endBatch();
 
             RenderSystem.enableCull();

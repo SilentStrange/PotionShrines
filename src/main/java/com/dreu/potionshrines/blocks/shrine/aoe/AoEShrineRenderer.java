@@ -9,13 +9,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-import static com.dreu.potionshrines.PotionShrines.BAKED_ICONS;
+import static com.dreu.potionshrines.PotionShrines.getBakedIconOrDefault;
 
 public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEntity>{
     public AoEShrineRenderer(){}
@@ -102,8 +101,5 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
 
             poseStack.popPose();
         }
-    }
-    public static BakedModel getBakedIconOrDefault(String key) {
-        return BAKED_ICONS.get(key) == null ? BAKED_ICONS.get("default") : BAKED_ICONS.get(key);
     }
 }
