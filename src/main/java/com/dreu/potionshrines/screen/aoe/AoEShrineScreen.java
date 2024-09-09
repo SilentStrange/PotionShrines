@@ -1,6 +1,5 @@
 package com.dreu.potionshrines.screen.aoe;
 
-import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.network.ResetCooldownPacket;
 import com.dreu.potionshrines.network.SaveAoEShrinePacket;
@@ -13,6 +12,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -229,23 +229,27 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             effectBox.setValue(suggestions.get(0));
         }
         menu.shrineEntity.setEffect(effectBox.getValue());
-        menu.shrineEntity.setAmplifier(parseInt(amplifierBox.getValue()));
-        menu.shrineEntity.setDuration(parseInt(durationBox.getValue()) * 20);
-        menu.shrineEntity.setMaxCooldown(parseInt(maxCooldownBox.getValue()) * 20);
-        menu.shrineEntity.setRadius(parseInt(radiusBox.getValue()));
+        if (!amplifierBox.getValue().isEmpty())
+            menu.shrineEntity.setAmplifier(parseInt(amplifierBox.getValue()));
+        if (!durationBox.getValue().isEmpty())
+            menu.shrineEntity.setDuration(parseInt(durationBox.getValue()) * 20);
+        if (!maxCooldownBox.getValue().isEmpty())
+            menu.shrineEntity.setMaxCooldown(parseInt(maxCooldownBox.getValue()) * 20);
+        if (!radiusBox.getValue().isEmpty())
+            menu.shrineEntity.setRadius(parseInt(radiusBox.getValue()));
         menu.shrineEntity.setCanEffectPlayers(parseBoolean(effectPlayersButton.getMessage().getString()));
         menu.shrineEntity.setCanEffectMonsters(parseBoolean(effectMonstersButton.getMessage().getString()));
         menu.shrineEntity.setCanReplenish(parseBoolean(replenishButton.getMessage().getString()));
         menu.shrineEntity.setIcon(icon);
         PacketHandler.CHANNEL.sendToServer(new SaveAoEShrinePacket(
                 effectBox.getValue(),
-                parseInt(amplifierBox.getValue()),
-                parseInt(durationBox.getValue()) * 20,
-                parseInt(maxCooldownBox.getValue()) * 20,
-                parseInt(radiusBox.getValue()),
-                parseBoolean(effectPlayersButton.getMessage().getString()),
-                parseBoolean(effectMonstersButton.getMessage().getString()),
-                parseBoolean(replenishButton.getMessage().getString()),
+                menu.shrineEntity.getAmplifier(),
+                menu.shrineEntity.getDuration(),
+                menu.shrineEntity.getMaxCooldown(),
+                menu.shrineEntity.getRadius(),
+                menu.shrineEntity.canEffectPlayers(),
+                menu.shrineEntity.canEffectMonsters(),
+                menu.shrineEntity.canReplenish(),
                 icon
         ));
         onClose();
@@ -260,9 +264,11 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         if (!newRadius.isEmpty() && parseInt(newRadius) > 64) {
             radiusBox.setValue("64");
         }
+        updateNbtValidity();
     }
 
     private void onCooldownChanged(String newCooldown) {
+        updateNbtValidity();
     }
 
     private void onCooldownClick(Button button) {
@@ -273,9 +279,11 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         if (!newAmplifier.isEmpty() && parseInt(newAmplifier) > 255) {
             amplifierBox.setValue("255");
         }
+        updateNbtValidity();
     }
 
     private void onDurationChanged(String newDuration) {
+        updateNbtValidity();
     }
 
     private void onEffectChanged(String effectInput) {
@@ -290,8 +298,7 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             effectInvalid = suggestions.isEmpty() && getEffectFromString(effectInput) == null;
         }
         saveButton.active = !effectInvalid;
-        itemNbtButton.active = !effectInvalid;
-        blockNbtButton.active = !effectInvalid;
+        updateNbtValidity();
         scrollOffset = 0;
     }
 
@@ -323,6 +330,8 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
             vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
             vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
         }
+        if (resetCooldownButton.isMouseOver((double) mouseX, (double) mouseY))
+            renderTooltip(poseStack, Component.translatable("gui.potion_shrines.reset_cooldown"), mouseX, mouseY);
         renderIcon(poseStack, mouseX, mouseY, partialTicks);
         if (effectBox.isFocused() && !suggestions.isEmpty() && !(suggestions.size() == 1 && suggestions.get(0).equals(effectBox.getValue())))
             renderSuggestionsDropdown(poseStack, mouseX, mouseY);
@@ -469,6 +478,19 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         });
     }
 
+    public void updateNbtValidity(){
+        for (Widget widget : renderables){
+            if (widget instanceof EditBox box){
+                if (box.getValue().isEmpty()) {
+                    itemNbtButton.active = false;
+                    blockNbtButton.active = false;
+                    return;
+                }
+            }
+        }
+        itemNbtButton.active = !effectInvalid;
+        blockNbtButton.active = !effectInvalid;
+    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
