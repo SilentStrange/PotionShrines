@@ -14,6 +14,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -39,14 +40,14 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu> implements IconScreen<SimpleShrineScreen> {
     private EditBox effectBox, amplifierBox, durationBox, maxCooldownBox;
-    private Button replenishButton, resetCooldownButton;
+    private Button replenishButton, resetCooldownButton, itemNbtButton, blockNbtButton, saveButton;
     private String icon;
     private List<String> suggestions;
     static final int EFFECT_BOX_WIDTH = 227;
     static final int NUMBER_BOX_WIDTH = 66;
     private static final int MAX_DISPLAYED = 5;
     private static int scrollOffset = 0;
-    private boolean initialized = false;
+    private boolean initialized = false, effectInvalid = false;
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/simple_shrine_screen.png");
 
     public SimpleShrineScreen(SimpleShrineMenu simpleShrineMenu, Inventory inventory, Component component) {
@@ -68,6 +69,14 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
         super.init();
 
         if (!initialized) {
+            resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
+            blockNbtButton = new Button(leftPos + 47, topPos + 166, NUMBER_BOX_WIDTH, 20,
+                Component.translatable("gui.potion_shrines.blockNbt"), this::onCopyBlockNbtClick);
+            itemNbtButton = new Button(leftPos + 113, topPos + 166, NUMBER_BOX_WIDTH, 20,
+                Component.translatable("gui.potion_shrines.itemNbt"), this::onCopyItemNbtClick);
+            saveButton = new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20,
+                Component.translatable("gui.potion_shrines.save"), this::onSaveClick);
+
             effectBox = new EditBox(font, leftPos + 8, topPos + 32, EFFECT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             effectBox.setMaxLength(100);
             effectBox.setVisible(true);
@@ -91,8 +100,6 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
             durationBox.setFilter((s -> s.matches("\\d*")));
             durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
 
-            resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
-
             maxCooldownBox = new EditBox(font, leftPos + 148, topPos + 66, NUMBER_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.literal(""));
             maxCooldownBox.setMaxLength(6);
             maxCooldownBox.setVisible(true);
@@ -112,6 +119,12 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
             amplifierBox.y = topPos + 32;
             durationBox.x = leftPos + 8;
             durationBox.y = topPos + 66;
+            saveButton.x = leftPos + 222;
+            saveButton.y = topPos + 166;
+            blockNbtButton.x = leftPos + 47;
+            blockNbtButton.y = topPos + 166;
+            itemNbtButton.x = leftPos + 113;
+            itemNbtButton.y = topPos + 166;
             resetCooldownButton.x = leftPos + 81;
             resetCooldownButton.y = topPos + 65;
             maxCooldownBox.x = leftPos + 148;
@@ -126,17 +139,15 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
         addRenderableWidget(resetCooldownButton);
         addRenderableWidget(maxCooldownBox);
         addRenderableWidget(replenishButton);
+        addRenderableWidget(itemNbtButton);
+        addRenderableWidget(blockNbtButton);
+        addRenderableWidget(saveButton);
 
         addRenderableWidget(new Button(leftPos + 222, topPos + 99, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
         addRenderableWidget(new Button(leftPos + 222, topPos + 132, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
-        addRenderableWidget(new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.save"), this::onSaveClick));
-        addRenderableWidget(new Button(leftPos + 47, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.blockNbt"), this::onCopyBlockNbtClick));
-        addRenderableWidget(new Button(leftPos + 113, topPos + 166, NUMBER_BOX_WIDTH, 20,
-                Component.translatable("gui.potion_shrines.itemNbt"), this::onCopyItemNbtClick));
+
         initialized = true;
     }
 
@@ -187,18 +198,28 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
     }
 
     private void onSaveClick(Button button) {
+        if (getEffectFromString(effectBox.getValue()) == null) {
+            if (suggestions.isEmpty()){
+                effectInvalid = true;
+                return;
+            }
+            effectBox.setValue(suggestions.get(0));
+        }
         menu.shrineEntity.setEffect(effectBox.getValue());
-        menu.shrineEntity.setAmplifier(parseInt(amplifierBox.getValue()));
-        menu.shrineEntity.setDuration(parseInt(durationBox.getValue()) * 20);
-        menu.shrineEntity.setMaxCooldown(parseInt(maxCooldownBox.getValue()) * 20);
+        if (!amplifierBox.getValue().isEmpty())
+            menu.shrineEntity.setAmplifier(parseInt(amplifierBox.getValue()));
+        if (!durationBox.getValue().isEmpty())
+            menu.shrineEntity.setDuration(parseInt(durationBox.getValue()) * 20);
+        if (!maxCooldownBox.getValue().isEmpty())
+            menu.shrineEntity.setMaxCooldown(parseInt(maxCooldownBox.getValue()) * 20);
         menu.shrineEntity.setCanReplenish(parseBoolean(replenishButton.getMessage().getString()));
         menu.shrineEntity.setIcon(icon);
         PacketHandler.CHANNEL.sendToServer(new SaveSimpleShrinePacket(
-                effectBox.getValue(),
-                parseInt(amplifierBox.getValue()),
-                parseInt(durationBox.getValue()) * 20,
-                parseInt(maxCooldownBox.getValue()) * 20,
-                parseBoolean(replenishButton.getMessage().getString()),
+                menu.shrineEntity.getEffect(),
+                menu.shrineEntity.getAmplifier(),
+                menu.shrineEntity.getDuration(),
+                menu.shrineEntity.getMaxCooldown(),
+                menu.shrineEntity.canReplenish(),
                 icon
         ));
         onClose();
@@ -212,6 +233,7 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
 
     private void onCooldownChanged(String newCooldown) {
         suggestions.clear();
+        updateNbtValidity();
     }
 
     private void onCooldownClick(Button button) {
@@ -223,22 +245,28 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
         if (!newAmplifier.isEmpty() && parseInt(newAmplifier) > 255) {
             amplifierBox.setValue("255");
         }
+        updateNbtValidity();
     }
 
     private void onDurationChanged(String newDuration) {
         suggestions.clear();
+        updateNbtValidity();
     }
 
-    private void onEffectChanged(String newEffect) {
-        if (newEffect.isEmpty()) {
+    private void onEffectChanged(String effectInput) {
+        if (effectInput.isEmpty()) {
+            effectInvalid = true;
             suggestions.clear();
         } else {
             suggestions = ForgeRegistries.MOB_EFFECTS.getEntries().stream()
                     .map(resourceKey -> resourceKey.getKey().location().toString())
-                    .filter(name -> name.toLowerCase().contains(newEffect.toLowerCase()))
+                    .filter(name -> name.toLowerCase().contains(effectInput.toLowerCase()))
                     .collect(Collectors.toList());
+            effectInvalid = suggestions.isEmpty() && getEffectFromString(effectInput) == null;
         }
         scrollOffset = 0;
+        saveButton.active = !effectInvalid;
+        updateNbtValidity();
     }
 
     @Override
@@ -252,8 +280,16 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
+        resetCooldownButton.active = !(menu.shrineEntity.getRemainingCooldown() == 0);
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
+        if (effectInvalid){
+            poseStack.translate(0, 0, 1);
+            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 31, 0xFFFF0000);
+            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 50, 0xFFFF0000);
+            vLine(poseStack, leftPos + 7, topPos + 31, topPos + 50, 0xFFFF0000);
+            vLine(poseStack, leftPos + 235, topPos + 31, topPos + 50, 0xFFFF0000);
+        }
         if (suggestions.isEmpty() && mouseX > leftPos + 84 && mouseX < leftPos + 137 && mouseY > topPos + 99 && mouseY < topPos + 153) {
             poseStack.translate(0, 0, 1);
             hLine(poseStack, leftPos + 85, leftPos + 136, topPos + 100, 0xFF80ff80);
@@ -261,6 +297,8 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
             vLine(poseStack, leftPos + 85, topPos + 100, topPos + 151, 0xFF80ff80);
             vLine(poseStack, leftPos + 136, topPos + 100, topPos + 151, 0xFF80ff80);
         }
+        if (resetCooldownButton.isMouseOver((double) mouseX, (double) mouseY))
+            renderTooltip(poseStack, Component.translatable("gui.potion_shrines.reset_cooldown"), mouseX, mouseY);
         renderIcon(poseStack, mouseX, mouseY, partialTicks);
         if (effectBox.isFocused() && !suggestions.isEmpty() && !(suggestions.size() == 1 && suggestions.get(0).equals(effectBox.getValue())))
             renderSuggestionsDropdown(poseStack, mouseX, mouseY);
@@ -304,7 +342,7 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         font.draw(poseStack, title, 47 - font.width(title.getVisualOrderText()) * 0.5f, titleLabelY, 4210752);
-        font.draw(poseStack, Component.translatable("gui.potion_shrines.effect"), titleLabelX, 22, 4210752);
+        font.draw(poseStack, Component.translatable("gui.potion_shrines.effect").append(Component.translatable("gui.potion_shrines.tab_hint")), titleLabelX, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.amplifier"), 243, 22, 4210752);
         font.draw(poseStack, Component.translatable("gui.potion_shrines.duration"), titleLabelX, 56, 4210752);
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.cooldown"), 82, 56, 4210752);
@@ -346,19 +384,22 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
                 unfocusExcept(effectBox);
             } else if (amplifierBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(amplifierBox);
-                if (amplifierBox.isFocused() && button == 1) {
+                if (button == 1) {
                     amplifierBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             } else if (durationBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(durationBox);
-                if (durationBox.isFocused() && button == 1) {
+                if (button == 1) {
                     durationBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)) {
                 unfocusExcept(maxCooldownBox);
-                if (maxCooldownBox.isFocused() && button == 1) {
+                if (button == 1) {
                     maxCooldownBox.setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, 0);
             }
         }
         if (mouseX >= leftPos + 8 && mouseX <= leftPos + 8 + EFFECT_BOX_WIDTH) {
@@ -373,9 +414,31 @@ public class SimpleShrineScreen extends AbstractContainerScreen<SimpleShrineMenu
                 effectBox.setValue(suggestions.get(index));
                 suggestions.clear();
                 return false;
+            } else {
+                if (getEffectFromString(effectBox.getValue()) == null) {
+                    if (suggestions.isEmpty()) {
+                        effectInvalid = true;
+                    } else {
+                        effectBox.setValue(suggestions.get(0));
+                    }
+                }
+                suggestions.clear();
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+    public void updateNbtValidity(){
+        for (Widget widget : renderables){
+            if (widget instanceof EditBox box){
+                if (box.getValue().isEmpty()) {
+                    itemNbtButton.active = false;
+                    blockNbtButton.active = false;
+                    return;
+                }
+            }
+        }
+        itemNbtButton.active = !effectInvalid;
+        blockNbtButton.active = !effectInvalid;
     }
 
     public void unfocusExcept(EditBox keep) {
