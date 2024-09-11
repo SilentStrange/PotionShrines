@@ -5,6 +5,8 @@ import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -113,12 +115,14 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         SimpleShrineBlockEntity shrine = (SimpleShrineBlockEntity) level.getBlockEntity(blockPos);
-        if (player.isCreative() && !player.isShiftKeyDown() && !level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
+        if (player.isCreative() && !player.isShiftKeyDown()){
+            if (!level.isClientSide)
+                NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);
             return InteractionResult.SUCCESS;
         } else if (shrine.canUse()) {
+            shrine.resetCooldown();
             if (!level.isClientSide) {
-                shrine.resetCooldown();
+                level.playSound(null, blockPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 3F, 1F);
                 player.addEffect(new MobEffectInstance(
                         getEffectFromString(shrine.getEffect()),
                         shrine.getDuration(),

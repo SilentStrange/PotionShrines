@@ -19,6 +19,7 @@ public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfigur
     public ShrineSurfaceAltarFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        if (!context.level().getServer().getWorldData().worldGenSettings().generateStructures()) {return false;}
         for (int i = -1; i < 2; i++){
             for (int j = -1; j < 2; j++){
                 if (!context.level().getBlockState(context.origin().below().north(i).east(j)).getMaterial().isSolid())
@@ -91,7 +92,6 @@ public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfigur
     }
 
     public boolean canPlaceBlock(WorldGenLevel level, BlockPos blockPos){
-        return  blockPos.getY() < level.getMaxBuildHeight()
-                && level.getBlockState(blockPos).getMaterial().isReplaceable();
+        return  blockPos.getY() < level.getMaxBuildHeight() && level.getBlockState(blockPos).getMaterial().isReplaceable();
     }
 }

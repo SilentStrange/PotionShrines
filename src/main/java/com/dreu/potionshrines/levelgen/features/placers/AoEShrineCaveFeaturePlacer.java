@@ -15,6 +15,7 @@ public class AoEShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration
     public AoEShrineCaveFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        if (!context.level().getServer().getWorldData().worldGenSettings().generateStructures()) {return false;}
         BlockPos origin = context.origin();
         origin = new BlockPos(origin.getX(), -59, origin.getZ());
         while (!(context.level().getBlockState(origin).getMaterial().isReplaceable() && context.level().getBlockState(origin.below()).getMaterial().isSolid())){
@@ -33,6 +34,6 @@ public class AoEShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration
     }
 
     public boolean canPlaceBlock(WorldGenLevel level, BlockPos blockPos){
-        return level.getBlockState(blockPos).getMaterial().isReplaceable();
+        return level.getBlockState(blockPos).getMaterial().isReplaceable() && level.getFluidState(blockPos).isEmpty();
     }
 }
