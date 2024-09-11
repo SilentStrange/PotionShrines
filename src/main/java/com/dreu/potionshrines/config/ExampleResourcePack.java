@@ -29,6 +29,7 @@ public class ExampleResourcePack {
                         """
                                 This pack is structured as follows:
                                 [Potion Shrine Icons]
+                                   -pack.mcmeta
                                    -[assets]
                                       -[potion_shrines]
                                          -[models]
@@ -38,7 +39,6 @@ public class ExampleResourcePack {
                                             -[icon]
                                                -default.png
                                                ~add your icon png here~
-                                   - pack.mcmeta
 
                                 In the "textures/icon" folder put the desired png for the custom icon (nothing more than 64x64 is recommended)
                                 *In order for these to be usable the game MUST be restarted.
