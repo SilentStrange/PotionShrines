@@ -1,73 +1,48 @@
 package com.dreu.potionshrines.screen.aoe;
 
 import com.dreu.potionshrines.network.PacketHandler;
-import com.dreu.potionshrines.network.ResetCooldownPacket;
 import com.dreu.potionshrines.network.SaveAoEShrinePacket;
 import com.dreu.potionshrines.screen.IconScreen;
 import com.dreu.potionshrines.screen.IconSelectionMenu;
 import com.dreu.potionshrines.screen.IconSelectionScreen;
+import com.dreu.potionshrines.screen.ShrineScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.dreu.potionshrines.PotionShrines.*;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
-import static org.lwjgl.glfw.GLFW.*;
 
-public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen> {
-    private EditBox effectBox, amplifierBox, durationBox, maxCooldownBox, radiusBox;
-    private Button replenishButton, resetCooldownButton, effectMonstersButton, effectPlayersButton, saveButton, itemNbtButton, blockNbtButton;
-    private String icon;
-    private List<String> suggestions;
-    static final int EFFECT_BOX_WIDTH = 227;
-    public static final int NUMBER_BOX_WIDTH = 66;
-    private static final int MAX_DISPLAYED = 5;
-    private static int scrollOffset = 0;
-    private boolean initialized = false, translate = true, effectInvalid = false;
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(MODID, "textures/gui/aoe_shrine_screen.png");
+public class AoEShrineScreen extends ShrineScreen<AoEShrineMenu> implements IconScreen<AoEShrineScreen> {
+    private EditBox radiusBox;
+    private Button effectMonstersButton, effectPlayersButton;
 
     public AoEShrineScreen(AoEShrineMenu aoEShrineMenu, Inventory inventory, Component component) {
         super(aoEShrineMenu, inventory, component);
         imageWidth = 296;
         imageHeight = 196;
+        iconX = 123.5;
+        iconY = 103;
+        backgroundTexture = new ResourceLocation(MODID, "textures/gui/aoe_shrine_screen.png");
     }
-
     @Override
     protected void containerTick() {
-        effectBox.tick();
-        amplifierBox.tick();
-        durationBox.tick();
-        maxCooldownBox.tick();
+        super.containerTick();
         radiusBox.tick();
     }
 
     @Override
-    protected void init() {
-        super.init();
-
-        if (!initialized) {
-            saveButton = new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.save"), this::onSaveClick);
+    protected void initialize() {
+        saveButton = new Button(leftPos + 222, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.save"), this::onSaveClick);
             resetCooldownButton = new Button(leftPos + 81, topPos + 65, NUMBER_BOX_WIDTH, 20, Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)), this::onCooldownClick);
             blockNbtButton = new Button(leftPos + 82, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.blockNbt"), this::onCopyBlockNbtClick);
             itemNbtButton = new Button(leftPos + 148, topPos + 166, NUMBER_BOX_WIDTH, 20, Component.translatable("gui.potion_shrines.itemNbt"), this::onCopyItemNbtClick);
@@ -120,33 +95,38 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                     Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()), this::onBooleanClick);
             suggestions = new ArrayList<>();
             icon = menu.shrineEntity.getIcon();
-        } else {
-            effectBox.x = leftPos + 8;
-            effectBox.y = topPos + 32;
-            amplifierBox.x = leftPos + 243;
-            amplifierBox.y = topPos + 32;
-            durationBox.x = leftPos + 8;
-            durationBox.y = topPos + 66;
-            resetCooldownButton.x = leftPos + 81;
-            resetCooldownButton.y = topPos + 65;
-            saveButton.x = leftPos + 222;
-            saveButton.y = topPos + 166;
-            blockNbtButton.x = leftPos + 82;
-            blockNbtButton.y = topPos + 166;
-            itemNbtButton.x = leftPos + 148;
-            itemNbtButton.y = topPos + 166;
-            maxCooldownBox.x = leftPos + 148;
-            maxCooldownBox.y = topPos + 66;
-            radiusBox.x = leftPos + 222;
-            radiusBox.y = topPos + 66;
-            effectPlayersButton.x = leftPos + 8;
-            effectPlayersButton.y = topPos + 99;
-            effectMonstersButton.x = leftPos + 8;
-            effectMonstersButton.y = topPos + 132;
-            replenishButton.x = leftPos + 8;
-            replenishButton.y = topPos + 166;
-        }
+    }
 
+    @Override
+    protected void alignWidgets() {
+        effectBox.x = leftPos + 8;
+        effectBox.y = topPos + 32;
+        amplifierBox.x = leftPos + 243;
+        amplifierBox.y = topPos + 32;
+        durationBox.x = leftPos + 8;
+        durationBox.y = topPos + 66;
+        resetCooldownButton.x = leftPos + 81;
+        resetCooldownButton.y = topPos + 65;
+        saveButton.x = leftPos + 222;
+        saveButton.y = topPos + 166;
+        blockNbtButton.x = leftPos + 82;
+        blockNbtButton.y = topPos + 166;
+        itemNbtButton.x = leftPos + 148;
+        itemNbtButton.y = topPos + 166;
+        maxCooldownBox.x = leftPos + 148;
+        maxCooldownBox.y = topPos + 66;
+        radiusBox.x = leftPos + 222;
+        radiusBox.y = topPos + 66;
+        effectPlayersButton.x = leftPos + 8;
+        effectPlayersButton.y = topPos + 99;
+        effectMonstersButton.x = leftPos + 8;
+        effectMonstersButton.y = topPos + 132;
+        replenishButton.x = leftPos + 8;
+        replenishButton.y = topPos + 166;
+    }
+
+    @Override
+    protected void addWidgets() {
         addRenderableWidget(effectBox);
         addRenderableWidget(amplifierBox);
         addRenderableWidget(durationBox);
@@ -164,7 +144,6 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
                 Component.translatable("gui.potion_shrines.reset"), this::onResetClick));
         addRenderableWidget(new Button(leftPos + 222, topPos + 132, NUMBER_BOX_WIDTH, 20,
                 Component.translatable("gui.potion_shrines.cancel"), this::onCancelClick));
-        initialized = true;
     }
 
     private void onCopyBlockNbtClick(Button button) {
@@ -200,26 +179,24 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
 
         this.minecraft.keyboardHandler.setClipboard(compoundTag.getAsString());
     }
-    private void onIconClick() {
+    @Override
+    protected void onIconClick() {
         Minecraft.getInstance().setScreen(new IconSelectionScreen(
                 new IconSelectionMenu(this.menu.containerId),
                 this.minecraft.player.getInventory(),
                 Component.literal("Icon Selection")).withReturnScreen(this));
     }
-
-    private void onResetClick(Button button) {
+    protected void onResetClick(Button button) {
         effectBox.setValue(menu.shrineEntity.getEffect());
         amplifierBox.setValue(String.valueOf(menu.shrineEntity.getAmplifier()));
         durationBox.setValue(String.valueOf(menu.shrineEntity.getDuration() / 20));
         maxCooldownBox.setValue(String.valueOf(menu.shrineEntity.getMaxCooldown() / 20));
         radiusBox.setValue(String.valueOf(menu.shrineEntity.getRadius()));
         icon = menu.shrineEntity.getIcon();
+        effectPlayersButton.setMessage(Component.translatable("potion_shrines." + menu.shrineEntity.canEffectPlayers()));
+        effectMonstersButton.setMessage(Component.translatable("potion_shrines." + menu.shrineEntity.canEffectMonsters()));
+        replenishButton.setMessage(Component.translatable("potion_shrines." + menu.shrineEntity.canReplenish()));
     }
-
-    private void onCancelClick(Button button) {
-        onClose();
-    }
-
     private void onSaveClick(Button button) {
         if (getEffectFromString(effectBox.getValue()) == null) {
             if (suggestions.isEmpty()){
@@ -254,124 +231,27 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         ));
         onClose();
     }
-
-
-    private void onBooleanClick(Button button) {
-        button.setMessage(Component.translatable("potion_shrines." + !parseBoolean(button.getMessage().getString())));
-    }
-
     private void onRadiusChanged(String newRadius) {
         if (!newRadius.isEmpty() && parseInt(newRadius) > 64) {
             radiusBox.setValue("64");
         }
         updateNbtValidity();
     }
-
-    private void onCooldownChanged(String newCooldown) {
-        updateNbtValidity();
-    }
-
-    private void onCooldownClick(Button button) {
-        PacketHandler.CHANNEL.sendToServer(new ResetCooldownPacket());
-    }
-
-    private void onAmplifierChanged(String newAmplifier) {
-        if (!newAmplifier.isEmpty() && parseInt(newAmplifier) > 255) {
-            amplifierBox.setValue("255");
-        }
-        updateNbtValidity();
-    }
-
-    private void onDurationChanged(String newDuration) {
-        updateNbtValidity();
-    }
-
-    private void onEffectChanged(String effectInput) {
-        if (effectInput.isEmpty()) {
-            effectInvalid = true;
-            suggestions.clear();
-        } else {
-            suggestions = ForgeRegistries.MOB_EFFECTS.getEntries().stream()
-                    .map(resourceKey -> resourceKey.getKey().location().toString())
-                    .filter(name -> translate ? Component.translatable(getEffectFromString(name).getDescriptionId()).getString().toLowerCase().contains(effectInput.toLowerCase()) : name.toLowerCase().contains(effectInput.toLowerCase()))
-                    .collect(Collectors.toList());
-            effectInvalid = suggestions.isEmpty() && getEffectFromString(effectInput) == null;
-        }
-        saveButton.active = !effectInvalid;
-        updateNbtValidity();
-        scrollOffset = 0;
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (suggestions.size() > MAX_DISPLAYED) {
-            scrollOffset = Math.max(0, Math.min(scrollOffset - (int) delta, suggestions.size() - MAX_DISPLAYED));
-        }
-        return super.mouseScrolled(mouseX, mouseY, delta);
-    }
-
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
         resetCooldownButton.active = !(menu.shrineEntity.getRemainingCooldown() == 0);
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
-        if (effectInvalid){
-            poseStack.translate(0, 0, 1);
-            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 31, 0xFFFF0000);
-            hLine(poseStack, leftPos + 7, leftPos + 235, topPos + 50, 0xFFFF0000);
-            vLine(poseStack, leftPos + 7, topPos + 31, topPos + 50, 0xFFFF0000);
-            vLine(poseStack, leftPos + 235, topPos + 31, topPos + 50, 0xFFFF0000);
-        }
-        if (suggestions.isEmpty() && mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
+        if (suggestions.isEmpty() && isMouseOverIcon(mouseX, mouseY)) {
             poseStack.translate(0, 0, 1);
             hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
             hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 151, 0xFF80ff80);
             vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
             vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
         }
-        if (resetCooldownButton.isMouseOver((double) mouseX, (double) mouseY))
-            renderTooltip(poseStack, Component.translatable("gui.potion_shrines.reset_cooldown"), mouseX, mouseY);
-        renderIcon(poseStack, mouseX, mouseY, partialTicks);
-        if (effectBox.isFocused() && !suggestions.isEmpty() && !(suggestions.size() == 1 && suggestions.get(0).equals(effectBox.getValue())))
-            renderSuggestionsDropdown(poseStack, mouseX, mouseY);
         RenderSystem.disableDepthTest();
     }
-
-    private void renderIcon(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-
-        // Set up rotation
-        RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
-        RenderSystem.disableCull();
-
-        // Push matrix and apply transformations
-        poseStack.pushPose();
-
-        poseStack.translate(leftPos + 123.5, topPos + 103, 2); // Positioning in the center
-        poseStack.scale(45.0F, 45.0F, 45.0F);
-        poseStack.translate(0.5F, 0.5F, 0.5F);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees((Minecraft.getInstance().level.getGameTime() + partialTicks) % 3600L));
-        poseStack.translate(-0.5F, -0.5F, -0.5F);
-
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        Minecraft.getInstance().getItemRenderer().renderModelLists(getBakedIconOrDefault(icon), ItemStack.EMPTY, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource.getBuffer(RenderType.cutout()));
-        bufferSource.endBatch();
-
-        RenderSystem.enableCull();
-        poseStack.popPose();
-    }
-
-    @Override
-    protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-        renderBackground(poseStack);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-
-        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
-    }
-
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         font.draw(poseStack, title, 47 - font.width(title.getVisualOrderText()) * 0.5f, titleLabelY, 4210752);
@@ -386,143 +266,9 @@ public class AoEShrineScreen extends AbstractContainerScreen<AoEShrineMenu> impl
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.replenish"), 9, 157, 4210752);
         font.draw(poseStack, Component.translatable("tooltip.potion_shrines.icon"), 120, 90, 4210752);
     }
-
-    private void renderSuggestionsDropdown(PoseStack poseStack, int mouseX, int mouseY) {
-        poseStack.translate(0, 0, 1);
-        int x = leftPos + 8;
-        int y = topPos + 50;
-
-        // Render background box for the dropdown
-        fill(poseStack, x, y, x + EFFECT_BOX_WIDTH, y + Math.min(suggestions.size(), MAX_DISPLAYED) * 14, 0xFF000000); // Black background
-
-        // Render each suggestion
-        for (int i = 0; i < Math.min(MAX_DISPLAYED, suggestions.size()); i++) {
-            int index = i + scrollOffset;
-            String suggestion = translate ? Component.translatable(getEffectFromString(suggestions.get(index)).getDescriptionId()).getString() : suggestions.get(index);
-            int yOffset = y + i * 14;
-
-            drawString(poseStack, font, suggestion, x + 4, yOffset + 3, 0xFFFFFF);
-
-            if (mouseX >= x && mouseX <= x + EFFECT_BOX_WIDTH && mouseY >= yOffset && mouseY < yOffset + 14) {
-                fill(poseStack, x, yOffset, x + EFFECT_BOX_WIDTH, yOffset + 14, 0x80FFFFFF);
-            }
-        }
-    }
-
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (suggestions.isEmpty()) {
-            if (mouseX > leftPos + 119 && mouseX < leftPos + 173 && mouseY > topPos + 99 && mouseY < topPos + 153) {
-                onIconClick();
-                return true;
-            }
-            if (effectBox.isMouseOver(mouseX, mouseY)) {
-                unfocusExcept(effectBox);
-            } else if (amplifierBox.isMouseOver(mouseX, mouseY)) {
-                unfocusExcept(amplifierBox);
-                if (button == 1) {
-                    amplifierBox.setValue("");
-                }
-                return super.mouseClicked(mouseX, mouseY, 0);
-            } else if (durationBox.isMouseOver(mouseX, mouseY)) {
-                unfocusExcept(durationBox);
-                if (button == 1) {
-                    durationBox.setValue("");
-                }
-                return super.mouseClicked(mouseX, mouseY, 0);
-            } else if (maxCooldownBox.isMouseOver(mouseX, mouseY)) {
-                unfocusExcept(maxCooldownBox);
-                if (button == 1) {
-                    maxCooldownBox.setValue("");
-                }
-                return super.mouseClicked(mouseX, mouseY, 0);
-            } else if (radiusBox.isMouseOver(mouseX, mouseY)) {
-                unfocusExcept(radiusBox);
-                if (button == 1) {
-                    radiusBox.setValue("");
-                }
-                return super.mouseClicked(mouseX, mouseY, 0);
-            }
-        }
-        if (mouseX >= leftPos + 8 && mouseX <= leftPos + 8 + EFFECT_BOX_WIDTH) {
-            int suggestionCount = Math.min(MAX_DISPLAYED, suggestions.size());
-            int suggestionYBottom = topPos + 50 + suggestionCount * 14;
-            if (effectBox.isMouseOver(mouseX, mouseY) && button == 1) {
-                suggestions.clear();
-                effectBox.setValue("");
-                return super.mouseClicked(mouseX, mouseY, 0);
-            } else if (mouseY >= topPos + 50 && mouseY <= suggestionYBottom && !suggestions.isEmpty()) {
-                int index = (int) (mouseY - topPos - 50) / 14 + scrollOffset;
-                effectBox.setValue(suggestions.get(index));
-                suggestions.clear();
-                return false;
-            } else {
-                if (getEffectFromString(effectBox.getValue()) == null) {
-                    if (suggestions.isEmpty()) {
-                        effectInvalid = true;
-                    } else {
-                        effectBox.setValue(suggestions.get(0));
-                    }
-                }
-                suggestions.clear();
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    public void unfocusExcept(EditBox keep) {
-        renderables.stream().filter(widget -> widget instanceof EditBox).forEach(editBox -> {
-            if (editBox != keep) {
-                ((EditBox) editBox).setFocus(false);
-            }
-        });
-    }
-
-    public void updateNbtValidity(){
-        for (Widget widget : renderables){
-            if (widget instanceof EditBox box){
-                if (box.getValue().isEmpty()) {
-                    itemNbtButton.active = false;
-                    blockNbtButton.active = false;
-                    return;
-                }
-            }
-        }
-        itemNbtButton.active = !effectInvalid;
-        blockNbtButton.active = !effectInvalid;
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW_KEY_TAB) {
-            translate = !translate;
-            onEffectChanged(effectBox.getValue());
-        }
-        if (effectBox.canConsumeInput() && keyCode != GLFW_KEY_ESCAPE) {
-            if (keyCode == GLFW_KEY_ENTER) {
-                effectBox.setValue(suggestions.isEmpty() ? effectBox.getValue() : suggestions.get(0));
-                suggestions.clear();
-            }
-            return effectBox.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        // Pass the key release event to the EditBox
-        if (effectBox.keyReleased(keyCode, scanCode, modifiers)) {
-            return false;
-        }
-        return super.keyReleased(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        if (effectBox.charTyped(codePoint, modifiers)) {
-            return true;
-        }
-        return super.charTyped(codePoint, modifiers);
+    protected boolean isMouseOverIcon(int mouseX, int mouseY) {
+        return mouseX > leftPos + 119 && mouseX < leftPos + 172 && mouseY > topPos + 100 && mouseY < topPos + 153;
     }
 
     @Override
