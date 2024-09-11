@@ -35,6 +35,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
 
@@ -75,21 +77,25 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
-        if (player.isShiftKeyDown()){
-            SimpleShrineBlockEntity shrine = level.getBlockEntity(blockPos, PSBlockEntities.SIMPLE_SHRINE.get()).get();
-            ItemStack itemStack = new ItemStack(this);
-            CompoundTag tag = new CompoundTag();
-            tag.putString("effect", shrine.getEffect());
-            tag.putInt("amplifier", shrine.getAmplifier());
-            tag.putInt("duration", shrine.getDuration());
-            tag.putInt("max_cooldown", shrine.getMaxCooldown());
-            tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
-            tag.putBoolean("replenish", shrine.canReplenish());
-            tag.putString("icon", shrine.getIcon());
-            CompoundTag compoundTag = new CompoundTag();
-            compoundTag.put("BlockEntityTag", tag);
-            itemStack.setTag(compoundTag);
-            return itemStack;
+        if (player.isShiftKeyDown()) {
+            Optional<SimpleShrineBlockEntity> optionalShrine = level.getBlockEntity(blockPos, PSBlockEntities.SIMPLE_SHRINE.get());
+
+            if (optionalShrine.isPresent()) {
+                SimpleShrineBlockEntity shrine = optionalShrine.get();
+                ItemStack itemStack = new ItemStack(this);
+                CompoundTag tag = new CompoundTag();
+                tag.putString("effect", shrine.getEffect());
+                tag.putInt("amplifier", shrine.getAmplifier());
+                tag.putInt("duration", shrine.getDuration());
+                tag.putInt("max_cooldown", shrine.getMaxCooldown());
+                tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
+                tag.putBoolean("replenish", shrine.canReplenish());
+                tag.putString("icon", shrine.getIcon());
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.put("BlockEntityTag", tag);
+                itemStack.setTag(compoundTag);
+                return itemStack;
+            }
         }
         return super.getCloneItemStack(state, target, level, blockPos, player);
     }
@@ -103,6 +109,7 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, PSBlockEntities.SIMPLE_SHRINE.get(), SimpleShrineBlockEntity::tick);
     }
+    @SuppressWarnings("unchecked")
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> aBlockEntityType, BlockEntityType<E> eBlockEntityType, BlockEntityTicker<? super E> blockEntityTicker) {
         return eBlockEntityType == aBlockEntityType ? (BlockEntityTicker<A>)blockEntityTicker : null;
     }

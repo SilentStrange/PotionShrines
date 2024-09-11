@@ -47,6 +47,7 @@ public class ShrineBlockItem extends BlockItem {
                 && context.getLevel().setBlock(context.getClickedPos().above(2), blockState, 11);
     }
 
+    @SuppressWarnings("all")
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
         CompoundTag nbt = itemStack.getTagElement("BlockEntityTag");
@@ -58,6 +59,7 @@ public class ShrineBlockItem extends BlockItem {
                 .append(Component.literal(": " + asTime((int) (nbt.getInt("remaining_cooldown") * 0.05)) + "/" + asTime((int) (nbt.getInt("max_cooldown") * 0.05)))).withStyle(Style.EMPTY.withBold(false)));
     }
 
+    @SuppressWarnings("all")
     @Override
     public InteractionResult place(BlockPlaceContext context) {
         BlockPlaceContext blockplacecontext = this.updatePlacementContext(context);
@@ -97,7 +99,7 @@ public class ShrineBlockItem extends BlockItem {
             }
         }
     }
-
+    @SuppressWarnings("all")
     private BlockState updateBlockStateFromTag(BlockPos blockPos, Level level, ItemStack itemStack, BlockState blockState) {
       BlockState blockstate = blockState;
       CompoundTag compoundtag = itemStack.getTag();
@@ -109,7 +111,7 @@ public class ShrineBlockItem extends BlockItem {
             Property<?> property = statedefinition.getProperty(s);
             if (property != null) {
                String s1 = compoundtag1.get(s).getAsString();
-               blockstate = updateState(blockstate, property, s1);
+               blockstate = updateBlockState(blockstate, property, s1);
             }
          }
       }
@@ -121,9 +123,7 @@ public class ShrineBlockItem extends BlockItem {
       return blockstate;
    }
 
-   private static <T extends Comparable<T>> BlockState updateState(BlockState p_40594_, Property<T> p_40595_, String p_40596_) {
-      return p_40595_.getValue(p_40596_).map((p_40592_) -> {
-         return p_40594_.setValue(p_40595_, p_40592_);
-      }).orElse(p_40594_);
-   }
+    public static <T extends Comparable<T>> BlockState updateBlockState(BlockState blockState, Property<T> property, String value) {
+        return property.getValue(value).map(comparable -> blockState.setValue(property, comparable)).orElse(blockState);
+    }
 }

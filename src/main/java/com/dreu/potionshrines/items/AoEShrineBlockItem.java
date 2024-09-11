@@ -25,13 +25,13 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.*;
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.items.ShrineBlockItem.updateBlockState;
 
 public class AoEShrineBlockItem extends BlockItem {
     public AoEShrineBlockItem(Block block, Properties properties) {
@@ -124,7 +124,7 @@ public class AoEShrineBlockItem extends BlockItem {
             Property<?> property = statedefinition.getProperty(s);
             if (property != null) {
                String s1 = compoundtag1.get(s).getAsString();
-               blockstate = updateState(blockstate, property, s1);
+               blockstate = updateBlockState(blockstate, property, s1);
             }
          }
       }
@@ -134,11 +134,5 @@ public class AoEShrineBlockItem extends BlockItem {
       }
 
       return blockstate;
-   }
-
-   private static <T extends Comparable<T>> BlockState updateState(BlockState p_40594_, Property<T> p_40595_, String p_40596_) {
-      return p_40595_.getValue(p_40596_).map((p_40592_) -> {
-         return p_40594_.setValue(p_40595_, p_40592_);
-      }).orElse(p_40594_);
    }
 }

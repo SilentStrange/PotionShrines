@@ -26,7 +26,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
@@ -42,6 +41,7 @@ import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
 import static com.dreu.potionshrines.config.SimpleShrine.SHRINES;
 import static com.dreu.potionshrines.config.SimpleShrine.TOTAL_WEIGHT;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Mod(PotionShrines.MODID)
 public class PotionShrines {
     public static final String MODID = "potion_shrines";
@@ -115,8 +115,6 @@ public class PotionShrines {
         PSMenuTypes.MENUS.register(eventBus);
         PacketHandler.register();
 
-        eventBus.addListener(this::commonSetup);
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -168,13 +166,6 @@ public class PotionShrines {
         }
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-    }
-
-    @Mod.EventBusSubscriber(modid = PotionShrines.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public class ForgeEvents {
-
-    }
     public static MobEffect getEffectFromString(String effect){
         try {
             return ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(new ResourceLocation(effect)).get();

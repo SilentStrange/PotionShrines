@@ -4,8 +4,8 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.toml.TomlParser;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.dreu.potionshrines.PotionShrines.LOGGER;
@@ -14,7 +14,7 @@ import static com.dreu.potionshrines.PotionShrines.MODID;
 public class PSConfig {
 
     static Pair<Config, String> getConfigOrDefault(String name, String defaultConfig) {
-        new File("config/" + MODID).mkdirs();
+        try {Files.createDirectories(Path.of("config/" + MODID));} catch (Exception ignored) {}
         return Pair.of(new TomlParser().parse(Path.of("config/" + MODID + "/"+ name +".toml").toAbsolutePath(),
                 ((path, configFormat) -> {
                     FileWriter writer = new FileWriter(path.toFile().getAbsolutePath());

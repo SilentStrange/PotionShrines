@@ -113,6 +113,7 @@ public class ShrineBaseBlock extends Block {
             level.removeBlock(blockPos, true);
         }
     }
+    @SuppressWarnings("all")
     @Override
     public boolean onDestroyedByPlayer(BlockState blockState, Level level, BlockPos blockPos, Player player, boolean willHarvest, FluidState fluid) {
         BlockPos shrinePos = blockPos.above(blockState.getValue(HALF) == Half.BOTTOM ? 2 : 1);

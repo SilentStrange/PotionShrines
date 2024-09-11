@@ -54,11 +54,6 @@ public class ShrineScreen<T extends AbstractContainerMenu> extends AbstractConta
     }
 
     @Override
-    public T getMenu() {
-        return super.getMenu();
-    }
-
-    @Override
     protected void init() {
         super.init();
         if (!initialized) initialize();

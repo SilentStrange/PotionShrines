@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.PushReaction;
@@ -39,6 +38,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
 import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
@@ -81,24 +82,28 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos blockPos, Player player) {
         if (player.isShiftKeyDown()){
-            AoEShrineBlockEntity shrine = level.getBlockEntity(blockPos, PSBlockEntities.AOE_SHRINE.get()).get();
-            ItemStack itemStack = new ItemStack(this);
-            CompoundTag tag = new CompoundTag();
-            tag.putString("effect", shrine.getEffect());
-            tag.putInt("amplifier", shrine.getAmplifier());
-            tag.putInt("duration", shrine.getDuration());
-            tag.putInt("max_cooldown", shrine.getMaxCooldown());
-            tag.putInt("radius", shrine.getRadius());
-            tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
-            tag.putBoolean("players", shrine.canEffectPlayers());
-            tag.putBoolean("monsters", shrine.canEffectMonsters());
-            tag.putBoolean("replenish", shrine.canReplenish());
-            tag.putString("icon", shrine.getIcon());
-            CompoundTag compoundTag = new CompoundTag();
-            compoundTag.put("BlockEntityTag", tag);
-            itemStack.setTag(compoundTag);
+            Optional<AoEShrineBlockEntity> optionalShrine = level.getBlockEntity(blockPos, PSBlockEntities.AOE_SHRINE.get());
 
-            return itemStack;
+            if (optionalShrine.isPresent()) {
+                AoEShrineBlockEntity shrine = optionalShrine.get();
+                ItemStack itemStack = new ItemStack(this);
+                CompoundTag tag = new CompoundTag();
+                tag.putString("effect", shrine.getEffect());
+                tag.putInt("amplifier", shrine.getAmplifier());
+                tag.putInt("duration", shrine.getDuration());
+                tag.putInt("max_cooldown", shrine.getMaxCooldown());
+                tag.putInt("radius", shrine.getRadius());
+                tag.putInt("remaining_cooldown", shrine.getRemainingCooldown());
+                tag.putBoolean("players", shrine.canEffectPlayers());
+                tag.putBoolean("monsters", shrine.canEffectMonsters());
+                tag.putBoolean("replenish", shrine.canReplenish());
+                tag.putString("icon", shrine.getIcon());
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.put("BlockEntityTag", tag);
+                itemStack.setTag(compoundTag);
+
+                return itemStack;
+            }
         }
         return super.getCloneItemStack(state, target, level, blockPos, player);
     }
@@ -112,6 +117,7 @@ public class AoEShrineBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, PSBlockEntities.AOE_SHRINE.get(), AoEShrineBlockEntity::tick);
     }
+    @SuppressWarnings("unchecked")
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> aBlockEntityType, BlockEntityType<E> eBlockEntityType, BlockEntityTicker<? super E> blockEntityTicker) {
         return eBlockEntityType == aBlockEntityType ? (BlockEntityTicker<A>)blockEntityTicker : null;
     }
@@ -121,9 +127,11 @@ public class AoEShrineBlock extends Block implements EntityBlock {
         return PushReaction.BLOCK;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         AoEShrineBlockEntity shrine = (AoEShrineBlockEntity) level.getBlockEntity(blockPos);
+        if (shrine == null) return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
         if (player.isCreative() && !player.isShiftKeyDown()){
             if (!level.isClientSide)
                 NetworkHooks.openScreen((ServerPlayer) player, shrine, blockPos);

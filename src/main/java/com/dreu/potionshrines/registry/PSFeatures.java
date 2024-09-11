@@ -81,7 +81,7 @@ public class PSFeatures {
 						InSquarePlacement.spread()
 				));
 
-        		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"all"})
 		private static RegistryObject<PlacedFeature> register(String name, RegistryObject<? extends ConfiguredFeature<?, ?>> feature, List<PlacementModifier> placementModifiers) {
 			return PLACED_FEATURES.register(name, () -> new PlacedFeature((Holder<ConfiguredFeature<?, ?>>) feature.getHolder().get(), ImmutableList.copyOf(placementModifiers)));
 		}
