@@ -4,7 +4,8 @@ import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
-import com.dreu.potionshrines.registry.*;
+import com.dreu.potionshrines.registry.PSBlockEntities;
+import com.dreu.potionshrines.registry.PSMenuTypes;
 import com.dreu.potionshrines.screen.IconSelectionScreen;
 import com.dreu.potionshrines.screen.aoe.AoEShrineScreen;
 import com.dreu.potionshrines.screen.simple.SimpleShrineScreen;
@@ -27,6 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
@@ -40,6 +42,13 @@ import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
 import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
 import static com.dreu.potionshrines.config.SimpleShrine.SHRINES;
 import static com.dreu.potionshrines.config.SimpleShrine.TOTAL_WEIGHT;
+import static com.dreu.potionshrines.registry.PSBlockEntities.BLOCK_ENTITIES;
+import static com.dreu.potionshrines.registry.PSBlocks.BLOCKS;
+import static com.dreu.potionshrines.registry.PSFeatures.Configured.CONFIGURED_FEATURES;
+import static com.dreu.potionshrines.registry.PSFeatures.FEATURES;
+import static com.dreu.potionshrines.registry.PSFeatures.Placed.PLACED_FEATURES;
+import static com.dreu.potionshrines.registry.PSItems.ITEMS;
+import static com.dreu.potionshrines.registry.PSMenuTypes.MENUS;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Mod(PotionShrines.MODID)
@@ -50,6 +59,7 @@ public class PotionShrines {
     public static final Map<String, BakedModel> BAKED_ICONS = new HashMap<>();
     public static final Set<String> SHRINE_ICONS = new HashSet<>();
     public static final int EDIT_BOX_HEIGHT = 18;
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     static {
         ExampleResourcePack.generate();
         SHRINES.forEach(shrine -> TOTAL_WEIGHT += shrine.getInt("Weight"));
@@ -80,15 +90,32 @@ public class PotionShrines {
                 "dolphins_grace", "fire_resistance", "glowing", "haste", "health_boost", "hero_of_the_village",
                 "hunger", "instant_damage", "instant_health", "invisibility", "jump_boost", "levitation",
                 "luck", "mining_fatigue", "nausea", "night_vision", "poison", "regeneration", "resistance",
-                "saturation", "slow_falling", "slowness", "speed", "strength", "unluck", "water_breathing", "weakness"
+                "saturation", "slow_falling", "slowness", "speed", "strength", "unluck", "water_breathing", "weakness",
+                "xp_boost"
         ));
     }
+    public PotionShrines() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        ITEMS.register(eventBus);
+        BLOCKS.register(eventBus);
+        BLOCK_ENTITIES.register(eventBus);
+        FEATURES.register(eventBus);
+        CONFIGURED_FEATURES.register(eventBus);
+        PLACED_FEATURES.register(eventBus);
+        MENUS.register(eventBus);
+        EFFECTS.register(eventBus);
+
+        PacketHandler.register();
+
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     public static List<File> searchDirectory(File rootDir, String searchPath, String fileExtension, int maxDepth) {
         List<File> result = new ArrayList<>();
         searchDirectory(rootDir, searchPath, fileExtension, result, 0, maxDepth);
         return result;
     }
-
     private static void searchDirectory(File dir, String searchPath, String fileExtension, List<File> result, int depth, int maxDepth) {
         if (depth > maxDepth || !dir.isDirectory()) return;
 
@@ -102,20 +129,6 @@ public class PotionShrines {
                 result.add(file);
             }
         }
-    }
-    public PotionShrines() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        PSItems.ITEMS.register(eventBus);
-        PSBlocks.BLOCKS.register(eventBus);
-        PSBlockEntities.BLOCK_ENTITIES.register(eventBus);
-        PSFeatures.FEATURES.register(eventBus);
-        PSFeatures.Configured.CONFIGURED_FEATURES.register(eventBus);
-        PSFeatures.Placed.PLACED_FEATURES.register(eventBus);
-        PSMenuTypes.MENUS.register(eventBus);
-        PacketHandler.register();
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

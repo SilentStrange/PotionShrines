@@ -31,4 +31,7 @@
 
   "potion_shrines.false": "False",
   "potion_shrines.true": "True"
+  "potion_shrines.true": "True",
+
+  "effect.potion_shrines.xp_boost": "XP Boost",
 }
