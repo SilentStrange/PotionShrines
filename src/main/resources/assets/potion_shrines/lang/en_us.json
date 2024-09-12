@@ -30,8 +30,8 @@
   "gui.potion_shrines.itemNbt": "⎘ Item NBT",
 
   "potion_shrines.false": "False",
-  "potion_shrines.true": "True"
   "potion_shrines.true": "True",
 
   "effect.potion_shrines.xp_boost": "XP Boost",
+  "effect.potion_shrines.jump_dash": "Jump Dash"
 }
