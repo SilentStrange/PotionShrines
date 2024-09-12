@@ -239,16 +239,19 @@ public class AoEShrineScreen extends ShrineScreen<AoEShrineMenu> implements Icon
     }
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
-        resetCooldownButton.active = !(menu.shrineEntity.getRemainingCooldown() == 0);
+
         RenderSystem.enableDepthTest();
         super.render(poseStack, mouseX, mouseY, partialTicks);
-        if (suggestions.isEmpty() && isMouseOverIcon(mouseX, mouseY)) {
-            poseStack.translate(0, 0, 1);
-            hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
-            hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 151, 0xFF80ff80);
-            vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
-            vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
+        if (suggestions.isEmpty()) {
+            resetCooldownButton.setMessage(Component.literal(String.valueOf(menu.shrineEntity.getRemainingCooldown() / 20)));
+            resetCooldownButton.active = !(menu.shrineEntity.getRemainingCooldown() == 0);
+            if (isMouseOverIcon(mouseX, mouseY)) {
+                poseStack.translate(0, 0, 1);
+                hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 100, 0xFF80ff80);
+                hLine(poseStack, leftPos + 120, leftPos + 171, topPos + 151, 0xFF80ff80);
+                vLine(poseStack, leftPos + 120, topPos + 100, topPos + 151, 0xFF80ff80);
+                vLine(poseStack, leftPos + 171, topPos + 100, topPos + 151, 0xFF80ff80);
+            }
         }
         RenderSystem.disableDepthTest();
     }
