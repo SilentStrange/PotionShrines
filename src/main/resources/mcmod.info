@@ -1,0 +1,16 @@
+[
+{
+  "modid": "potion_shrines",
+  "name": "Potion Shrines",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Dreu", "Fleece"],
+  "credits": "",
+  "logoFile": "shrines_icon.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
