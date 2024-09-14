@@ -2,7 +2,7 @@ package com.dreu.potionshrines.blocks.shrine.aoe;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,8 +16,9 @@ import java.util.Objects;
 
 import static com.dreu.potionshrines.PotionShrines.getBakedIconOrDefault;
 
-public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEntity>{
-    public AoEShrineRenderer(){}
+public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEntity> {
+    public AoEShrineRenderer() {}
+
     @Override
     public void render(AoEShrineBlockEntity aoeshrineEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         if (!Objects.equals(aoeshrineEntity.getEffect(), "null")) {
@@ -28,9 +29,9 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
                 uvY = 1;
                 poseStack.pushPose();
                 poseStack.translate(0.5, Math.sin((aoeshrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0.5);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees((aoeshrineEntity.getLevel().getGameTime() + partialTicks) % 360));  // Apply rotation around the Y-axis
+                poseStack.mulPose(new Quaternionf().rotateY((aoeshrineEntity.getLevel().getGameTime() + partialTicks) % 360));
 
-                RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader); // Ensure correct shader
                 RenderSystem.enableDepthTest();
 
                 poseStack.scale(0.88889f, 0.88889f, 0.88889f);
@@ -41,15 +42,15 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
 
                 poseStack.popPose();
             } else if (cooldown < 40) {
-                //Animation on replenish
+                // Animation on replenish
                 poseStack.pushPose();
                 poseStack.translate(0.5, -cooldown * 0.01, 0.5);
                 poseStack.translate(0, Math.sin((aoeshrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0);
                 float normalizedCooldown = cooldown / 39.0f;
                 poseStack.scale(1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(((aoeshrineEntity.getLevel().getGameTime() + partialTicks) - 3600 * normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
+                poseStack.mulPose(new Quaternionf().rotateY(((aoeshrineEntity.getLevel().getGameTime() + partialTicks) - 3600 * normalizedCooldown * normalizedCooldown) % 360));  // Updated to Quaternionf
 
-                RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader); // Ensure correct shader
                 RenderSystem.enableDepthTest();
 
                 poseStack.scale(0.88889f, 0.88889f, 0.88889f);
@@ -60,16 +61,16 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
 
                 poseStack.popPose();
             } else if (cooldown > aoeshrineEntity.getMaxCooldown() - 20) {
-                //Animation on use
+                // Animation on use
                 cooldown = aoeshrineEntity.getMaxCooldown() - cooldown;
                 poseStack.pushPose();
                 poseStack.translate(0.5, cooldown * 0.04 + 0.1, 0.5);
                 poseStack.translate(0, Math.sin((aoeshrineEntity.getLevel().getGameTime() + partialTicks) * 0.05) * 0.1, 0);
                 float normalizedCooldown = cooldown / 19.0f;
                 poseStack.scale(1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown, 1 - normalizedCooldown * normalizedCooldown);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(((aoeshrineEntity.getLevel().getGameTime() + partialTicks) - 1800 * normalizedCooldown * normalizedCooldown) % 360));  // Apply rotation around the Y-axis
+                poseStack.mulPose(new Quaternionf().rotateY(((aoeshrineEntity.getLevel().getGameTime() + partialTicks) - 1800 * normalizedCooldown * normalizedCooldown) % 360));  // Updated to Quaternionf
 
-                RenderSystem.setShader(GameRenderer::getRendertypeItemEntityTranslucentCullShader);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader); // Ensure correct shader
                 RenderSystem.enableDepthTest();
 
                 poseStack.scale(0.88889f, 0.88889f, 0.88889f);
@@ -95,7 +96,7 @@ public class AoEShrineRenderer implements BlockEntityRenderer<AoEShrineBlockEnti
                 buffer.vertex(poseStack.last().pose(), 0.125f, 0.0f, 0.2501f).uv(1, 1).endVertex();
                 buffer.vertex(poseStack.last().pose(), 0.125f, uvY, 0.2501f).uv(1, 1 - uvY).endVertex();
                 buffer.vertex(poseStack.last().pose(), -0.125f, uvY, 0.2501f).uv(0, 1 - uvY).endVertex();
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+                poseStack.mulPose(new Quaternionf().rotateY((float) Math.toRadians(90))); // Updated to Quaternionf
             }
             Tesselator.getInstance().end();
 
