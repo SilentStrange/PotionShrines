@@ -21,7 +21,7 @@ public class ShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
     }
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        if (!context.level().getServer().getWorldData().worldGenSettings().generateStructures()) {return false;}
+        if (!context.level().getServer().getWorldData().worldGenSettings().generateStructures()) return false;
         BlockPos origin = context.origin();
         origin = new BlockPos(origin.getX(), -59, origin.getZ());
         while (!(context.level().getBlockState(origin).getMaterial().isReplaceable() && context.level().getBlockState(origin.below()).getMaterial().isSolid())){
@@ -31,10 +31,10 @@ public class ShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
         if (canPlaceBlock(context.level(), origin)
                 && canPlaceBlock(context.level(), origin.above(1))
                 && canPlaceBlock(context.level(), origin.above(2))
-                && context.level().setBlock(origin.above(2), PSBlocks.SHRINE.get().defaultBlockState(), 11)) {
+                && context.level().setBlock(origin.above(2), shrine.defaultBlockState(), 11)) {
 
-            context.level().setBlock(origin.above(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-            context.level().setBlock(origin, PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+            context.level().setBlock(origin.above(1), base.defaultBlockState().setValue(HALF, Half.TOP), 11);
+            context.level().setBlock(origin, base.defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
         }
         return false;
     }
