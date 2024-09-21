@@ -3,8 +3,11 @@ package com.dreu.potionshrines.registry;
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEDecrepitBlock;
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBaseBlock;
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineBlock;
-import com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock;
-import com.dreu.potionshrines.blocks.shrine.simple.ShrineDecrepitBlock;
+import com.dreu.potionshrines.blocks.shrine.aura.AuraDecrepitBlock;
+import com.dreu.potionshrines.blocks.shrine.aura.AuraShrineBaseBlock;
+import com.dreu.potionshrines.blocks.shrine.aura.AuraShrineBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock;
+import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineDecrepitBlock;
 import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,5 +43,16 @@ public class PSBlocks {
                         .strength(SHRINE_INDESTRUCTIBLE ? -1 : 5)));
         public static final RegistryObject<Block> AOE_SHRINE_DECREPIT = BLOCKS.register("aoe_shrine_decrepit",
                 () -> new AoEDecrepitBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
+                        .strength(5)));
+
+        public static final RegistryObject<Block> AURA_SHRINE = BLOCKS.register("aura_shrine",
+                () -> new AuraShrineBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
+                        .lightLevel((blockstate) -> blockstate.getValue(LIGHT_LEVEL))
+                        .emissiveRendering((blockState, blockGetter, blockPos) -> true)));
+        public static final RegistryObject<Block> AURA_SHRINE_BASE = BLOCKS.register("aura_shrine_base",
+                () -> new AuraShrineBaseBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
+                        .strength(SHRINE_INDESTRUCTIBLE ? -1 : 5)));
+        public static final RegistryObject<Block> AURA_SHRINE_DECREPIT = BLOCKS.register("aura_shrine_decrepit",
+                () -> new AuraDecrepitBlock(BlockBehaviour.Properties.copy(Blocks.STONE)
                         .strength(5)));
 }

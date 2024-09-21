@@ -1,9 +1,9 @@
 package com.dreu.potionshrines.registry;
 
 import com.dreu.potionshrines.PotionShrines;
-import com.dreu.potionshrines.levelgen.features.placers.AoEShrineCaveFeaturePlacer;
-import com.dreu.potionshrines.levelgen.features.placers.AoEShrineSurfaceAltarFeaturePlacer;
+import com.dreu.potionshrines.levelgen.features.placers.AuraShrineSurfaceAltarFeaturePlacer;
 import com.dreu.potionshrines.levelgen.features.placers.ShrineCaveFeaturePlacer;
+import com.dreu.potionshrines.levelgen.features.placers.AoEShrineSurfaceAltarFeaturePlacer;
 import com.dreu.potionshrines.levelgen.features.placers.ShrineSurfaceAltarFeaturePlacer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Holder;
@@ -29,11 +29,10 @@ public class PSFeatures {
 
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> SIMPLE_SHRINE_SURFACE_ALTAR = FEATURES.register("simple_shrine_surface_altar", ShrineSurfaceAltarFeaturePlacer::new);
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> AOE_SHRINE_SURFACE_ALTAR = FEATURES.register("aoe_shrine_surface_altar", AoEShrineSurfaceAltarFeaturePlacer::new);
-	public static final RegistryObject<Feature<NoneFeatureConfiguration>> SHRINE_CAVE = FEATURES.register("shrine_cave", ShrineCaveFeaturePlacer::new);
-	public static final RegistryObject<Feature<NoneFeatureConfiguration>> AOE_SHRINE_CAVE = FEATURES.register("aoe_shrine_cave", AoEShrineCaveFeaturePlacer::new);
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> AURA_SHRINE_SURFACE_ALTAR = FEATURES.register("aura_shrine_surface_altar", AuraShrineSurfaceAltarFeaturePlacer::new);
 	public static final RegistryObject<Feature<NoneFeatureConfiguration>> SIMPLE_SHRINE_CAVE = FEATURES.register("simple_shrine_cave", () -> new ShrineCaveFeaturePlacer(SIMPLE_SHRINE_BASE.get(), SIMPLE_SHRINE.get()));
 	public static final RegistryObject<Feature<NoneFeatureConfiguration>> AOE_SHRINE_CAVE = FEATURES.register("aoe_shrine_cave", () -> new ShrineCaveFeaturePlacer(AOE_SHRINE_BASE.get(), AOE_SHRINE.get()));
+	public static final RegistryObject<Feature<NoneFeatureConfiguration>> AURA_SHRINE_CAVE = FEATURES.register("aura_shrine_cave", () -> new ShrineCaveFeaturePlacer(AURA_SHRINE_BASE.get(), AURA_SHRINE.get()));
 
     public static final class Configured {
 		public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, PotionShrines.MODID);
@@ -47,6 +46,11 @@ public class PSFeatures {
 				new ConfiguredFeature<>(PSFeatures.AOE_SHRINE_SURFACE_ALTAR.get(), new NoneFeatureConfiguration()));
 		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> AOE_SHRINE_CAVE = register("aoe_shrine_cave", () ->
 				new ConfiguredFeature<>(PSFeatures.AOE_SHRINE_CAVE.get(), new NoneFeatureConfiguration()));
+
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> AURA_SHRINE_SURFACE_ALTAR = register("aura_shrine_surface_altar", () ->
+				new ConfiguredFeature<>(PSFeatures.AURA_SHRINE_SURFACE_ALTAR.get(), new NoneFeatureConfiguration()));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> AURA_SHRINE_CAVE = register("aura_shrine_cave", () ->
+				new ConfiguredFeature<>(PSFeatures.AURA_SHRINE_CAVE.get(), new NoneFeatureConfiguration()));
 
         private static <FC extends FeatureConfiguration, F extends Feature<FC>> RegistryObject<ConfiguredFeature<FC, ?>> register(String name, Supplier<ConfiguredFeature<FC, F>> feature) {
 			return CONFIGURED_FEATURES.register(name, feature);
@@ -82,6 +86,21 @@ public class PSFeatures {
 		public static final RegistryObject<PlacedFeature> AOE_SHRINE_CAVE = register("aoe_shrine_cave",
 				Configured.AOE_SHRINE_CAVE, List.of(
 						RarityFilter.onAverageOnceEvery(AOE_SHRINE_RARITY),
+						InSquarePlacement.spread()
+				));
+
+		public static final RegistryObject<PlacedFeature> AURA_SHRINE_SURFACE_ALTAR = register("aura_shrine_surface_altar",
+				Configured.AURA_SHRINE_SURFACE_ALTAR, List.of(
+						RarityFilter.onAverageOnceEvery(AURA_SHRINE_RARITY),
+						SurfaceWaterDepthFilter.forMaxDepth(63),
+						PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+						InSquarePlacement.spread(),
+						BiomeFilter.biome()
+				));
+
+		public static final RegistryObject<PlacedFeature> AURA_SHRINE_CAVE = register("aura_shrine_cave",
+				Configured.AURA_SHRINE_CAVE, List.of(
+						RarityFilter.onAverageOnceEvery(AURA_SHRINE_RARITY),
 						InSquarePlacement.spread()
 				));
 

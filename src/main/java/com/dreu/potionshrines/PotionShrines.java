@@ -1,7 +1,7 @@
 package com.dreu.potionshrines;
 
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
-import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
+import com.dreu.potionshrines.blocks.shrine.aura.AuraShrineRenderer;
 import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
@@ -9,6 +9,7 @@ import com.dreu.potionshrines.registry.PSBlockEntities;
 import com.dreu.potionshrines.registry.PSMenuTypes;
 import com.dreu.potionshrines.screen.IconSelectionScreen;
 import com.dreu.potionshrines.screen.aoe.AoEShrineScreen;
+import com.dreu.potionshrines.screen.aura.AuraShrineScreen;
 import com.dreu.potionshrines.screen.simple.SimpleShrineScreen;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
@@ -41,6 +42,8 @@ import java.util.*;
 
 import static com.dreu.potionshrines.config.AoEShrine.AOE_SHRINES;
 import static com.dreu.potionshrines.config.AoEShrine.TOTAL_WEIGHT_AOE;
+import static com.dreu.potionshrines.config.AuraShrine.AURA_SHRINES;
+import static com.dreu.potionshrines.config.AuraShrine.TOTAL_WEIGHT_AURA;
 import static com.dreu.potionshrines.config.SimpleShrine.SHRINES;
 import static com.dreu.potionshrines.config.SimpleShrine.TOTAL_WEIGHT;
 import static com.dreu.potionshrines.registry.PSBlockEntities.BLOCK_ENTITIES;
@@ -65,6 +68,7 @@ public class PotionShrines {
         ExampleResourcePack.generate();
         SHRINES.forEach(shrine -> TOTAL_WEIGHT += shrine.getInt("Weight"));
         AOE_SHRINES.forEach(shrine -> TOTAL_WEIGHT_AOE += shrine.getInt("Weight"));
+        AURA_SHRINES.forEach(shrine -> TOTAL_WEIGHT_AURA += shrine.getInt("Weight"));
 
         File resourcePacks = new File("resourcepacks");
         String iconSearchPath = MODID + "\\textures\\icon";
@@ -136,11 +140,14 @@ public class PotionShrines {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            MenuScreens.register(PSMenuTypes.AOE_SHRINE_MENU.get(), AoEShrineScreen::new);
-            MenuScreens.register(PSMenuTypes.ICON_SELECTION_MENU.get(), IconSelectionScreen::new);
             MenuScreens.register(PSMenuTypes.SIMPLE_SHRINE_MENU.get(), SimpleShrineScreen::new);
-            BlockEntityRenderers.register(PSBlockEntities.SIMPLE_SHRINE.get(), (c) -> new ShrineRenderer());
+            MenuScreens.register(PSMenuTypes.AOE_SHRINE_MENU.get(), AoEShrineScreen::new);
+            MenuScreens.register(PSMenuTypes.AURA_SHRINE_MENU.get(), AuraShrineScreen::new);
+            MenuScreens.register(PSMenuTypes.ICON_SELECTION_MENU.get(), IconSelectionScreen::new);
+
+            BlockEntityRenderers.register(PSBlockEntities.SIMPLE_SHRINE.get(), (c) -> new SimpleShrineRenderer());
             BlockEntityRenderers.register(PSBlockEntities.AOE_SHRINE.get(), (c) -> new AoEShrineRenderer());
+            BlockEntityRenderers.register(PSBlockEntities.AURA_SHRINE.get(), (c) -> new AuraShrineRenderer());
         }
         @SubscribeEvent
         public static void registerModels(ModelEvent.RegisterAdditional event){
@@ -209,9 +216,7 @@ public class PotionShrines {
                tens[(number % 100) / 10] +
                ones[number % 10] + " ";
     }
-    public static String asTime(int seconds) {
-        return String.format("%d:%02d", seconds / 60, seconds % 60);
-    }
+    public static String asTime(int seconds) {return String.format("%d:%02d", seconds / 60, seconds % 60);}
     public static BakedModel getBakedIconOrDefault(String key) {
         return BAKED_ICONS.get(key) == null ? BAKED_ICONS.get("default") : BAKED_ICONS.get(key);
     }
