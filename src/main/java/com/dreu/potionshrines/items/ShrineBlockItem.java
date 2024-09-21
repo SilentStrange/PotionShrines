@@ -1,6 +1,5 @@
 package com.dreu.potionshrines.items;
 
-import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -30,11 +29,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static com.dreu.potionshrines.PotionShrines.*;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.HALF;
 
 public class ShrineBlockItem extends BlockItem {
-    public ShrineBlockItem(Block block, Properties properties) {
+    private final Block baseBlock;
+
+    public ShrineBlockItem(Block block, Block baseBlock, Properties properties) {
         super(block, properties);
+        this.baseBlock = baseBlock;
     }
 
     @Override
@@ -59,43 +61,46 @@ public class ShrineBlockItem extends BlockItem {
                 .append(Component.literal(": " + asTime((int) (nbt.getInt("remaining_cooldown") * 0.05)) + "/" + asTime((int) (nbt.getInt("max_cooldown") * 0.05)))).withStyle(Style.EMPTY.withBold(false)));
     }
 
-    @SuppressWarnings("all")
     @Override
     public InteractionResult place(BlockPlaceContext context) {
-        BlockPlaceContext blockplacecontext = this.updatePlacementContext(context);
-        if (blockplacecontext == null) {
+        if (!context.canPlace()) {
             return InteractionResult.FAIL;
         } else {
-            BlockState blockstate = this.getPlacementState(blockplacecontext);
-            if (blockstate == null) {
-                return InteractionResult.FAIL;
-            } else if (!this.placeBlock(blockplacecontext, blockstate)) {
+            BlockPlaceContext blockplacecontext = this.updatePlacementContext(context);
+            if (blockplacecontext == null) {
                 return InteractionResult.FAIL;
             } else {
-                BlockPos blockpos = blockplacecontext.getClickedPos().above(2);
-                Level level = blockplacecontext.getLevel();
-                Player player = blockplacecontext.getPlayer();
-                ItemStack itemstack = blockplacecontext.getItemInHand();
-                BlockState blockstate1 = level.getBlockState(blockpos);
-                if (blockstate1.is(blockstate.getBlock())) {
-                    blockstate1 = this.updateBlockStateFromTag(blockpos, level, itemstack, blockstate1);
-                    this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
-                    blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
-                    if (player instanceof ServerPlayer) {
-                        CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, blockpos, itemstack);
+                BlockState blockstate = this.getPlacementState(blockplacecontext);
+                if (blockstate == null) {
+                    return InteractionResult.FAIL;
+                } else if (!this.placeBlock(blockplacecontext, blockstate)) {
+                    return InteractionResult.FAIL;
+                } else {
+                    BlockPos blockpos = blockplacecontext.getClickedPos().above(2);
+                    Level level = blockplacecontext.getLevel();
+                    Player player = blockplacecontext.getPlayer();
+                    ItemStack itemstack = blockplacecontext.getItemInHand();
+                    BlockState blockstate1 = level.getBlockState(blockpos);
+                    if (blockstate1.is(blockstate.getBlock())) {
+                        blockstate1 = this.updateBlockStateFromTag(blockpos, level, itemstack, blockstate1);
+                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
+                        blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
+                        if (player instanceof ServerPlayer) {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, blockpos, itemstack);
+                        }
                     }
-                }
 
-                level.setBlockAndUpdate(blockpos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP));
-                level.setBlockAndUpdate(blockpos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM));
+                    level.setBlockAndUpdate(blockpos.below(1), getBaseBlock().defaultBlockState().setValue(HALF, Half.TOP));
+                    level.setBlockAndUpdate(blockpos.below(2), getBaseBlock().defaultBlockState().setValue(HALF, Half.BOTTOM));
 
-                level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(player, blockstate1));
-                SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());
-                level.playSound(player, blockpos, this.getPlaceSound(blockstate1, level, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                if (player == null || !player.getAbilities().instabuild) {
-                    itemstack.shrink(1);
+                    level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(player, blockstate1));
+                    SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());
+                    level.playSound(player, blockpos, this.getPlaceSound(blockstate1, level, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    if (player == null || !player.getAbilities().instabuild) {
+                        itemstack.shrink(1);
+                    }
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
     }
@@ -121,7 +126,11 @@ public class ShrineBlockItem extends BlockItem {
       }
 
       return blockstate;
-   }
+    }
+
+    public Block getBaseBlock() {
+        return baseBlock;
+    }
 
     public static <T extends Comparable<T>> BlockState updateBlockState(BlockState blockState, Property<T> property, String value) {
         return property.getValue(value).map(comparable -> blockState.setValue(property, comparable)).orElse(blockState);

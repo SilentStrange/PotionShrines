@@ -109,11 +109,6 @@ public class AoEShrineBaseBlock extends Block {
     }
 
     @Override
-    public void animateTick(BlockState p_220827_, Level p_220828_, BlockPos p_220829_, RandomSource p_220830_) {
-        super.animateTick(p_220827_, p_220828_, p_220829_, p_220830_);
-    }
-
-    @Override
     public boolean canEntityDestroy(BlockState blockState, BlockGetter level, BlockPos blockPos, Entity entity) {
         return !General.SHRINE_INDESTRUCTIBLE && super.canEntityDestroy(blockState, level, blockPos, entity);
     }
@@ -131,9 +126,7 @@ public class AoEShrineBaseBlock extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
-        return false;
-    }
+    public boolean isPathfindable(BlockState blockState, BlockGetter level, BlockPos blockPos, PathComputationType pathType) {return false;}
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {

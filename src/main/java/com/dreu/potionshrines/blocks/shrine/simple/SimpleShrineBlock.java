@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.HALF;
 
 public class SimpleShrineBlock extends Block implements EntityBlock {
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
@@ -142,8 +142,8 @@ public class SimpleShrineBlock extends Block implements EntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
-        level.setBlock(blockPos.below(1), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-        level.setBlock(blockPos.below(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+        level.setBlock(blockPos.below(1), PSBlocks.SIMPLE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+        level.setBlock(blockPos.below(2), PSBlocks.SIMPLE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
     }
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

@@ -30,7 +30,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import static com.dreu.potionshrines.config.General.OBTAINABLE;
 
-public class ShrineBaseBlock extends Block {
+public class SimpleShrineBaseBlock extends Block {
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final VoxelShape BOTTOM_SHAPE =
             Shapes.join(
@@ -79,7 +79,7 @@ public class ShrineBaseBlock extends Block {
 
     public static final VoxelShape COLLISION_SHAPE = Block.box(3, 0, 3, 13, 16, 13);
 
-    public ShrineBaseBlock(Properties properties) {
+    public SimpleShrineBaseBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
                 .setValue(HALF, Half.BOTTOM));
@@ -107,7 +107,7 @@ public class ShrineBaseBlock extends Block {
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         blockPos = blockPos.above(blockState.getValue(HALF) == Half.TOP ? 1 : 2);
-        if (level.getBlockState(blockPos).is(PSBlocks.SHRINE.get())) {
+        if (level.getBlockState(blockPos).is(PSBlocks.SIMPLE_SHRINE.get())) {
             level.destroyBlock(blockPos.below(2), true);
             level.removeBlock(blockPos.below(1), true);
             level.removeBlock(blockPos, true);
@@ -155,8 +155,8 @@ public class ShrineBaseBlock extends Block {
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
         level.setBlock(blockPos.above(), blockState.getValue(HALF) == Half.BOTTOM
-                ? PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP)
-                : PSBlocks.SHRINE.get().defaultBlockState(), 11);
+                ? PSBlocks.SIMPLE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP)
+                : PSBlocks.SIMPLE_SHRINE.get().defaultBlockState(), 11);
     }
 
     @Override

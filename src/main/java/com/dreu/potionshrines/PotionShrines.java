@@ -2,6 +2,7 @@ package com.dreu.potionshrines;
 
 import com.dreu.potionshrines.blocks.shrine.aoe.AoEShrineRenderer;
 import com.dreu.potionshrines.blocks.shrine.simple.ShrineRenderer;
+import com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineRenderer;
 import com.dreu.potionshrines.config.ExampleResourcePack;
 import com.dreu.potionshrines.network.PacketHandler;
 import com.dreu.potionshrines.registry.PSBlockEntities;

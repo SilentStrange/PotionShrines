@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#potion_shrines:has_feature/simple_shrine_surface_altar",
+  "features": "potion_shrines:simple_shrine_surface_altar",
+  "step": "surface_structures"
+}

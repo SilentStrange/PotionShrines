@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": {"model": "potion_shrines:block/simple_shrine"}
+  }
+}

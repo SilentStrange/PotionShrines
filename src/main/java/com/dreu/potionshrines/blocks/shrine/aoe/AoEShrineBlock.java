@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 import static com.dreu.potionshrines.PotionShrines.getEffectFromString;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.HALF;
 
 public class AoEShrineBlock extends Block implements EntityBlock {
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);

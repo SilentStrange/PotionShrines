@@ -8,11 +8,11 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.BOTTOM_SHAPE;
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.TOP_SHAPE;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.BOTTOM_SHAPE;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.TOP_SHAPE;
 
-public class ShrineDecrepitBlock extends DecrepitShrineBlock {
-    public ShrineDecrepitBlock(Properties properties) {
+public class SimpleShrineDecrepitBlock extends DecrepitShrineBlock {
+    public SimpleShrineDecrepitBlock(Properties properties) {
         super(properties);
     }
     @Override

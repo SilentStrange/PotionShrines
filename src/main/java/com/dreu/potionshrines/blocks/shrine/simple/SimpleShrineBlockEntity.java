@@ -60,7 +60,7 @@ public class SimpleShrineBlockEntity extends BlockEntity implements MenuProvider
                     level.removeBlock(blockPos.below(2), false);
                     level.removeBlock(blockPos.below(1), false);
                     level.removeBlock(blockPos, false);
-                    level.setBlock(blockPos.below(2), PSBlocks.SHRINE_DECREPIT.get().defaultBlockState(), 11);
+                    level.setBlock(blockPos.below(2), PSBlocks.SIMPLE_SHRINE_DECREPIT.get().defaultBlockState(), 11);
                 }
                 shrine.setRemainingCooldown(shrine.remainingCooldown - 1);
                 setChanged(level, blockPos, blockState);
