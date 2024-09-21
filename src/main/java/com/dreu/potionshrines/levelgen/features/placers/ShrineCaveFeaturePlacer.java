@@ -1,18 +1,24 @@
 package com.dreu.potionshrines.levelgen.features.placers;
 
-import com.dreu.potionshrines.registry.PSBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.HALF;
 
 public class ShrineCaveFeaturePlacer extends Feature<NoneFeatureConfiguration> {
-    public ShrineCaveFeaturePlacer() {super(NoneFeatureConfiguration.CODEC);}
+    private final Block base;
+    private final Block shrine;
+    public ShrineCaveFeaturePlacer(Block base, Block shrine) {
+        super(NoneFeatureConfiguration.CODEC);
+        this.base = base;
+        this.shrine = shrine;
+    }
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         if (!context.level().getServer().getWorldData().worldGenSettings().generateStructures()) {return false;}

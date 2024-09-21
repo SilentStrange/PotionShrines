@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import static com.dreu.potionshrines.blocks.shrine.simple.ShrineBaseBlock.HALF;
+import static com.dreu.potionshrines.blocks.shrine.simple.SimpleShrineBaseBlock.HALF;
 import static net.minecraft.world.level.block.StairBlock.FACING;
 import static net.minecraft.world.level.block.StairBlock.SHAPE;
 
@@ -30,10 +30,10 @@ public class ShrineSurfaceAltarFeaturePlacer extends Feature<NoneFeatureConfigur
                 && canPlaceBlock(context.level(), context.origin().above(1))
                 && canPlaceBlock(context.level(), context.origin().above(2))
                 && canPlaceBlock(context.level(), context.origin().above(3))
-                && context.level().setBlock(context.origin().above(3), PSBlocks.SHRINE.get().defaultBlockState(), 11)) {
+                && context.level().setBlock(context.origin().above(3), PSBlocks.SIMPLE_SHRINE.get().defaultBlockState(), 11)) {
 
-            context.level().setBlock(context.origin().above(2), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
-            context.level().setBlock(context.origin().above(), PSBlocks.SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
+            context.level().setBlock(context.origin().above(2), PSBlocks.SIMPLE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.TOP), 11);
+            context.level().setBlock(context.origin().above(), PSBlocks.SIMPLE_SHRINE_BASE.get().defaultBlockState().setValue(HALF, Half.BOTTOM), 11);
 
             if (canPlaceBlock(context.level(), context.origin()))
                 context.level().setBlock(context.origin(), Blocks.DEEPSLATE_BRICKS.defaultBlockState(), 11);
